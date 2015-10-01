@@ -5,8 +5,8 @@ package core.sig;
  * a CompSig. 
  */
 public class ArgSpec { 
-    private String name;
-    private ISig type;
+    String name;
+    ISig type;
     
     public ArgSpec(String name, ISig type) {
         this.name = name;

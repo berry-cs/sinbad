@@ -6,8 +6,11 @@ import core.sig.*;
 import static org.junit.Assert.*;
 import static core.sig.PrimSig.*;
 
-
-public class TestPrimSig {
+/**
+ * Unit tests for core.sig classes
+ *
+ */
+public class TestSig {
 
     static ISigVisitor<Integer> intVisitor = new ISigVisitor<Integer>() {
         public Integer defaultVisit(ISig s) { return 0; }
