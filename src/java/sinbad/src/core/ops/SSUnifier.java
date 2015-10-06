@@ -67,18 +67,18 @@ public class SSUnifier {
 							}
 
 							@Override
-							public IDataOp<T> visit(CompSig<?> s) {
+							public IDataOp<T> visit(CompSig<?> sig) {
 
 								System.out.println("Attempting to unify prim schema with compSig");
-								if(s.getFieldCount() != 1)
+								if(sig.getFieldCount() != 1)
 									throw new RuntimeException("Cannot unify a Primitive with a compound of more than 1 field.");
 								else 
 								{
-
+										//TODO fix findConstructor
 									if (f.getPath() == null) {
-										return opf.makeConstructor(s.findConstructor(), new IDataOp[]{unifyWith(schema, s.getFieldSig(0))});
+										return opf.makeConstructor(sig.findConstructor(), new IDataOp[]{unifyWith(schema, sig.getFieldSig(0))});
 									} else {
-										return opf.makeConstructor(s.findConstructor(), new IDataOp[]{opf.makeSelectOp(unifyWith(schema, s.getFieldSig(0)),
+										return opf.makeConstructor(sig.findConstructor(), new IDataOp[]{opf.makeSelectOp(unifyWith(schema, sig.getFieldSig(0)),
 												f.getPath())});
 									}
 								}
