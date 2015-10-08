@@ -13,7 +13,8 @@ import java.util.HashMap;
 public class Errors {
     private static HashMap<String, ErrorMessage> errdb;
     
-    {  // static initialization block
+    static {  // static initialization block
+        errdb = new HashMap<String, ErrorMessage>(); 
         
         addError("da:getcontents", "could not access contents as a primitive (string)", 0);
         addError("da:get-index", "could not access index %d of path %s", 2);
@@ -23,6 +24,9 @@ public class Errors {
         addError("em:no-exception", "error instantiating exception class: %s", 1);
         addError("em:no-tag", "error message tag not found: %s", 1);
         addError("em:wrong-count", "incorrect argument count for error message: %s", 1);
+        
+        addError("scunify:unknown-sig", "unexpected/unhandled signature type", 0);
+        addError("scunify:not-prim", "%s is not a primitive class", 1);
     }
     
     public static RuntimeException exception(Class<? extends RuntimeException> exnClass, String tag, Object ... args) {
@@ -46,7 +50,7 @@ public class Errors {
     
     private Errors() {}
 
-    private void addError(String tag, String descrip, int argCount) {
+    private static void addError(String tag, String descrip, int argCount) {
         errdb.put(tag, new ErrorMessage(tag, descrip, argCount));        
     }
     
