@@ -11,8 +11,11 @@ import org.w3c.dom.*;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import big.data.field.*;
-import big.data.sig.*;
+import core.access.*;
+import core.access.raw.*;
+import core.ops.SSUnifier;
+import core.schema.*;
+import core.sig.*;
 
 class Foo {
 	int n;
@@ -27,8 +30,7 @@ class Foo {
 }
 
 class Bar{
-	int x;
-	int y;
+	int x,y;
 	String s;
 	public Bar(int x, int y, String s) {
 		this.x = x;
@@ -42,10 +44,21 @@ class Bar{
 	}
 }
 
+class WeirdClass{
+	int x,y,z;
+	public WeirdClass(int x, int y, int z){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	public String toString(){
+		return "x: "+this.x+" y: "+this.y+" z: "+this.z;
+	}
+}
+
 class FooBar{
-	int n;
-	int x;
-	int y;
+	int n,x,y;
 	String s;
 	public FooBar(int n, int x, int y, String s){
 		this.n = n;
@@ -84,10 +97,10 @@ public class TestUnifier {
 	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 
 		/*======= Test case : Prim || Prim =======*/
-		IDataField fld1 = new PrimField();
+		ISchema fld1 = new PrimSchema();
 		ISig sig1 = PrimSig.INT_SIG;
-		RuleBuilder r = new RuleBuilder();
-		IDataOp<Integer> dop = r.unifyWith(fld1, sig1);
+		SSUnifier unifier = new SSUnifier();
+		IDataOp<Integer> dop = (IDataOp<Integer>) unifier.unifyWith(fld1, sig1);
 		int i = dop.apply(new RawPrim("123"));
 		System.out.println(i + "!");
 
@@ -96,32 +109,32 @@ public class TestUnifier {
 		/*=======  Test case : Prim || Compound */ 
 		CompSig<Foo> sig2 = new CompSig<Foo>(Foo.class);
 		sig2.addField(sig1, "n");
-		IDataOp<Foo> dop2 = r.unifyWith(fld1, sig2);
+		IDataOp<Foo> dop2 = unifier.unifyWith(fld1, sig2);
 		Foo f = dop2.apply(new RawPrim("123"));
 		System.out.println(f.n + "!!!");
 
 		/*======= Test case : Prim || List */
 		ListSig sig3 = new ListSig(PrimSig.INT_SIG);
-		IDataField pfield = new PrimField("n");
-		IDataOp<Stream<Integer>> dop3 = r.unifyWith(pfield, sig3);
+		ISchema pfield = new PrimSchema("n");
+		IDataOp<Stream<Integer>> dop3 = unifier.unifyWith(pfield, sig3);
 		List<Integer> i0 = dop3.apply(new RawList("n",new IDataAccess[]
 				{new RawPrim("0")})).collect(Collectors.toList());
 		System.out.println(i0 + "!?!?!");
 
 
 		/*=======  Test case : Compound || Prim */
-		CompField fld2 = new CompField("somePath","A description");
-		fld1 = new PrimField("a/path","Adescription");
-		/*fld2 = (CompField)*/ fld2.addField("n", fld1);
+		CompSchema fld2 = new CompSchema("somePath","A description");
+		fld1 = new PrimSchema("a/path","Adescription");
+		/*fld2 = (CompSchema)*/ fld2.addField("n", fld1);
 		System.out.println("Field n: "+fld2.hasField("n"));
-		IDataOp<Integer> dop4 = r.unifyWith(fld2, sig1); 
+		IDataOp<Integer> dop4 = unifier.unifyWith(fld2, sig1); 
 		int i1 = dop4.apply(new RawPrim("123"));
 		System.out.println(i1+"!!@!");
 
 		/* **************** Test cases for Compound || Compound **************************************/
 		/*=======  subcase 1 : Compound{f0} || Compound {f0} */
-		//Using sig2 CompSig(Foo.class) and fld2 CompField with 1 field named n    	
-		IDataOp<Foo> dop5 = r.unifyWith(fld2, sig2);
+		//Using sig2 CompSig(Foo.class) and fld2 CompSchema with 1 field named n    	
+		IDataOp<Foo> dop5 = unifier.unifyWith(fld2, sig2);
 		Foo foo1 = dop5.apply(new RawStruct(new RawStructField[]{new RawStructField("n",new RawPrim("2"))}));
 
 
@@ -134,11 +147,11 @@ public class TestUnifier {
 		barSig1.addField(barX, "x");
 		barSig1.addField(barY, "y");
 		barSig1.addField(barS, "s");
-		CompField barField = new CompField("BasePath","ABarDescription");
-		barField.addField("x", new PrimField());
-		barField.addField("y", new PrimField());
-		barField.addField("s", new PrimField());
-		IDataOp<Bar> dop6 = r.unifyWith(barField, barSig1);
+		CompSchema barField = new CompSchema("BasePath","ABarDescription");
+		barField.addField("x", new PrimSchema());
+		barField.addField("y", new PrimSchema());
+		barField.addField("s", new PrimSchema());
+		IDataOp<Bar> dop6 = unifier.unifyWith(barField, barSig1);
 		Bar bar1 = dop6.apply(new RawStruct(new RawStructField[]
 				{new RawStructField("x",new RawPrim("10")),
 				new RawStructField("y",new RawPrim("11")),
@@ -147,13 +160,13 @@ public class TestUnifier {
 		System.out.println("Bar : \n\tx : "+bar1.x+"\n\ty : "+bar1.y+"\n\ts : "+bar1.s);
 
 		/*======= subcase 3 : Compound{f0,...,fn} || Compound{f0...fm} n > m */
-		CompField fooBarField = new CompField("foo.bar.foobar","aNiceDescription");
-		fooBarField.addField("n", new PrimField());
-		fooBarField.addField("x", new PrimField());
-		fooBarField.addField("y", new PrimField());
-		fooBarField.addField("s", new PrimField());
+		CompSchema fooBarField = new CompSchema("foo.bar.foobar","aNiceDescription");
+		fooBarField.addField("n", new PrimSchema());
+		fooBarField.addField("x", new PrimSchema());
+		fooBarField.addField("y", new PrimSchema());
+		fooBarField.addField("s", new PrimSchema());
 
-		IDataOp<Bar> dop7 = r.unifyWith(fooBarField,barSig1);
+		IDataOp<Bar> dop7 = unifier.unifyWith(fooBarField,barSig1);
 		Bar bar2 = dop7.apply(new RawStruct(new RawStructField[]
 				{new RawStructField("n",new RawPrim("9")),
 				new RawStructField("x",new RawPrim("10")),
@@ -170,7 +183,7 @@ public class TestUnifier {
 		fooBarSig.addField(PrimSig.STRING_SIG,"s");
 
 		try{
-			IDataOp<FooBar> dop8 = r.unifyWith(barField,fooBarSig);
+			IDataOp<FooBar> dop8 = unifier.unifyWith(barField,fooBarSig);
 		}catch(RuntimeException e){
 			System.out.println("Bar 2 unable to unify like it was suppposed to :)\n");
 		}
@@ -182,13 +195,13 @@ public class TestUnifier {
 		fooSig.addField(PrimSig.INT_SIG, "n");
 		fooTooSig.addField(fooSig, "foo");
 		fooTooSig.addField(PrimSig.INT_SIG, "too");
-		CompField fooTooField = new CompField();
-		CompField fooField = new CompField("foo","");
-		fooField.addField("n", new PrimField());
+		CompSchema fooTooField = new CompSchema();
+		CompSchema fooField = new CompSchema("foo","");
+		fooField.addField("n", new PrimSchema());
 		fooTooField.addField("foo",fooField);
-		fooTooField.addField("too", new PrimField());
+		fooTooField.addField("too", new PrimSchema());
 
-		IDataOp<FooToo> fooTooDop = r.unifyWith(fooTooField, fooTooSig);
+		IDataOp<FooToo> fooTooDop = unifier.unifyWith(fooTooField, fooTooSig);
 		FooToo newFooToo = fooTooDop.apply(
 				new RawStruct(new RawStructField[]
 						{new RawStructField("foo",new RawStruct(new RawStructField("n",new RawPrim("1")))),
@@ -198,9 +211,9 @@ public class TestUnifier {
 
 		/*======= Test case : Comp || List(List WRAP 2)*/
 		//Use fooSig & fooField for the comp
-		CompField wrapField = fooField;
+		CompSchema wrapField = fooField;
 		ListSig listWrapComp = new ListSig(fooSig);
-		IDataOp<Stream<Foo>> dop12 = r.unifyWith(wrapField, listWrapComp);
+		IDataOp<Stream<Foo>> dop12 = unifier.unifyWith(wrapField, listWrapComp);
 		List<Foo> wrappedFoo = dop12.apply(
 				new RawList("foo",new IDataAccess[]{(new RawStruct(new RawStructField("",
 						new RawStruct(new RawStructField("n",new RawPrim("521"))))))})).collect(Collectors.toList());
@@ -229,9 +242,9 @@ public class TestUnifier {
 		System.out.println(wrappedFoo);
 
 		/*======= Test case : List || Prim (List STRIP 1)*/
-		PrimField listFldPrimTest = new PrimField("","");
-		ListField listfld1 = new ListField("list/","n",listFldPrimTest);
-		IDataOp<Integer> dop9 = r.unifyWith(listfld1, PrimSig.INT_SIG);
+		PrimSchema listFldPrimTest = new PrimSchema("","");
+		ListSchema listfld1 = new ListSchema("list/","n",listFldPrimTest);
+		IDataOp<Integer> dop9 = unifier.unifyWith(listfld1, PrimSig.INT_SIG);
 		int listInt = dop9.apply(new RawStruct(new RawStructField[]{new RawStructField("n",new RawPrim("1337"))}));
 		/*		
 				new FailAccess(){
@@ -250,12 +263,12 @@ public class TestUnifier {
 		System.out.println("List elem 1: "+listInt);
 
 		/*======= Test case : List || Comp (List STRIP 2) */
-		CompField listCompField = new CompField("","");
-		listCompField.addField("x", listFldPrimTest);
-		listCompField.addField("y", listFldPrimTest);
-		listCompField.addField("s", listFldPrimTest);
-		ListField listfld2 = new ListField("","thing",listCompField);
-		IDataOp<Bar> dop10 = r.unifyWith(listfld2, barSig1);
+		CompSchema listCompSchema = new CompSchema("","");
+		listCompSchema.addField("x", listFldPrimTest);
+		listCompSchema.addField("y", listFldPrimTest);
+		listCompSchema.addField("s", listFldPrimTest);
+		ListSchema listfld2 = new ListSchema("","thing",listCompSchema);
+		IDataOp<Bar> dop10 = unifier.unifyWith(listfld2, barSig1);
 
 		Bar barFromList = dop10.apply(new RawStruct(new RawStructField("thing",new RawStruct(new RawStructField[]
 				{new RawStructField("x",new RawPrim("156")),
@@ -298,10 +311,10 @@ public class TestUnifier {
 
 		/*======= Test Case : List[t] || List[t], && t = PrimSig */
 		//Asking for a list of ints have a list of ints
-		ListField listfld3 = new ListField("","",listFldPrimTest);
+		ListSchema listfld3 = new ListSchema("","",listFldPrimTest);
 		ListSig listSig = new ListSig(PrimSig.INT_SIG);
 
-		IDataOp<Stream<Integer>> listOints = r.unifyWith(listfld3, listSig);
+		IDataOp<Stream<Integer>> listOints = unifier.unifyWith(listfld3, listSig);
 		IDataAccess[] testData = new IDataAccess[10];
 		for(int j = 0; j < testData.length; j++){
 			testData[j] = new RawStruct(new RawStructField("",new RawPrim(""+j)));
@@ -328,14 +341,14 @@ public class TestUnifier {
 		System.out.println(intStream);
 
 		/*======== Test Case : List[t] || List[t], && t = CompSig{PrimSig's only} */
-		CompField foofld2 = new CompField();
-		foofld2.addField("n", new PrimField());
-		ListField listfld4 = new ListField("test","",foofld2);
+		CompSchema foofld2 = new CompSchema();
+		foofld2.addField("n", new PrimSchema());
+		ListSchema listfld4 = new ListSchema("test","",foofld2);
 		CompSig<Foo> fooSig2 = new CompSig<Foo>(Foo.class);
 		fooSig2.addField(PrimSig.INT_SIG, "n");
 		ListSig listSig2 = new ListSig(fooSig2);
 
-		IDataOp<Stream<Foo>> listOFoos = r.unifyWith(listfld4, listSig2);
+		IDataOp<Stream<Foo>> listOFoos = unifier.unifyWith(listfld4, listSig2);
 		IDataAccess[] testData2 = new IDataAccess[10];
 		for(int j = 0; j < testData2.length; j++){
 			testData2[j] = new RawStruct(
@@ -369,28 +382,26 @@ public class TestUnifier {
 
 
 		/*======= Test Case : List[t] || List[t], && t = ListSig (Recursive call list) */
-		listFldPrimTest = new PrimField("atest","");
-		listfld3 = new ListField("test1","atest",listFldPrimTest);
-		ListField listoListFld = new ListField("test3","btest",listfld3);
+		listFldPrimTest = new PrimSchema("ctest","");
+		listfld3 = new ListSchema("baseB","btest",listFldPrimTest);
+		ListSchema listoListFld = new ListSchema("baseA","Atest",listfld3);
 		ListSig listoListSig = new ListSig(new ListSig(PrimSig.INT_SIG));
 
-		IDataOp<Stream<Stream<Integer>>> dop11 = r.unifyWith(listoListFld, listoListSig);
+		IDataOp<Stream<Stream<Integer>>> dop11 = unifier.unifyWith(listoListFld, listoListSig);
 		IDataAccess[] testDataLol = new IDataAccess[10];
 		for(int j = 0; j < testDataLol.length; j++){
 			IDataAccess[] testData3 = new IDataAccess[10];
 			for(int k = 0; k < testData3.length; k++){
 				testData3[k] = new RawStruct(
-						new RawStructField("atest",new RawPrim(""+(j+k))));
+						new RawStructField("btest",new RawPrim(""+(j+k))));
 			}
-			testDataLol[j] = new RawList("btest",testData3);
+			testDataLol[j] = new RawStruct(new RawStructField("Atest",new RawList("baseB",testData3)));
 		}
-
-
 		List<List<Integer>> lol = 
-				dop11.apply(new RawList("test3",testDataLol)).map(item -> 
+				dop11.apply(new RawList("baseA",testDataLol)).map(item -> 
 												item.collect(Collectors.toList())).collect(Collectors.toList());
+		System.out.println(lol);
 		/*
-
 				new FailAccess(){
 					public Stream<IDataAccess> getAll(String path){
 						IDataAccess[] dad = new IDataAccess[5];
@@ -423,11 +434,21 @@ public class TestUnifier {
 					}
 				}).map(item -> item.collect(Collectors.toList())).collect(Collectors.toList());
 				*/
-		System.out.println(lol);
 
 
 		/* Test Case : List || Comp (WEIRD) */
-		//TODO
+		ListSchema lField = new ListSchema("weirdBase","weirdElt",new PrimSchema("int"));
+		CompSig<WeirdClass> weirdSig = new CompSig<WeirdClass>(WeirdClass.class);
+		weirdSig.addField(PrimSig.INT_SIG, "x");
+		weirdSig.addField(PrimSig.INT_SIG, "y");
+		weirdSig.addField(PrimSig.INT_SIG, "z");
+		
+		RawList weirdList = new RawList("weirdElt",new IDataAccess[]{
+				new RawPrim("1"),new RawPrim("2"),new RawPrim("3")
+		});
+		IDataOp<WeirdClass> weirdOp = unifier.unifyWith(lField, weirdSig);
+		WeirdClass w = weirdOp.apply(weirdList);
+		System.out.println(w);
 
 		/*
         CsvParser r = new CsvParser(new CsvParserSettings());

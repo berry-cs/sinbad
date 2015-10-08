@@ -22,6 +22,13 @@ public class SSUnifier {
 	 *  DataOpFactory.makeParse<T>(Schema){}
 	 * 
 	 */
+	/**
+	 *  Builds a funciton that unifies data with a provided signature, by checking if the provided schema and signature
+	 *  match in a valid way.
+	 * @param schema - describes the type of the data, along with a path for where to find it
+	 * @param sig - describes the type the user is requesting
+	 * @return an object that can be applied to the actual data to find and parse the data into an object of the requested type.
+	 */
 	public <T> IDataOp<T> unifyWith(ISchema schema ,ISig sig){
 		DataOpFactory opf = new DataOpFactory();
 
@@ -31,6 +38,11 @@ public class SSUnifier {
 						throw new RuntimeException("Unknown schema type");
 					}
 
+					/** Attempt to visit a schema of Primitive type, and unify it with the sig parameter.
+					 * Builds
+					 * @param f the schema to visit
+					 * @return an IDataOp of a type <T> that will be applied to the data to fetch and parse it.
+					 */
 					@Override
 					public IDataOp<T> visit(PrimSchema f) {
 						return sig.apply(new ISigVisitor<IDataOp<T>>() {
@@ -192,9 +204,9 @@ public class SSUnifier {
 								return opf.makeSelectOp(unifyWith(f.getElementSchema(),s), f.getPath());
 								}catch(RuntimeException e){
 									e.printStackTrace();
-									IDataOp<T>[] ops = new IDataOp[s.getFieldCount()+1];
+									IDataOp<T>[] ops = new IDataOp[s.getFieldCount()];
 									for(int i = 0; i < ops.length; i++){
-										ops[i] = unifyWith(f.getElementSchema(),s.getFieldSig(i));
+										ops[i] = opf.makeIndexOp(unifyWith(f.getElementSchema(),s.getFieldSig(i)),f.getPath(),i);
 									}
 									return opf.makeConstructor(s.findConstructor(),ops);
 								}
