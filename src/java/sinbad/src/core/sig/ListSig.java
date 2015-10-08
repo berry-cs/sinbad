@@ -42,4 +42,29 @@ public class ListSig implements ISig {
         return "[listof " + elemType + "]";
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((elemType == null) ? 0 : elemType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ListSig))
+            return false;
+        ListSig other = (ListSig) obj;
+        if (elemType == null) {
+            if (other.elemType != null)
+                return false;
+        } else if (!elemType.equals(other.elemType))
+            return false;
+        return true;
+    }
 }

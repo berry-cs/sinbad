@@ -27,6 +27,9 @@ public class Errors {
         
         addError("scunify:unknown-sig", "unexpected/unhandled signature type", 0);
         addError("scunify:not-prim", "%s is not a primitive class", 1);
+        addError("scunify:prim-mismatch", "%s cannot be unified with %s", 2); //  sig first, then the java class type
+        addError("scunify:list-fail", "cannot unify %s with %s", 2);
+        addError("scunify:list-fail/bc", "cannot unify %s with %s because %s", 3);
     }
     
     public static RuntimeException exception(Class<? extends RuntimeException> exnClass, String tag, Object ... args) {

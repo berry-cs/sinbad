@@ -14,7 +14,7 @@ public class TestSig {
 
     static ISigVisitor<Integer> intVisitor = new ISigVisitor<Integer>() {
         public Integer defaultVisit(ISig s) { return 0; }
-        public <C> Integer visit(PrimSig s) { return 1; }
+        public Integer visit(PrimSig s) { return 1; }
         public Integer visit(CompSig<?> s) { return 2; }
         public Integer visit(ListSig s) { return 3; } 
     };
@@ -22,13 +22,13 @@ public class TestSig {
     
     @Test
     public void testApply() {
-        assertEquals(BOOLEAN_SIG.apply(intVisitor), 1);
+        assertEquals(1, BOOLEAN_SIG.apply(intVisitor));
     }
     
     @Test
     public void testToString() {
-        assertEquals(BOOLEAN_SIG.toString(), "<boolean>");
-        assertEquals(INT_SIG.toString(), "<int>");
-        assertEquals(STRING_SIG.toString(), "<String>");
+        assertEquals("<boolean>", BOOLEAN_SIG.toString());
+        assertEquals("<int>", INT_SIG.toString());
+        assertEquals("<String>", STRING_SIG.toString());
     }
 }
