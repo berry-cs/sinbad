@@ -51,7 +51,7 @@ public class SSUnifier {
 								throw new RuntimeException("Unknown signature case");
 							}
 
-							@SuppressWarnings("unchecked")
+							@SuppressWarnings("unchecked") 
 							@Override
 							public IDataOp<T> visit(PrimSig s) {
 								System.out.println("Attempting to unify prim schema with primSig");
@@ -86,12 +86,13 @@ public class SSUnifier {
 									throw new RuntimeException("Cannot unify a Primitive with a compound of more than 1 field.");
 								else 
 								{
-										//TODO fix findConstructor
+									//TODO fix findConstructor
 									if (f.getPath() == null) {
-										return opf.makeConstructor(sig.findConstructor(), new IDataOp[]{unifyWith(schema, sig.getFieldSig(0))});
+										return opf.makeConstructor(sig.findConstructor(),
+												new IDataOp[]{unifyWith(schema, sig.getFieldSig(0))});
 									} else {
-										return opf.makeConstructor(sig.findConstructor(), new IDataOp[]{opf.makeSelectOp(unifyWith(schema, sig.getFieldSig(0)),
-												f.getPath())});
+										return opf.makeConstructor(sig.findConstructor(), 
+												new IDataOp[]{opf.makeSelectOp(unifyWith(schema, sig.getFieldSig(0)),f.getPath())});
 									}
 								}
 
@@ -110,7 +111,7 @@ public class SSUnifier {
 						});
 
 					}
-
+					
 					@Override
 					public IDataOp<T> visit(CompSchema f) {
 						return sig.apply(new ISigVisitor<IDataOp<T>>(){
@@ -123,7 +124,7 @@ public class SSUnifier {
 							@Override
 							public IDataOp<T> visit(PrimSig s) {
 								System.out.println("Unifying Compound Schema with a prim sig");
-								
+
 								HashMap<String, ISchema> fieldMap = f.getFieldMap(); //TODO
 								if(fieldMap.size() == 1)
 								{
@@ -201,7 +202,7 @@ public class SSUnifier {
 							@Override
 							public IDataOp<T> visit(CompSig<?> s) {
 								try{
-								return opf.makeSelectOp(unifyWith(f.getElementSchema(),s), f.getPath());
+									return opf.makeSelectOp(unifyWith(f.getElementSchema(),s), f.getPath());
 								}catch(RuntimeException e){
 									e.printStackTrace();
 									IDataOp<T>[] ops = new IDataOp[s.getFieldCount()];

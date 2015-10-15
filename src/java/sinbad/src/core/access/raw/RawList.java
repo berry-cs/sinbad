@@ -7,7 +7,7 @@ import core.access.*;
  * Provides a simple, in-memory data access object around
  * a list of other data access objects.
  */
-class RawList extends FailAccess {
+public class RawList extends FailAccess {
     private String eltPath;         // could be null
     private IDataAccess[] elts;
     
