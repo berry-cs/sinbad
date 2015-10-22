@@ -93,22 +93,21 @@ class FooToo{
 	}
 }
 
-public class TestUnifier {
+public class TestSchemaSigUnifier {
 	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 
 		/*======= Test case : Prim || Prim =======*/
 		ISchema fld1 = new PrimSchema();
 		ISig sig1 = PrimSig.INT_SIG;
-		SSUnifier unifier = new SSUnifier();
-		IDataOp<Integer> dop = (IDataOp<Integer>) unifier.unifyWith(fld1, sig1);
-		int i = dop.apply(new RawPrim("123"));
+		SchemaSigUnifier unifier = new SchemaSigUnifier();
+		IDataOp<?> dop = unifier.unifyWith(fld1, sig1);
+		int i = (Integer) dop.apply(new RawPrim("123"));
 		System.out.println(i + "!");
 
 
 
 		/*=======  Test case : Prim || Compound */ 
-		CompSig<Foo> sig2 = new CompSig<Foo>(Foo.class);
-		sig2.addField(sig1, "n");
+		CompSig<Foo> sig2 = new CompSig<Foo>(Foo.class, new ArgSpec("n", sig1));
 		IDataOp<Foo> dop2 = unifier.unifyWith(fld1, sig2);
 		Foo f = dop2.apply(new RawPrim("123"));
 		System.out.println(f.n + "!!!");
@@ -123,10 +122,9 @@ public class TestUnifier {
 
 
 		/*=======  Test case : Compound || Prim */
-		CompSchema fld2 = new CompSchema("somePath","A description");
 		fld1 = new PrimSchema("a/path","Adescription");
-		/*fld2 = (CompSchema)*/ fld2.addField("n", fld1);
-		System.out.println("Field n: "+fld2.hasField("n"));
+        CompSchema fld2 = new CompSchema("somePath","A description", new CompField("n", fld1));
+		System.out.println("Field n: "+fld2.getFieldMap().get("n"));
 		IDataOp<Integer> dop4 = unifier.unifyWith(fld2, sig1); 
 		int i1 = dop4.apply(new RawPrim("123"));
 		System.out.println(i1+"!!@!");
@@ -140,17 +138,16 @@ public class TestUnifier {
 
 		System.out.println("Foo: n: "+foo1.n+" ..!!..!!");
 		/*======= subcase 2 : Compound{f0,...,fn} || Compound{f0...fm} n = m*/
-		CompSig<Bar> barSig1 = new CompSig<Bar>(Bar.class);
 		PrimSig barX = PrimSig.INT_SIG;
 		PrimSig barY = PrimSig.INT_SIG;
 		PrimSig barS = PrimSig.STRING_SIG;
-		barSig1.addField(barX, "x");
-		barSig1.addField(barY, "y");
-		barSig1.addField(barS, "s");
-		CompSchema barField = new CompSchema("BasePath","ABarDescription");
-		barField.addField("x", new PrimSchema());
-		barField.addField("y", new PrimSchema());
-		barField.addField("s", new PrimSchema());
+        CompSig<Bar> barSig1 = new CompSig<Bar>(Bar.class, new ArgSpec("x", barX),
+                                                            new ArgSpec("y", barY),
+                                                             new ArgSpec("s", barS));
+        CompSchema barField = new CompSchema("BasePath","ABarDescription", 
+                                new CompField("x", new PrimSchema()),
+                                new CompField("y", new PrimSchema()),
+                                new CompField("s", new PrimSchema()));
 		IDataOp<Bar> dop6 = unifier.unifyWith(barField, barSig1);
 		Bar bar1 = dop6.apply(new RawStruct(new RawStructField[]
 				{new RawStructField("x",new RawPrim("10")),

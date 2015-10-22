@@ -16,14 +16,14 @@ import core.sig.ListSig;
 import core.sig.PrimSig;
 
 
-public class SSUnifier {
+public class SchemaSigUnifier {
 	/*
 	 * If Sig type matches Schema type.... do
 	 *  DataOpFactory.makeParse<T>(Schema){}
 	 * 
 	 */
 	/**
-	 *  Builds a funciton that unifies data with a provided signature, by checking if the provided schema and signature
+	 *  Builds a function that unifies data with a provided signature, by checking if the provided schema and signature
 	 *  match in a valid way.
 	 * @param schema - describes the type of the data, along with a path for where to find it
 	 * @param sig - describes the type the user is requesting
