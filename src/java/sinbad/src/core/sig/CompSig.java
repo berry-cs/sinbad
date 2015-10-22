@@ -1,5 +1,7 @@
 package core.sig;
 
+import java.util.Arrays;
+
 /**
  * Represents the signature of a constructor for a compound data
  * type (i.e. a class)
@@ -85,5 +87,33 @@ public class CompSig<C> implements ISig {
         }
         m += "}";
         return m;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(args);
+        result = prime * result + ((cls == null) ? 0 : cls.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof CompSig))
+            return false;
+        CompSig other = (CompSig) obj;
+        if (!Arrays.equals(args, other.args))
+            return false;
+        if (cls == null) {
+            if (other.cls != null)
+                return false;
+        } else if (!cls.getCanonicalName().equals(other.cls.getCanonicalName()))
+            return false;
+        return true;
     }
 }

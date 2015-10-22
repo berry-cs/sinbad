@@ -25,11 +25,12 @@ public class Errors {
         addError("em:no-tag", "error message tag not found: %s", 1);
         addError("em:wrong-count", "incorrect argument count for error message: %s", 1);
         
-        addError("scunify:unknown-sig", "unexpected/unhandled signature type", 0);
+        addError("scunify:unknown-sig", "unexpected/unhandled signature type: %s", 1);
         addError("scunify:not-prim", "%s is not a primitive class", 1);
-        addError("scunify:prim-mismatch", "%s cannot be unified with %s", 2); //  sig first, then the java class type
-        addError("scunify:list-fail", "cannot unify %s with %s", 2);
-        addError("scunify:list-fail/bc", "cannot unify %s with %s because %s", 3);
+        addError("scunify:prim-mismatch", "%s cannot be unified with %s", 2); //  sig first, then the java class type   
+        addError("scunify:unify-fail", "cannot unify %s with %s", 2);
+        addError("scunify:unify-fail/bc", "cannot unify %s with %s because %s", 3);
+        addError("scunify:comp-classmismatch", "class of %s does not match %s" , 2); // sig first
     }
     
     public static RuntimeException exception(Class<? extends RuntimeException> exnClass, String tag, Object ... args) {
