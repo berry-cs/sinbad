@@ -149,6 +149,7 @@ public class DataOpFactory {
 					args[i] = consParamOps[i].apply(d);
 				}
 				try {
+				    cons.setAccessible(true);
 					return (T) cons.newInstance(args);
 				} catch (InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException e) {
