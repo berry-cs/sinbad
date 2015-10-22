@@ -42,21 +42,6 @@ public class SigClassUnifier implements ISigVisitor<ISig> {
     }
 
     /**
-     * Used to package multiple return values from <code>findConstructor</code>.
-     */
-    public static class ConstructorSigPair<C> {
-        public final Constructor<C> constructor;
-        public final CompSig<C> sig;
-       
-        public ConstructorSigPair(Constructor<C> constructor, CompSig<C> sig) {
-            super();
-            this.constructor = constructor;
-            this.sig = sig;
-        }
-    }
-    
-
-    /**
      * Finds the appropriate constructor of class C whose Java type
      * signature can be unified against that of the given 
      * CompSig signature object.

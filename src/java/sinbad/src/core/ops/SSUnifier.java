@@ -86,12 +86,13 @@ public class SSUnifier {
 									throw new RuntimeException("Cannot unify a Primitive with a compound of more than 1 field.");
 								else 
 								{
-									//TODO fix findConstructor
+									// TODO: findConstructor - could throw a SignatureUnificationException: what to do?
+                                    ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(sig);
 									if (f.getPath() == null) {
-										return opf.makeConstructor(sig.findConstructor(),
+										return opf.makeConstructor(csp.constructor,
 												new IDataOp[]{unifyWith(schema, sig.getFieldSig(0))});
 									} else {
-										return opf.makeConstructor(sig.findConstructor(), 
+										return opf.makeConstructor(csp.constructor, 
 												new IDataOp[]{opf.makeSelectOp(unifyWith(schema, sig.getFieldSig(0)),f.getPath())});
 									}
 								}
@@ -125,7 +126,7 @@ public class SSUnifier {
 							public IDataOp<T> visit(PrimSig s) {
 								System.out.println("Unifying Compound Schema with a prim sig");
 
-								HashMap<String, ISchema> fieldMap = f.getFieldMap(); //TODO
+								HashMap<String, ISchema> fieldMap = f.getFieldMap();
 								if(fieldMap.size() == 1)
 								{
 									ISchema field0 = fieldMap.values().iterator().next();
@@ -175,7 +176,8 @@ public class SSUnifier {
 
 								/* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
 
-								return opf.makeConstructor(s.findConstructor(), (IDataOp<T>[]) listOps.toArray(new IDataOp[]{}));
+								ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
+								return opf.makeConstructor(csp.constructor, (IDataOp<T>[]) listOps.toArray(new IDataOp[]{}));
 							}
 
 							@Override
@@ -209,7 +211,8 @@ public class SSUnifier {
 									for(int i = 0; i < ops.length; i++){
 										ops[i] = opf.makeIndexOp(unifyWith(f.getElementSchema(),s.getFieldSig(i)),f.getPath(),i);
 									}
-									return opf.makeConstructor(s.findConstructor(),ops);
+	                                ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
+									return opf.makeConstructor(csp.constructor, ops);
 								}
 							}
 

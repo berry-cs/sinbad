@@ -59,4 +59,8 @@ public class CompSchema extends AbsSchema {
             return m;
         }
     }
+
+    public HashMap<String, ISchema> getFieldMap() {
+        return this.fieldMap;
+    }
 }
