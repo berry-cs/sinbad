@@ -7,7 +7,7 @@ import core.access.*;
  * a structure of fields and sub-objects.
  *
  */
-class RawStruct extends FailAccess {
+public class RawStruct extends FailAccess {
     private RawStructField[] flds;
     
     public RawStruct(RawStructField ... flds) {

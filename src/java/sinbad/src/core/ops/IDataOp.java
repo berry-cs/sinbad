@@ -8,6 +8,6 @@ import core.access.IDataAccess;
  *
  * @param <T> The type of the result of the expression
  */
-interface IDataOp<T> {
+public interface IDataOp<T> {
 	T apply(IDataAccess d);
 }
