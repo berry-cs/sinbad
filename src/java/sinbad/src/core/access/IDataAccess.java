@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  * 
  */
 public interface IDataAccess {
+      
     /** 
      * Access the contents of the current data element
      * 
