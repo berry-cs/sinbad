@@ -34,7 +34,18 @@ public class CSVAccessTest {
         assertEquals("1997", rows[0].get("Year").getContents());
         assertEquals("", rows[1].get("Description").getContents());
         assertEquals("Venture \"Extended Edition, Very Large\"", rows[3].get("Model").getContents());
+    }
 
+    @Test
+    public void testGetAllStreaming() {
+        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        IDataAccess csv = new CSVAccessFactory().setOption("streaming", "").newInstance(example);
+        Stream<IDataAccess> s = csv.getAll(null);
+        IDataAccess[] rows = s.toArray(IDataAccess[]::new);
+        
+        assertEquals("1997", rows[0].get("Year").getContents());
+        assertEquals("", rows[1].get("Description").getContents());
+        assertEquals("Venture \"Extended Edition, Very Large\"", rows[3].get("Model").getContents());
     }
 
 }

@@ -32,11 +32,13 @@ public class CSVAccess extends FailAccess {
     private char delimiter;
     private CsvParser p;
     List<String[]> allRows;
+    boolean streaming;   // load rows on demand for getAll()
        
-    public CSVAccess(InputStream is, String[] header, char delimiter) {
+    public CSVAccess(InputStream is, String[] header, char delimiter, boolean streaming) {
         this.header = header;
         this.delimiter = delimiter;
         this.allRows = new ArrayList<String[]>();
+        this.streaming = streaming;
         
         CsvParserSettings sts = new CsvParserSettings();
         sts.setLineSeparatorDetectionEnabled(true);
@@ -130,37 +132,46 @@ public class CSVAccess extends FailAccess {
      * @param path is ignored by this data access object
      */
     public Stream<IDataAccess> getAll(String path) {
-        Iterator<IDataAccess> source = new Iterator<IDataAccess>() {
-            boolean done = false;
-            String[] readAhead = null;
-            
-            @Override
-            public boolean hasNext() {
-                this.readAhead = p.parseNext();
-                if (this.readAhead == null) done = true;
-                return (!done);
+        if (!streaming) {
+            // read in rest of rows
+            String[] nextRow;
+            while ( (nextRow = p.parseNext()) != null ) {
+                allRows.add(nextRow);
             }
+            return allRows.stream().map((row) -> new StringRowAccess(row));
+        } else {
+            Iterator<IDataAccess> source = new Iterator<IDataAccess>() {
+                boolean done = false;
+                String[] readAhead = null;
 
-            @Override
-            public IDataAccess next() {
-                String[] nextRow;
-                if (done) {
-                    throw new NoSuchElementException(); 
+                @Override
+                public boolean hasNext() {
+                    this.readAhead = p.parseNext();
+                    if (this.readAhead == null) done = true;
+                    return (!done);
                 }
-                if (this.readAhead != null) {
-                    nextRow = this.readAhead;
-                } else {
-                    nextRow = p.parseNext();
+
+                @Override
+                public IDataAccess next() {
+                    String[] nextRow;
+                    if (done) {
+                        throw new NoSuchElementException(); 
+                    }
+                    if (this.readAhead != null) {
+                        nextRow = this.readAhead;
+                    } else {
+                        nextRow = p.parseNext();
+                    }
+                    if (nextRow == null) {
+                        throw new NoSuchElementException(); 
+                    }
+                    return new StringRowAccess(nextRow);
                 }
-                if (nextRow == null) {
-                    throw new NoSuchElementException(); 
-                }
-                return new StringRowAccess(nextRow);
-            }
-            
-        };
-        Iterable<IDataAccess> iterable = () -> source;
-        return StreamSupport.stream(iterable.spliterator(), false);
+
+            };
+            Iterable<IDataAccess> iterable = () -> source;
+            return StreamSupport.stream(iterable.spliterator(), false);
+        }
     }
     
     
