@@ -3,6 +3,7 @@
  */
 package data.csv;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,25 +17,39 @@ import java.util.stream.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
-import core.access.DataAccessException;
-import core.access.FailAccess;
-import core.access.IDataAccess;
+import core.access.*;
+import core.schema.*;
+import core.util.IOUtil;
 
 import static core.log.Errors.*;
 
 /**
  * A delimiter-separated (usually comma-separated) data access object.
  */
-public class CSVAccess extends FailAccess {
+public class CsvDataSource extends FailAccess implements ISchemaProducer {
 
+    public static void main(String[] args) {
+       //InputStream in = IOUtil.createInput("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
+        InputStream in = IOUtil.createInput("/Users/nhamid/Downloads/routes.dat");
+        CsvDataSource csv = (CsvDataSource)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
+                .newInstance(in);
+        long millis = System.currentTimeMillis();
+        Stream<IDataAccess> s = csv.getAll(null);
+        System.out.println(System.currentTimeMillis() - millis);
+        IDataAccess[] rows = s.toArray(IDataAccess[]::new);
+        System.out.println(rows.length);
+        System.out.println(rows[10].get("Dest Airport").getContents());
+    }
+    
     private String[] header;
     private HashMap<String,Integer> headerIndex;
     private char delimiter;
     private CsvParser p;
-    List<String[]> allRows;
-    boolean streaming;   // load rows on demand for getAll()
+    private List<String[]> allRows;
+    private boolean streaming;   // load rows on demand for getAll()
+    private ISchema schema;
        
-    public CSVAccess(InputStream is, String[] header, char delimiter, boolean streaming) {
+    public CsvDataSource(InputStream is, String[] header, char delimiter, boolean streaming) {
         this.header = header;
         this.delimiter = delimiter;
         this.allRows = new ArrayList<String[]>();
@@ -45,15 +60,37 @@ public class CSVAccess extends FailAccess {
         sts.getFormat().setDelimiter(this.delimiter);
         p = new CsvParser(sts);
         //System.err.println(p.parseAll(new InputStreamReader(is)));
-        p.beginParsing(new InputStreamReader(is));
+        p.beginParsing(new InputStreamReader(new BufferedInputStream(is)));
         if (this.header == null) {
             this.header = p.parseNext();
+        }
+        if (this.header == null) {
+            throw exception(DataAccessException.class, "da:construct", "missing header");
         }
         
         this.headerIndex = new HashMap<String, Integer>();
         for (int i = 0; i < this.header.length; i++) {
             this.headerIndex.put(this.header[i], i);
         }
+        
+        this.schema = buildSchema();
+    }
+    
+    /**
+     * Produce a schema for this data set 
+     */
+    @Override
+    public ISchema getSchema() {
+        return this.schema;
+    }
+    
+    private ISchema buildSchema() {
+        CompField[] fields = new CompField[this.header.length];
+        PrimSchema ps = new PrimSchema();  // objects are immutable, so should be ok to share... (?)
+        for (int i = 0; i < this.header.length; i++) {
+            fields[i] = new CompField(this.header[i], ps);
+        }
+        return new ListSchema(new CompSchema(fields));
     }
 
     /* 

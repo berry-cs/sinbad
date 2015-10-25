@@ -63,4 +63,33 @@ public class CompSchema extends AbsSchema {
     public HashMap<String, ISchema> getFieldMap() {
         return this.fieldMap;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((fieldMap == null) ? 0 : fieldMap.hashCode());
+        result = prime * result + Arrays.hashCode(fieldNames);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof CompSchema))
+            return false;
+        CompSchema other = (CompSchema) obj;
+        if (fieldMap == null) {
+            if (other.fieldMap != null)
+                return false;
+        } else if (!fieldMap.equals(other.fieldMap))
+            return false;
+        if (!Arrays.equals(fieldNames, other.fieldNames))
+            return false;
+        return true;
+    }
 }

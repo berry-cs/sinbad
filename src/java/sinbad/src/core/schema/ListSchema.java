@@ -41,5 +41,31 @@ public class ListSchema extends AbsSchema {
         }
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((elementSchema == null) ? 0 : elementSchema.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof ListSchema))
+            return false;
+        ListSchema other = (ListSchema) obj;
+        if (elementSchema == null) {
+            if (other.elementSchema != null)
+                return false;
+        } else if (!elementSchema.equals(other.elementSchema))
+            return false;
+        return true;
+    }
+
 
 }

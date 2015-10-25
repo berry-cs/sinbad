@@ -7,16 +7,17 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import core.access.IDataAccess;
+import core.access.*;
+import core.schema.*;
 import core.util.IOUtil;
-import data.csv.CSVAccessFactory;
+import data.csv.*;
 
-public class CSVAccessTest {
+public class CsvDataTest {
 
     @Test
     public void testSingleRow() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        IDataAccess csv = new CSVAccessFactory().newInstance(example);
+        IDataAccess csv = new CsvFactory().newInstance(example);
         
         assertEquals("1997", csv.get(null, 0).get("Year").getContents());
         assertEquals("Venture \"Extended Edition, Very Large\"", csv.get(null, 3).get("Model").getContents());
@@ -27,7 +28,7 @@ public class CSVAccessTest {
     @Test
     public void testGetAll() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        IDataAccess csv = new CSVAccessFactory().newInstance(example);
+        IDataAccess csv = new CsvFactory().newInstance(example);
         Stream<IDataAccess> s = csv.getAll(null);
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
         
@@ -39,7 +40,7 @@ public class CSVAccessTest {
     @Test
     public void testGetAllStreaming() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        IDataAccess csv = new CSVAccessFactory().setOption("streaming", "").newInstance(example);
+        IDataAccess csv = new CsvFactory().setOption("streaming", "").newInstance(example);
         Stream<IDataAccess> s = csv.getAll(null);
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
         
@@ -47,5 +48,20 @@ public class CSVAccessTest {
         assertEquals("", rows[1].get("Description").getContents());
         assertEquals("Venture \"Extended Edition, Very Large\"", rows[3].get("Model").getContents());
     }
-
+    
+    @Test
+    public void testSchema() {
+        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        CsvDataSource csv = new CsvFactory().setOption("streaming", "").newInstance(example);
+        PrimSchema ps = new PrimSchema();
+        
+        assertEquals(new ListSchema(new CompSchema(new CompField("Year", ps),
+                new CompField("Make", ps),
+                new CompField("Model", ps),
+                new CompField("Description", ps),
+                new CompField("Price", ps))),
+                csv.getSchema());
+    }
 }
+
+

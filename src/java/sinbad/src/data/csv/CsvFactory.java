@@ -6,20 +6,19 @@ import java.io.StringReader;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
-import core.access.IDataAccess;
 import core.access.IDataAccessFactory;
 
-public class CSVAccessFactory implements IDataAccessFactory {
+public class CsvFactory implements IDataAccessFactory {
 
     private String[] header; // if null, should be read from the input
     private char delimiter = ',';  // default is comma
     private boolean streaming = false;
     
-    public CSVAccessFactory() {
+    public CsvFactory() {
     }
 
     @Override
-    public IDataAccessFactory setOption(String option, String value) {
+    public CsvFactory setOption(String option, String value) {
         if ("header".equals(option)) {
             CsvParserSettings sts = new CsvParserSettings();
             sts.setLineSeparatorDetectionEnabled(true);
@@ -37,8 +36,8 @@ public class CSVAccessFactory implements IDataAccessFactory {
     }
 
     @Override
-    public IDataAccess newInstance(InputStream is) {
-        return new CSVAccess(is, header, delimiter, streaming);
+    public CsvDataSource newInstance(InputStream is) {
+        return new CsvDataSource(is, header, delimiter, streaming);
     }
 
 }

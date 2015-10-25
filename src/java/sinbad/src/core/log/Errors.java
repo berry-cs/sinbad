@@ -16,6 +16,7 @@ public class Errors {
     static {  // static initialization block
         errdb = new HashMap<String, ErrorMessage>(); 
         
+        addError("da:construct", "could not construct data access object: %s", 1);
         addError("da:getcontents", "could not access contents as a primitive (string)", 0);
         addError("da:get-index", "could not access index %d of path %s", 2);
         addError("da:get-path", "could not access path %s", 1);
