@@ -204,7 +204,8 @@ public class SchemaSigUnifier {
 							@Override
 							public IDataOp<T> visit(CompSig<?> s) {
 								try{
-									return opf.makeSelectOp(unifyWith(f.getElementSchema(),s), f.getPath());
+								    // (LIST-STRIP) rule
+									return opf.makeIndexOp(unifyWith(f.getElementSchema(),s), f.getPath(), 0);  
 								}catch(RuntimeException e){
 									e.printStackTrace();
 									IDataOp<T>[] ops = new IDataOp[s.getFieldCount()];

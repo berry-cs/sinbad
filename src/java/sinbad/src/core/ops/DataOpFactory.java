@@ -25,7 +25,7 @@ public class DataOpFactory {
 				String s = d.getContents();
 				if (s == null || s.equals("")) return 0;
 				else return Integer.parseInt(s);
-			}
+			}			
 		};
 	}
 	/**
@@ -214,6 +214,9 @@ public class DataOpFactory {
 	 * @return an IDataOp object that can be applied to an IDataAccess object to select data from the given path and parse it.
 	 */
 	<T> IDataOp<T> makeSelectOp(IDataOp<T> op, String path) {
+	    if (path == null || path.equals("")) {   // this is a no-op
+	        return op;
+	    }
 		return new IDataOp<T>() {
 			public T apply(IDataAccess d) {
 				return op.apply(d.get(path));
