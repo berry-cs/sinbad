@@ -197,7 +197,7 @@ public class SchemaSigUnifier {
                                     IDataOp<T> fieldOp = unifyWith(theField,fieldSig);
                                     return opf.makeSelectOp(fieldOp, fieldName);
 							    } 
-							    // a new rule (COMP-UNWRAP) --- handle paths to nested structures
+							    // a new rule (COMP-FLATTEN) --- handle paths to nested structures
 							    else if ( fieldName.indexOf('/') >= 0) {
 							        String[] pieces = fieldName.split("/");
 							        System.out.println("pieces: " + pieces.length);
