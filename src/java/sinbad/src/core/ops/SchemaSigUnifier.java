@@ -282,9 +282,9 @@ public class SchemaSigUnifier {
 	protected static <T> IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
         // normal (COMP-COMP) rule behavior
         if (fieldMap.containsKey(fieldName)) {
-            ISchema theField = fieldMap.get(fieldName);
-            IDataOp<T> fieldOp = unifyWith(theField,fieldSig);
-            return opf.makeSelectOp(fieldOp, fieldName);
+            ISchema theFieldSchema = fieldMap.get(fieldName);
+            IDataOp<T> fieldOp = unifyWith(theFieldSchema, fieldSig);
+            return opf.makeSelectOp(fieldOp, theFieldSchema.getPath());
         } 
         // a new rule (COMP-FLATTEN) --- handle paths to nested structures
         else if ( fieldName.indexOf('/') >= 0) {
@@ -295,9 +295,9 @@ public class SchemaSigUnifier {
                 String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
                 System.out.println(prefix + "--" + rest);
                 if (fieldMap.containsKey(prefix)) {
-                    ISchema theField = fieldMap.get(prefix);
+                    ISchema theFieldSchema = fieldMap.get(prefix);
                     IDataOp<T> theOp =
-                            theField.apply(new ISchemaVisitor<IDataOp<T>>() {
+                            theFieldSchema.apply(new ISchemaVisitor<IDataOp<T>>() {
                                 public IDataOp<T> defaultVisit(ISchema s) { return null; }
                                 public IDataOp<T> visit(PrimSchema s) { return null; }
                                 public IDataOp<T> visit(ListSchema s) { return null; }
@@ -305,7 +305,7 @@ public class SchemaSigUnifier {
                                     return unwrapAndUnify(s.getFieldMap(), rest, fieldSig);
                                 }
                             });
-                    if (theOp != null) return opf.makeSelectOp(theOp, prefix);
+                    if (theOp != null) return opf.makeSelectOp(theOp, theFieldSchema.getPath());
                 }                                       
             }
         }
