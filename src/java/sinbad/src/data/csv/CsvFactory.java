@@ -17,6 +17,10 @@ public class CsvFactory implements IDataAccessFactory {
     public CsvFactory() {
     }
 
+    public CsvFactory setOption(String option) {
+        return this.setOption(option, null);
+    }
+
     @Override
     public CsvFactory setOption(String option, String value) {
         if ("header".equals(option)) {

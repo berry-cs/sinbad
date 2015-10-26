@@ -40,7 +40,7 @@ public class CsvDataTest {
     @Test
     public void testGetAllStreaming() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        IDataAccess csv = new CsvFactory().setOption("streaming", "").newInstance(example);
+        IDataAccess csv = new CsvFactory().setOption("streaming").newInstance(example);
         Stream<IDataAccess> s = csv.getAll(null);
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
         
@@ -52,7 +52,7 @@ public class CsvDataTest {
     @Test
     public void testSchema() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        CsvDataSource csv = new CsvFactory().setOption("streaming", "").newInstance(example);
+        CsvDataSource csv = new CsvFactory().setOption("streaming").newInstance(example);
         PrimSchema ps = new PrimSchema();
         
         assertEquals(new ListSchema(new CompSchema(new CompField("Year", ps),

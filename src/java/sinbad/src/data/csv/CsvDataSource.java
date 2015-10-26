@@ -36,7 +36,8 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
         System.out.println(rows[10].get("Dest Airport").getContents());
         ISchema sch = csv.getSchema();
         
-        IDataOp<?> dop = new SchemaSigUnifier().unifyWith(sch, 
+        new SchemaSigUnifier();
+        IDataOp<?> dop = SchemaSigUnifier.unifyWith(sch, 
                 new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG)));
         System.out.println(sch);
         System.out.println(dop);
