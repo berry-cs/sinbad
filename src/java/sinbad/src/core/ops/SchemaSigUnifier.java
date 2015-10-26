@@ -15,6 +15,9 @@ public class SchemaSigUnifier {
 	 *  DataOpFactory.makeParse<T>(Schema){}
 	 * 
 	 */
+    
+    private static DataOpFactory opf = new DataOpFactory();
+    
 	/**
 	 *  Builds a function that unifies data with a provided signature, by checking if the provided schema and signature
 	 *  match in a valid way.
@@ -23,8 +26,6 @@ public class SchemaSigUnifier {
 	 * @return an object that can be applied to the actual data to find and parse the data into an object of the requested type.
 	 */
 	public static <T> IDataOp<T> unifyWith(ISchema schema ,ISig sig){
-		DataOpFactory opf = new DataOpFactory();
-
 		return 
 				schema.apply(new ISchemaVisitor<IDataOp<T>>() {
 					public IDataOp<T> defaultVisit(ISchema df) {
@@ -150,79 +151,10 @@ public class SchemaSigUnifier {
 							@SuppressWarnings("unchecked")
 							public IDataOp<T> visit(CompSig<?> s) {
 								System.out.println("Attempting to unify comp schema with compSig");
-								//	int max = s.getFieldCount();
-								IDataOp<T>[] listOps = new IDataOp[s.getFieldCount()];
-                                HashMap<String, ISchema> fieldMap = f.getFieldMap(); 
-
-								for(int i = 0; i < s.getFieldCount(); i++){
-									String fieldName = s.getFieldName(i);
-									ISig fieldSig = s.getFieldSig(i);
-									try {
-									    listOps[i] = unwrapAndUnify(fieldMap, fieldName, fieldSig);
-									} catch(RuntimeException e){
-                                        e.printStackTrace();
-                                        throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",fieldName));
-                                    }
-									    
-									if (listOps[i] == null) {
-									    throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",fieldName));
-									}
-									/*
-									if(fieldMap.containsKey(fieldName)){
-										ISchema theField = fieldMap.get(fieldName);
-										System.out.println("Found field "+fieldName);
-										try{
-											IDataOp<T> thisOp = unifyWith(theField,s.getFieldSig(i));
-											listOps.add(opf.makeSelectOp(thisOp,fieldName));
-										}catch(RuntimeException e){
-											e.printStackTrace();
-											throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",fieldName));
-										}
-									}else {
-									    throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",fieldName));
-									}
-									*/
-								}
-
-								/* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
-
-								ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
-								return opf.makeConstructor(csp.constructor, listOps);
+								return ruleCompComp(f, s);
 							}
 							
-							public IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
-							    // normal (COMP-COMP) rule behavior
-							    if (fieldMap.containsKey(fieldName)) {
-							        ISchema theField = fieldMap.get(fieldName);
-                                    IDataOp<T> fieldOp = unifyWith(theField,fieldSig);
-                                    return opf.makeSelectOp(fieldOp, fieldName);
-							    } 
-							    // a new rule (COMP-FLATTEN) --- handle paths to nested structures
-							    else if ( fieldName.indexOf('/') >= 0) {
-							        String[] pieces = fieldName.split("/");
-							        System.out.println("pieces: " + pieces.length);
-							        for (int i = 1; i < pieces.length; i++) {
-							            String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
-							            String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
-							            System.out.println(prefix + "--" + rest);
-							            if (fieldMap.containsKey(prefix)) {
-							                ISchema theField = fieldMap.get(prefix);
-							                IDataOp<T> theOp =
-							                        theField.apply(new ISchemaVisitor<IDataOp<T>>() {
-                                                        public IDataOp<T> defaultVisit(ISchema s) { return null; }
-                                                        public IDataOp<T> visit(PrimSchema s) { return null; }
-                                                        public IDataOp<T> visit(ListSchema s) { return null; }
-                                                        public IDataOp<T> visit(CompSchema s) {
-                                                            return unwrapAndUnify(s.getFieldMap(), rest, fieldSig);
-                                                        }
-							                        });
-							                if (theOp != null) return opf.makeSelectOp(theOp, prefix);
-							            }							            
-							        }
-							    }
-							    
-							    return null;
-							}
+							
 
 							@Override
 							public IDataOp<T> visit(ListSig ls) {
@@ -316,4 +248,68 @@ public class SchemaSigUnifier {
 
 				});
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * Implementation of the COMP-COMP rule
+	 */
+    protected static <T> IDataOp<T> ruleCompComp(CompSchema f, CompSig<?> s) {
+	    IDataOp<T>[] listOps = new IDataOp[s.getFieldCount()];
+        HashMap<String, ISchema> fieldMap = f.getFieldMap(); 
+
+        for(int i = 0; i < s.getFieldCount(); i++){
+            try {
+                listOps[i] = unwrapAndUnify(fieldMap, s.getFieldName(i), s.getFieldSig(i));
+            } catch(RuntimeException e){
+                e.printStackTrace();
+                throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",s.getFieldName(i)));
+            }
+                
+            if (listOps[i] == null) {
+                throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",s.getFieldName(i)));
+            }
+        }
+
+        /* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
+        ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
+        return opf.makeConstructor(csp.constructor, listOps);
+	}
+	
+	/**
+	 * Handle the unification of fields for the COMP-COMP rule
+	 */
+	protected static <T> IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
+        // normal (COMP-COMP) rule behavior
+        if (fieldMap.containsKey(fieldName)) {
+            ISchema theField = fieldMap.get(fieldName);
+            IDataOp<T> fieldOp = unifyWith(theField,fieldSig);
+            return opf.makeSelectOp(fieldOp, fieldName);
+        } 
+        // a new rule (COMP-FLATTEN) --- handle paths to nested structures
+        else if ( fieldName.indexOf('/') >= 0) {
+            String[] pieces = fieldName.split("/");
+            System.out.println("pieces: " + pieces.length);
+            for (int i = 1; i < pieces.length; i++) {
+                String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
+                String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
+                System.out.println(prefix + "--" + rest);
+                if (fieldMap.containsKey(prefix)) {
+                    ISchema theField = fieldMap.get(prefix);
+                    IDataOp<T> theOp =
+                            theField.apply(new ISchemaVisitor<IDataOp<T>>() {
+                                public IDataOp<T> defaultVisit(ISchema s) { return null; }
+                                public IDataOp<T> visit(PrimSchema s) { return null; }
+                                public IDataOp<T> visit(ListSchema s) { return null; }
+                                public IDataOp<T> visit(CompSchema s) {
+                                    return unwrapAndUnify(s.getFieldMap(), rest, fieldSig);
+                                }
+                            });
+                    if (theOp != null) return opf.makeSelectOp(theOp, prefix);
+                }                                       
+            }
+        }
+        
+        return null;    // means COMP-COMP failed
+    }
 }
