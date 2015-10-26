@@ -1,19 +1,12 @@
 package core.ops;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.stream.Stream;
 
-import core.schema.CompSchema;
-import core.schema.ISchema;
-import core.schema.ISchemaVisitor;
-import core.schema.ListSchema;
-import core.schema.PrimSchema;
-import core.sig.CompSig;
-import core.sig.ISig;
-import core.sig.ISigVisitor;
-import core.sig.ListSig;
-import core.sig.PrimSig;
+import java.util.*;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import core.schema.*;
+import core.sig.*;
 
 
 public class SchemaSigUnifier {
@@ -29,7 +22,7 @@ public class SchemaSigUnifier {
 	 * @param sig - describes the type the user is requesting
 	 * @return an object that can be applied to the actual data to find and parse the data into an object of the requested type.
 	 */
-	public <T> IDataOp<T> unifyWith(ISchema schema ,ISig sig){
+	public static <T> IDataOp<T> unifyWith(ISchema schema ,ISig sig){
 		DataOpFactory opf = new DataOpFactory();
 
 		return 
@@ -69,8 +62,8 @@ public class SchemaSigUnifier {
 									return (IDataOp<T>)opf.makeParseInt();
 								else if(s == PrimSig.LONG_SIG)
 									return (IDataOp<T>) opf.makeParseLong();
-								else if(s == PrimSig.WILDCARD_SIG)
-									return (IDataOp<T>) opf.makeParseWildCard();
+								//else if(s == PrimSig.WILDCARD_SIG)
+								//	return (IDataOp<T>) opf.makeParseWildCard();
 								else if(s == PrimSig.STRING_SIG)
 									return (IDataOp<T>)opf.makeParseString();
 								else
@@ -78,7 +71,8 @@ public class SchemaSigUnifier {
 
 							}
 
-							@Override
+							@SuppressWarnings("unchecked")
+                            @Override
 							public IDataOp<T> visit(CompSig<?> sig) {
 
 								System.out.println("Attempting to unify prim schema with compSig");
@@ -99,7 +93,8 @@ public class SchemaSigUnifier {
 
 							}
 
-							@Override
+							@SuppressWarnings("unchecked")
+                            @Override
 							public IDataOp<T> visit(ListSig s) {
 								try{
 									System.out.println(schema.toString()+" "+ s.getElemType().toString());
@@ -151,17 +146,30 @@ public class SchemaSigUnifier {
 								 */
 							}
 
-							@Override
+                            @Override
+							@SuppressWarnings("unchecked")
 							public IDataOp<T> visit(CompSig<?> s) {
 								System.out.println("Attempting to unify comp schema with compSig");
 								//	int max = s.getFieldCount();
-								ArrayList<IDataOp<T>> listOps = new ArrayList<IDataOp<T>>();
+								IDataOp<T>[] listOps = new IDataOp[s.getFieldCount()];
+                                HashMap<String, ISchema> fieldMap = f.getFieldMap(); 
+
 								for(int i = 0; i < s.getFieldCount(); i++){
 									String fieldName = s.getFieldName(i);
-									ISchema theField;
-									HashMap<String, ISchema> fieldMap = f.getFieldMap(); //TODO
+									ISig fieldSig = s.getFieldSig(i);
+									try {
+									    listOps[i] = unwrapAndUnify(fieldMap, fieldName, fieldSig);
+									} catch(RuntimeException e){
+                                        e.printStackTrace();
+                                        throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",fieldName));
+                                    }
+									    
+									if (listOps[i] == null) {
+									    throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",fieldName));
+									}
+									/*
 									if(fieldMap.containsKey(fieldName)){
-										theField = fieldMap.get(fieldName);
+										ISchema theField = fieldMap.get(fieldName);
 										System.out.println("Found field "+fieldName);
 										try{
 											IDataOp<T> thisOp = unifyWith(theField,s.getFieldSig(i));
@@ -170,14 +178,50 @@ public class SchemaSigUnifier {
 											e.printStackTrace();
 											throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",fieldName));
 										}
-									}else
-										throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",fieldName));
+									}else {
+									    throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",fieldName));
+									}
+									*/
 								}
 
 								/* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
 
 								ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
-								return opf.makeConstructor(csp.constructor, (IDataOp<T>[]) listOps.toArray(new IDataOp[]{}));
+								return opf.makeConstructor(csp.constructor, listOps);
+							}
+							
+							public IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
+							    // normal (COMP-COMP) rule behavior
+							    if (fieldMap.containsKey(fieldName)) {
+							        ISchema theField = fieldMap.get(fieldName);
+                                    IDataOp<T> fieldOp = unifyWith(theField,fieldSig);
+                                    return opf.makeSelectOp(fieldOp, fieldName);
+							    } 
+							    // a new rule (COMP-UNWRAP) --- handle paths to nested structures
+							    else if ( fieldName.indexOf('/') >= 0) {
+							        String[] pieces = fieldName.split("/");
+							        System.out.println("pieces: " + pieces.length);
+							        for (int i = 1; i < pieces.length; i++) {
+							            String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
+							            String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
+							            System.out.println(prefix + "--" + rest);
+							            if (fieldMap.containsKey(prefix)) {
+							                ISchema theField = fieldMap.get(prefix);
+							                IDataOp<T> theOp =
+							                        theField.apply(new ISchemaVisitor<IDataOp<T>>() {
+                                                        public IDataOp<T> defaultVisit(ISchema s) { return null; }
+                                                        public IDataOp<T> visit(PrimSchema s) { return null; }
+                                                        public IDataOp<T> visit(ListSchema s) { return null; }
+                                                        public IDataOp<T> visit(CompSchema s) {
+                                                            return unwrapAndUnify(s.getFieldMap(), rest, fieldSig);
+                                                        }
+							                        });
+							                if (theOp != null) return opf.makeSelectOp(theOp, prefix);
+							            }							            
+							        }
+							    }
+							    
+							    return null;
 							}
 
 							@Override
@@ -198,7 +242,8 @@ public class SchemaSigUnifier {
 
 							@Override
 							public IDataOp<T> visit(PrimSig s) {
-								return opf.makeSelectOp(unifyWith(f.getElementSchema(),s), f.getPath());
+                                // (LIST-STRIP) rule (???)
+								return opf.makeIndexOp(unifyWith(f.getElementSchema(),s), f.getElementSchema().getPath(), 0);
 							}
 
 							@Override
@@ -219,7 +264,53 @@ public class SchemaSigUnifier {
 
 							@Override
 							public IDataOp<T> visit(ListSig s) {
-								return (IDataOp<T>) opf.makeIndexAllOp(opf.makeSelectOp(unifyWith(f.getElementSchema(), s.getElemType()),f.getPath()),null);
+							    return 
+							    s.getElemType().apply(new ISigVisitor<IDataOp<T>>() {
+							        // in all of these, 'ss' == s.getElemType()
+							        
+                                    // (LIST-LIST) rule
+                                    public IDataOp<T> defaultVisit(ISig ss) {
+                                        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
+                                                f.getElementSchema().getPath());
+                                    }
+                                    public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }
+                                    public IDataOp<T> visit(ListSig ss) { return defaultVisit(ss); }
+
+                                    @SuppressWarnings({ "unchecked", "rawtypes" })
+                                    public IDataOp<T> visit(CompSig<?> ss) {
+                                        // see if all fields in the comp sig start with a common path prefix that matches
+                                        // f.getElementSchema().getPath
+                                        
+                                        String pathPrefix = f.getElementSchema().getPath();
+                                        if (pathPrefix == null) {
+                                            return defaultVisit(ss);
+                                        } else {
+                                            // this is a new rule,  (LIST-PREFIX)
+                                            int pplen = pathPrefix.length() + 1;
+                                            boolean commonPrefix = true;
+                                            ArgSpec[] newArgs = new ArgSpec[ss.getFieldCount()];
+                                            for (int i = 0; i < ss.getFieldCount(); i++) {
+                                                String iname = ss.getFieldName(i);
+                                                if (!iname.startsWith(pathPrefix + "/")) {
+                                                    commonPrefix = false;
+                                                    break;
+                                                }
+                                                newArgs[i] = new ArgSpec(iname.substring(pplen), ss.getFieldSig(i));
+                                            }
+                                            if (commonPrefix) {
+                                                CompSig<?> newSig = new CompSig(ss.getAssociatedClass(), newArgs);
+                                                return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), newSig), pathPrefix);
+                                            } else {
+                                                throw new RuntimeException("What happened here?");
+                                                // TODO: fix ^^^^
+                                            }
+                                        }
+                                    }
+
+							        
+							    });
+							    
+								
 							}});
 					}
 
