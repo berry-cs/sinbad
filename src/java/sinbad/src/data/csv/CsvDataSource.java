@@ -3,22 +3,17 @@
  */
 package data.csv;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.io.*;
+import java.util.*;
 import java.util.stream.*;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import core.access.*;
+import core.ops.*;
 import core.schema.*;
+import core.sig.*;
 import core.util.IOUtil;
 
 import static core.log.Errors.*;
@@ -39,6 +34,14 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
         System.out.println(rows.length);
         System.out.println(rows[10].get("Dest Airport").getContents());
+        ISchema sch = csv.getSchema();
+        
+        IDataOp<?> dop = new SchemaSigUnifier().unifyWith(sch, 
+                new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG)));
+        System.out.println(sch);
+        System.out.println(dop);
+        String e = (String)dop.apply(csv);
+        System.out.println(e);
     }
     
     private String[] header;
