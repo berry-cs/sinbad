@@ -9,10 +9,14 @@ import core.access.IDataAccess;
  */
 public class RawStructField {
     String name;
-    IDataAccess da;
+    IRawAccess da;
 
-    public RawStructField(String name, IDataAccess da) {
+    public RawStructField(String name, IRawAccess da) {
         this.name = name;
         this.da = da;
+    }
+    
+    public String toString() {
+        return name + ": " + da;
     }
 }
