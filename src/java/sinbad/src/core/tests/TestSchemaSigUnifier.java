@@ -47,7 +47,7 @@ public class TestSchemaSigUnifier {
 		List<Integer> l = new ArrayList<Integer>();
 		l.add(0);
 		assertEquals(l,dop.apply(
-				new RawList("n",new IDataAccess[]{new RawPrim("0")})).collect(Collectors.toList()));
+				new RawList("n",new IRawAccess[]{new RawPrim("0")})).collect(Collectors.toList()));
 	}
 
 
@@ -188,7 +188,7 @@ public class TestSchemaSigUnifier {
 	ListSchema listfld3 = new ListSchema("","",new PrimSchema());
 	ListSig listSig = new ListSig(INT_SIG);
 	IDataOp<Stream<Integer>> listOints = unifier.unifyWith(listfld3, listSig);
-	IDataAccess[] testData = new IDataAccess[10];
+	IRawAccess[] testData = new IRawAccess[10];
 	List<Integer> l = new ArrayList<Integer>();
 	for(int j = 0; j < testData.length; j++){
 		testData[j] = new RawStruct(new RawStructField("",new RawPrim(""+j)));
@@ -204,7 +204,7 @@ public class TestSchemaSigUnifier {
 		ListSchema list = new ListSchema("","",foo);
 		ListSig listSig2 = new ListSig(FOO_SIG);
 		IDataOp<Stream<Foo>> listOFoos = unifier.unifyWith(list, listSig2);
-		IDataAccess[] testData2 = new IDataAccess[10];
+		IRawAccess[] testData2 = new IRawAccess[10];
 		List<Foo> l = new ArrayList<Foo>();
 		for(int j = 0; j < testData2.length; j++){
 			l.add(new Foo(j));
@@ -213,6 +213,37 @@ public class TestSchemaSigUnifier {
 							new RawStructField("n",new RawPrim(""+j)))));
 		}
 		assertEquals(l,listOFoos.apply(new RawList("",testData2)).collect(Collectors.toList()));
+	}
+	
+	@Test
+	public void testList_ListList_List(){
+		/*======= Test Case : List[t] || List[t], && t = ListSig (Recursive call list) */
+		PrimSchema listFldPrimTest = new PrimSchema("ctest","");
+		ListSchema listfld3 = new ListSchema("baseB","btest",listFldPrimTest);
+		ListSchema listoListFld = new ListSchema("baseA","Atest",listfld3);
+		ListSig listoListSig = new ListSig(new ListSig(PrimSig.INT_SIG));
+
+		IDataOp<Stream<Stream<Integer>>> dop = unifier.unifyWith(listoListFld, listoListSig);
+		IRawAccess[] testDataLol = new IRawAccess[10];
+		for(int j = 0; j < testDataLol.length; j++){
+			IRawAccess[] testData3 = new IRawAccess[10];
+			for(int k = 0; k < testData3.length; k++){
+				testData3[k] = new RawStruct(
+						new RawStructField("ctest",new RawPrim(""+(j+k))));
+			}
+			testDataLol[j] = new RawStruct(new RawStructField("Atest",new RawList("baseA",testData3)));
+		}
+		List<List<Integer>> lol = 
+				dop.apply(new RawList("baseB",testDataLol)).map(item -> 
+												item.collect(Collectors.toList())).collect(Collectors.toList());
+		List<List<Integer>> l = new ArrayList<List<Integer>>();
+		for(int i = 0; i < 10; i++){
+			l.add(new ArrayList<Integer>(10));
+			for(int j = 0; j < 10; j++){
+				l.get(i).add(j+i);
+			}
+		}
+		assertEquals(l,lol);
 	}
 
 
