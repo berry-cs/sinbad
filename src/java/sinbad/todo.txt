@@ -1,0 +1,9 @@
+
+TODO
+
+ - 
+
+ - more sophisticated handling of zip files
+
+ - investigate findConstructor (SigClassUnifier) interaction with inner classes (extra constructor parameter added...)
+ 

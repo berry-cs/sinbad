@@ -11,10 +11,13 @@ import java.util.stream.Stream;
  * direction), and at every moment in time encapsulating a 
  * particular element in the data.
  * 
- * Path values could potentially be <pre>null</pre>. 
+ * Path values could potentially be <pre>null</pre>. Some
+ * types of data access object may ignore certain path
+ * variables. 
  * 
  */
 public interface IDataAccess {
+      
     /** 
      * Access the contents of the current data element
      * 

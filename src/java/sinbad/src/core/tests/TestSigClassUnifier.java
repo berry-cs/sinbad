@@ -7,6 +7,9 @@ import core.sig.*;
 import core.ops.*;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
 import static core.sig.PrimSig.*;
 
 public class TestSigClassUnifier {
@@ -42,6 +45,9 @@ public class TestSigClassUnifier {
         int[] nums = {};
         ListSig s1 = new ListSig(INT_SIG);
         assertEquals(s1, s1.apply(new SigClassUnifier(nums.getClass())));
+        
+        ArrayList<Integer> numlist = new ArrayList<Integer>();
+        assertEquals(s1, s1.apply(new SigClassUnifier(numlist.getClass())));
 
         String[][] wds = {};
         ListSig s2 = new ListSig(new ListSig(STRING_SIG));
@@ -94,6 +100,7 @@ public class TestSigClassUnifier {
                                                                     new ArgSpec("zip", BOOLEAN_SIG));
         assertEquals(true, uA.unifiesWith(c2));
         assertEquals(c2spec, c2.apply(uA));
+        assertEquals(c2spec, c2.apply(uA));  // test cached constructors (see findConstructor)
         
         CompSig<ClassB> c3 = new CompSig<ClassB>(ClassB.class, new ArgSpec("querty", DOUBLE_SIG),
                                                                 new ArgSpec("drum", c1),

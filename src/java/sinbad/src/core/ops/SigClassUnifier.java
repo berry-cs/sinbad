@@ -2,6 +2,8 @@ package core.ops;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.apache.commons.lang3.*;
 
 import core.sig.*;
@@ -29,6 +31,8 @@ import static core.sig.PrimSig.*;
  * fails.
  */
 public class SigClassUnifier implements ISigVisitor<ISig> {
+    private static HashMap<CompSig<?>, ConstructorSigPair<?>> foundConstructors = new HashMap<CompSig<?>, ConstructorSigPair<?>>();
+
     private Class<?> c;  // the class against which the signature is being unified
     private boolean allowWidening;
     
@@ -41,6 +45,7 @@ public class SigClassUnifier implements ISigVisitor<ISig> {
         this(c, false);
     }
 
+    
     /**
      * Finds the appropriate constructor of class C whose Java type
      * signature can be unified against that of the given 
@@ -50,8 +55,12 @@ public class SigClassUnifier implements ISigVisitor<ISig> {
      * @return a pair of the constructor found, as well as a specialization 
      * of <code>s</code> as appropriate 
      */
+    @SuppressWarnings("unchecked")
     public static <C> ConstructorSigPair<C> findConstructor(CompSig<C> s) throws SignatureUnificationException {
-
+        if (foundConstructors.containsKey(s)) {
+            return (ConstructorSigPair<C>) foundConstructors.get(s);
+        }
+        
         Class<C> c = s.getAssociatedClass();
         Constructor<C>[] constrs = (Constructor<C>[]) c.getDeclaredConstructors();  // get all constructors of class C
 
@@ -65,7 +74,9 @@ public class SigClassUnifier implements ISigVisitor<ISig> {
                 sC = unifyWithConstructor(s, cr, true); // try to account for Processing weirdness
             }
             if (sC != null) { // one or the other worked
-                return new ConstructorSigPair<C>(cr, sC);
+                ConstructorSigPair<C> csp = new ConstructorSigPair<C>(cr, sC);
+                foundConstructors.put(s, csp);
+                return csp;
             }
         }
         throw exception(SignatureUnificationException.class, "scunify:unify-fail", s, c.getSimpleName());

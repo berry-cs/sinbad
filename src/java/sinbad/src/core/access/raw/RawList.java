@@ -1,17 +1,21 @@
 package core.access.raw;
 
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 import core.access.*;
+import core.schema.*;
 
 /**
  * Provides a simple, in-memory data access object around
  * a list of other data access objects.
  */
-public class RawList extends FailAccess {
+public class RawList extends FailAccess implements IRawAccess {
     private String eltPath;         // could be null
-    private IDataAccess[] elts;
+    private IRawAccess[] elts;
     
-    public RawList(String eltPath, IDataAccess ... elts) {
+    public RawList(String eltPath, IRawAccess ... elts) {
         this.eltPath = eltPath;
         this.elts = elts;
     }
@@ -43,5 +47,19 @@ public class RawList extends FailAccess {
             return Stream.of(this.elts);
         else
             return super.getAll(path);
+    }
+    
+    public String toString() {
+        return "{" + eltPath + ": " + StringUtils.join(elts, ", " + eltPath + ": ") + "}";
+    }
+
+    @Override
+    public ISchema getSchema() {
+        return this.getSchema(null);
+    }
+
+    @Override
+    public ISchema getSchema(String basePath) {
+        return new ListSchema(basePath, elts[0].getSchema(eltPath));
     }
 }

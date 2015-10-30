@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+
 import core.access.IDataAccess;
 
 /**
@@ -25,7 +27,9 @@ public class DataOpFactory {
 				String s = d.getContents();
 				if (s == null || s.equals("")) return 0;
 				else return Integer.parseInt(s);
-			}
+			}		
+			
+			public String toString() { return "parseInt"; }
 		};
 	}
 	/**
@@ -37,6 +41,8 @@ public class DataOpFactory {
 			public String apply(IDataAccess d) {
 				return d.getContents();
 			}
+            
+            public String toString() { return "parseString"; }
 		};
 	}
 
@@ -128,10 +134,6 @@ public class DataOpFactory {
 		};
 	}
 
-	<T> IDataOp<T> makeParseWildCard() { 
-		//TODO
-		return null;
-	}
 
 	/**
 	 * Produces an operation that when applied to data will attempt to make a new Java object with the given constructor,
@@ -142,7 +144,8 @@ public class DataOpFactory {
 	 */
 	<T> IDataOp<T> makeConstructor(Constructor<?> cons,IDataOp<T>[] consParamOps){
 		return new IDataOp<T>(){
-			@Override
+			@SuppressWarnings("unchecked")
+            @Override
 			public T apply(IDataAccess d) {
 				Object[] args = new Object[consParamOps.length];
 				for(int i = 0; i < args.length; i++) {
@@ -156,7 +159,13 @@ public class DataOpFactory {
 					e.printStackTrace();
 				}
 				throw new RuntimeException("failed to construct object from data");
-			}};
+			}
+			
+			public String toString() {
+			    return String.format("new %s(%s)", cons.getDeclaringClass().getSimpleName(), StringUtils.join(consParamOps, ", "));
+			}
+
+		};
 	}
 
 	/**
@@ -172,17 +181,15 @@ public class DataOpFactory {
 	 * @return - an IDataOp object that can be applied to an IDataAccess object to parse a piece of a collection/list
 	 */
 	<T> IDataOp<T> makeIndexOp(IDataOp<T> op, String path, int i) {
-		try{
-			return new IDataOp<T>() {
-				public T apply(IDataAccess d) {
-					return op.apply(d.get(path, i));
-				}
-			};
-		}catch(RuntimeException e)
-		{
-			e.printStackTrace();
-			return null; //TODO should actually be throwing an error in this case
-		}
+	    return new IDataOp<T>() {
+	        public T apply(IDataAccess d) {
+	            return op.apply(d.get(path, i));
+	        }
+
+	        public String toString() {
+	            return String.format("%s(index(%s, %d))", op, path, i);
+	        }
+	    };
 	}
 	/**
 	 * Produces an operation that when applied to data will attempt to place all pieces of that data into a collection/list
@@ -201,6 +208,10 @@ public class DataOpFactory {
 			public Stream<T> apply(IDataAccess d) {
 				return d.getAll(path).map(d0 -> op.apply(d0)); 
 			}
+			
+			public String toString() {
+			    return String.format("indexall(%s, %s)", path, op);
+			}
 		};
 	}
 	
@@ -214,10 +225,18 @@ public class DataOpFactory {
 	 * @return an IDataOp object that can be applied to an IDataAccess object to select data from the given path and parse it.
 	 */
 	<T> IDataOp<T> makeSelectOp(IDataOp<T> op, String path) {
+	    if (path == null || path.equals("")) {   // this is a no-op
+	        return op;
+	    }
 		return new IDataOp<T>() {
 			public T apply(IDataAccess d) {
 				return op.apply(d.get(path));
 			}
+
+			public String toString() {
+			    return String.format("select(\"%s\") ==> [%s]", path, op);
+			}
+
 		};
 	}
 
