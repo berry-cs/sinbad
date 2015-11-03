@@ -21,7 +21,7 @@ import static core.log.Errors.*;
 /**
  * A delimiter-separated (usually comma-separated) data access object.
  */
-public class CsvDataSource extends FailAccess implements ISchemaProducer {
+public class CsvDataSource extends FailAccess {
 
     private String[] header;
     private HashMap<String,Integer> headerIndex;

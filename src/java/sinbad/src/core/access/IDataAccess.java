@@ -2,6 +2,8 @@ package core.access;
 
 import java.util.stream.Stream;
 
+import core.schema.ISchemaProducer;
+
 /**
  * 
  * Provides a generic way to traverse data obtained from
@@ -16,7 +18,7 @@ import java.util.stream.Stream;
  * variables. 
  * 
  */
-public interface IDataAccess {
+public interface IDataAccess extends ISchemaProducer {
       
     /** 
      * Access the contents of the current data element

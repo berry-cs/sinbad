@@ -2,6 +2,8 @@ package core.access;
 
 import java.util.stream.Stream;
 
+import core.schema.ISchema;
+
 import static core.log.Errors.*;
 
 /**
@@ -24,5 +26,9 @@ public class FailAccess implements IDataAccess {
     
     public Stream<IDataAccess> getAll(String path) {
         throw exception(DataAccessException.class, "da:get-list", path);
+    }
+
+    public ISchema getSchema() {
+        throw exception(DataAccessException.class, "da:schema");
     }
 }
