@@ -23,28 +23,6 @@ import static core.log.Errors.*;
  */
 public class CsvDataSource extends FailAccess implements ISchemaProducer {
 
-    public static void main(String[] args) {
-       //InputStream in = IOUtil.createInput("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
-        InputStream in = IOUtil.createInput("/Users/nhamid/Downloads/routes.dat");
-        CsvDataSource csv = (CsvDataSource)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
-                .newInstance(in);
-        long millis = System.currentTimeMillis();
-        Stream<IDataAccess> s = csv.getAll(null);
-        System.out.println(System.currentTimeMillis() - millis);
-        IDataAccess[] rows = s.toArray(IDataAccess[]::new);
-        System.out.println(rows.length);
-        System.out.println(rows[10].get("Dest Airport").getContents());
-        ISchema sch = csv.getSchema();
-        
-        new SchemaSigUnifier();
-        IDataOp<?> dop = SchemaSigUnifier.unifyWith(sch, 
-                new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG)));
-        System.out.println(sch);
-        System.out.println(dop);
-        String e = (String)dop.apply(csv);
-        System.out.println(e);
-    }
-    
     private String[] header;
     private HashMap<String,Integer> headerIndex;
     private char delimiter;
@@ -251,6 +229,30 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
             }
         }
     }
+
+    
+    public static void main(String[] args) {
+        //InputStream in = IOUtil.createInput("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
+         InputStream in = IOUtil.createInput("/Users/nhamid/Downloads/routes.dat");
+         CsvDataSource csv = (CsvDataSource)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
+                 .newInstance(in);
+         long millis = System.currentTimeMillis();
+         Stream<IDataAccess> s = csv.getAll(null);
+         System.out.println(System.currentTimeMillis() - millis);
+         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
+         System.out.println(rows.length);
+         System.out.println(rows[10].get("Dest Airport").getContents());
+         ISchema sch = csv.getSchema();
+         
+         new SchemaSigUnifier();
+         IDataOp<?> dop = SchemaSigUnifier.unifyWith(sch, 
+                 new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG)));
+         System.out.println(sch);
+         System.out.println(dop);
+         String e = (String)dop.apply(csv);
+         System.out.println(e);
+     }
+     
 
 
 }

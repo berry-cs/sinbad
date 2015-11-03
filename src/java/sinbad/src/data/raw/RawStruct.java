@@ -1,4 +1,4 @@
-package core.access.raw;
+package data.raw;
 
 import org.apache.commons.lang3.StringUtils;
 

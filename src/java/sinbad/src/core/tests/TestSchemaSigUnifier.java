@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import core.access.IDataAccess;
-import core.access.raw.*;
 import core.ops.*;
 import core.schema.*;
 import core.sig.*;
+import data.raw.*;
 
 public class TestSchemaSigUnifier {
 	SchemaSigUnifier unifier = new SchemaSigUnifier();

@@ -1,4 +1,4 @@
-package core.access.raw;
+package data.raw;
 
 import java.util.stream.Stream;
 

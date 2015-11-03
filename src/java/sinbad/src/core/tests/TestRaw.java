@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import core.access.*;
-import core.access.raw.*;
 import core.ops.*;
 import core.sig.*;
+import data.raw.*;
 import core.schema.*;
 
 public class TestRaw {
