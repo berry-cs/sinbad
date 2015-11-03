@@ -75,16 +75,12 @@ public class IOUtil {
      * <LI>Another file to be opened locally (when running as an application)
      * </UL>
      *
-     * @webref input:files
-     * @param filename the name of the file to use as input
-     * @see PApplet#createOutput(String)
-     * @see PApplet#selectOutput(String)
-     * @see PApplet#selectInput(String)
+     * @param path the path (URL/local filename path) of the file to use as input
      *
      */
-    public static InputStream createInput(String filename) {
-        InputStream input = createInputRaw(filename);
-        final String lower = filename.toLowerCase();
+    public static InputStream createInput(String path) {
+        InputStream input = createInputRaw(path);
+        final String lower = path.toLowerCase();
         if ((input != null) &&
                 (lower.endsWith(".gz") || lower.endsWith(".svgz"))) {
             try {
@@ -103,7 +99,7 @@ public class IOUtil {
      * 
      * Call openStream() without automatic gzip decompression.
      */
-    public static InputStream createInputRaw(String filename) {
+    private static InputStream createInputRaw(String filename) {
         if (filename == null) return null;
 
         if (filename.length() == 0) {
