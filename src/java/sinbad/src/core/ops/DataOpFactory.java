@@ -187,7 +187,7 @@ public class DataOpFactory {
 	        }
 
 	        public String toString() {
-	            return String.format("%s(index(%s, %d))", op, path, i);
+	            return String.format("index(%s, %d) ==> %s", path, i, op);
 	        }
 	    };
 	}
@@ -210,7 +210,7 @@ public class DataOpFactory {
 			}
 			
 			public String toString() {
-			    return String.format("indexall(%s, %s)", path, op);
+			    return String.format("indexall(%s) ==> %s", path, op);
 			}
 		};
 	}

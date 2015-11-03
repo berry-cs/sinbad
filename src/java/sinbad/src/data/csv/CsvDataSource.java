@@ -55,7 +55,7 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
             this.headerIndex.put(this.header[i], i);
         }
         
-        this.schema = buildSchema();
+        this.schema = null; // build it later on demand
     }
     
     /**
@@ -63,13 +63,16 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
      */
     @Override
     public ISchema getSchema() {
+        if (this.schema == null) {
+            this.schema = buildSchema();
+        }
         return this.schema;
     }
     
     private ISchema buildSchema() {
         CompField[] fields = new CompField[this.header.length];
-        PrimSchema ps = new PrimSchema();  // objects are immutable, so should be ok to share... (?)
         for (int i = 0; i < this.header.length; i++) {
+            PrimSchema ps = new PrimSchema(this.header[i]);  // basepath
             fields[i] = new CompField(this.header[i], ps);
         }
         return new ListSchema(new CompSchema(fields));
@@ -242,13 +245,14 @@ public class CsvDataSource extends FailAccess implements ISchemaProducer {
          IDataAccess[] rows = s.toArray(IDataAccess[]::new);
          System.out.println(rows.length);
          System.out.println(rows[10].get("Dest Airport").getContents());
-         ISchema sch = csv.getSchema();
-         
-         new SchemaSigUnifier();
-         IDataOp<?> dop = SchemaSigUnifier.unifyWith(sch, 
-                 new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG)));
+         ISchema sch = csv.getSchema();       
+         ISig sig = new CompSig<String>(String.class, new ArgSpec("Dest Airport", PrimSig.STRING_SIG));
          System.out.println(sch);
+         System.out.println(sig);
+         
+         IDataOp<?> dop = SchemaSigUnifier.unifyWith(sch, sig);
          System.out.println(dop);
+         
          String e = (String)dop.apply(csv);
          System.out.println(e);
      }
