@@ -7,12 +7,14 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import core.access.IDataAccessFactory;
+import core.schema.ISchema;
 
 public class CsvFactory implements IDataAccessFactory {
 
     private String[] header; // if null, should be read from the input
     private char delimiter = ',';  // default is comma
     private boolean streaming = false;
+    private ISchema schema = null;
     
     public CsvFactory() {
     }
@@ -38,10 +40,19 @@ public class CsvFactory implements IDataAccessFactory {
         }
         return this;
     }
+    
+    public CsvFactory setSchema(ISchema schema) {
+        this.schema = schema;
+        return this;
+    }
 
     @Override
-    public CsvDataSource newInstance(InputStream is) {
-        return new CsvDataSource(is, header, delimiter, streaming);
+    public CsvDataAccess newInstance(InputStream is) {
+        CsvDataAccess da =  new CsvDataAccess(is, header, delimiter, streaming);
+        if (this.schema != null) { 
+            da.setSchema(schema);
+        }
+        return da;
     }
 
 }
