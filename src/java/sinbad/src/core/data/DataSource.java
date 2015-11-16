@@ -153,6 +153,7 @@ public class DataSource implements IDataSource {
      * HELP
      */
     
+    // TODO: make this cleaner
     public String usageString(boolean verbose) {
         String s = "-----\n";
         if (this.name != null) 
@@ -182,7 +183,7 @@ public class DataSource implements IDataSource {
         }
         
         if (schema != null)
-            s += "\nThe following data is available:\n" + schema.toString(verbose) + "\n";
+            s += "\nThe following data is available:\n" + schema.apply(new SchemaPrettyPrint(3, true)) + "\n";
         
         if (!this.hasData())
             s += "\n*** Data not loaded *** ... use .load()\n";
@@ -295,13 +296,17 @@ public class DataSource implements IDataSource {
     }
     
     public DataSource load() {
+        return this.load(false);
+    }
+    
+    public DataSource load(boolean forceReload) {
         if (!readyToLoad())
             throw Errors.exception(DataSourceException.class, "ds:notready-params", StringUtils.join(missingParams().toArray(new String[]{}), ','));
 
         IDataFormatInfer infer = plugin.getInfer();
         IDataAccessFactory factory = plugin.getFactory();
 
-        // TODO: caching? 
+        // TODO: caching
         InputStream is = IOUtil.createInput(path); // reload
         if (is == null) {
             throw Errors.exception(DataSourceException.class, "ds:no-input", path);
@@ -314,6 +319,10 @@ public class DataSource implements IDataSource {
         }
         is = IOUtil.createInput(path);  // reload
         this.dataAccess = factory.newInstance(is);
+        
+        // TODO: load schema from cache if desired?
+        this.dataAccess.getSchema();  // forces it to be build
+        
         this.loaded = true;
         
         return this;

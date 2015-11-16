@@ -32,6 +32,18 @@ public class TestDataSource {
         
         ds.printUsageString();
     }
+    
+    @Test
+    public void testOnlineCSV() {
+        DataSource ds = DataSource.connect("https://www.data.gov/app/uploads/2014/11/opendatasites1.csv");
+        ds.load();
+        ds.printUsageString();
+        String[] names = ds.fetchStringArray("Item");
+        System.out.println(names.length);
+        
+        assertEquals("Aarhus", names[0]);
+        assertEquals("Zurich", names[names.length-1]);
+    }
 
 }
 
