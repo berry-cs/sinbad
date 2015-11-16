@@ -110,7 +110,7 @@ public class IOUtil {
 
         // First check whether this looks like a URL. This will prevent online
         // access logs from being spammed with GET /sketchfolder/http://blahblah
-        if (filename.contains(":")) {  // at least smells like URL
+        if (filename.contains("://")) {  // at least smells like URL
             try {
                 URL url = new URL(filename);
                 URLConnection conn = url.openConnection();
