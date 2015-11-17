@@ -1,5 +1,6 @@
 package core.tests;
 
+import org.json.JSONArray;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
@@ -8,6 +9,7 @@ import core.ops.*;
 
 import static org.junit.Assert.*;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import static core.sig.PrimSig.*;
@@ -17,7 +19,7 @@ public class TestSigClassUnifier {
     public final ExpectedException ex = ExpectedException.none();
 
     public TestSigClassUnifier() {
-        
+
     }
 
     @Test

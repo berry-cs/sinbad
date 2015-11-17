@@ -51,7 +51,7 @@ public interface IDataSource {
 	 * @return whether data has been successfully loaded and parsed from the data source 
 	 */
 	public boolean hasData();
-	
+		
 	/**
 	 * Determines whether data has been successfully loaded and parsed from the data source
 	 * (i.e. it calls hasData()), 
@@ -78,9 +78,9 @@ public interface IDataSource {
 	/**
 	 * Sets the cache timeout value, in <em>minutes</em>. This should be called before load() to have effect.
 	 */
-	// TODO
-	//public IDataSource setCacheTimeout(int val);
-	//public IDataSource setCacheDirectory(String path);
+	public IDataSource setCacheTimeout(int val);
+	
+	public IDataSource setCacheDirectory(String path);
 
 	/**
 	 * Sets an internal option for the data source

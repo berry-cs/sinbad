@@ -11,7 +11,7 @@ public interface IDataFormatInfer {
     /**
      * 
      * @param path the primary path (URL/file name) to the data
-     * @param is an input stream to the data 
+     * @param is an input stream to the data  (could be null)
      * @return
      */
     boolean matchedBy(String path, InputStream is);

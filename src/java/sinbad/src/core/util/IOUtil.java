@@ -129,7 +129,7 @@ public class IOUtil {
                 } else if (conn instanceof JarURLConnection) {
                     return url.openStream();
                 }
-            } catch (MalformedURLException mfue) {
+            } catch (MalformedURLException | UnknownHostException ue) {
                 // not a url, that's fine
 
             } catch (FileNotFoundException fnfe) {

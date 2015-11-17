@@ -12,10 +12,12 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import core.access.*;
+import core.cache.DataCacher;
 import core.infer.IDataFormatInfer;
 import core.log.Errors;
 import core.ops.*;
@@ -57,21 +59,21 @@ public class DataSource implements IDataSource {
      * @return a prepared data source
      */
     public static DataSource connect(String path) {
-        // TODO: caching
+        String resolvedPath = DataCacher.defaultCacher().resolvePath(path);
+        if (resolvedPath == null) {
+            resolvedPath = path;
+        } 
+
         // TODO: DataSourceLoader.isValidDataSourceSpec(resolvedPath)
-        try {
-            for (IDataSourcePlugin dsp : plugins.values()) {
-                InputStream is = IOUtil.createInput(path);
-                if (dsp.getInfer().matchedBy(path, is)) {
-                    if (is != null) is.close();
-                    return connect(path, dsp);
-                } else {
-                    if (is != null) is.close();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
+        for (IDataSourcePlugin dsp : plugins.values()) {
+            InputStream is = IOUtil.createInput(resolvedPath);
+            if (dsp.getInfer().matchedBy(path, is)) {
+                if (is != null) IOUtils.closeQuietly(is);
+                return connect(path, dsp);
+            } 
+            if (is != null) IOUtils.closeQuietly(is);
         }
+        
         throw Errors.exception(DataSourceException.class, "ds:noinfer", path);
     }
     
@@ -83,7 +85,6 @@ public class DataSource implements IDataSource {
      * @return a prepared data source
      */
     public static DataSource connectAs(String path, String typeExt) {
-        // TODO: caching
         if (!plugins.containsKey(typeExt)) {
             throw Errors.exception(DataSourceException.class, "ds:notype", typeExt);
         } 
@@ -127,8 +128,7 @@ public class DataSource implements IDataSource {
     
     protected IDataSourcePlugin plugin;
     protected IDataAccess dataAccess;
-    // protected ISchema schema;
-    // protected DataCacher cacher;
+    protected DataCacher cacher;
     
     protected DataSource(String name, String path, IDataSourcePlugin plugin) {
         this.name = name;
@@ -145,7 +145,7 @@ public class DataSource implements IDataSource {
         
         this.plugin = plugin;
         this.dataAccess = null;
-        // this.cacher = DataCacher.defaultCacher();
+        this.cacher = DataCacher.defaultCacher();
     }
     
     
@@ -231,6 +231,17 @@ public class DataSource implements IDataSource {
         return this.dataAccess;
     }
     
+    public IDataSource setCacheTimeout(int val) {
+        this.cacher = this.cacher.updateTimeout(val);
+        return this;
+    }
+
+    @Override
+    public IDataSource setCacheDirectory(String path) {
+        this.cacher = this.cacher.updateDirectory(path);
+        return this;
+    }
+    
     
     /*
      * HANDLING PARAMETERS
@@ -306,19 +317,19 @@ public class DataSource implements IDataSource {
         IDataFormatInfer infer = plugin.getInfer();
         IDataAccessFactory factory = plugin.getFactory();
 
-        // TODO: caching
-        InputStream is = IOUtil.createInput(path); // reload
-        if (is == null) {
+        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL());
+        if (resolvedPath == null) 
             throw Errors.exception(DataSourceException.class, "ds:no-input", path);
-        }
+        InputStream is = IOUtil.createInput(resolvedPath); // first time is for running infer...
         
         infer.matchedBy(path, is); // because getOptions is only valid after matchedBy has been invoked
         Map<String,String> options = infer.getOptions();
         for (Entry<String,String> e : options.entrySet()) {
             factory.setOption(e.getKey(), e.getValue());
         }
-        is = IOUtil.createInput(path);  // reload
-        this.dataAccess = factory.newInstance(is);
+        
+        is = IOUtil.createInput(resolvedPath);  // reset input stream to beginning 
+        this.dataAccess = factory.newInstance(is); // to prepare to actually parse data
         
         // TODO: load schema from cache if desired?
         this.dataAccess.getSchema();  // forces it to be build
@@ -328,6 +339,40 @@ public class DataSource implements IDataSource {
         return this;
     }
     
+    protected String getFullPathURL() {
+        if (!readyToLoad()) 
+            throw new RuntimeException("Cannot finalize path: not ready to load");
+
+        String fullpath = this.path;
+        
+        // add query params to request URL...
+        if (URLPrepper.isURL(this.path)) {
+            URLPrepper prepper = new URLPrepper(this.path);
+            for (String k : paramValueKeys) {
+                Param p = params.get(k);
+                if (p == null || p.getType() == ParamType.QUERY) {
+                    String v = paramValues.get(k);
+                    prepper.addParam(k, v);
+                }
+            }
+            fullpath = prepper.getRequestURL();
+        }
+        
+        // fill in substitutions
+        for (String k : paramValueKeys) {
+            Param p = params.get(k);
+            if (p != null && p.getType() == ParamType.PATH) {
+                fullpath = substParam(fullpath, k, paramValues.get(k));
+            }
+        }
+        
+        return fullpath;
+    }
+    
+    protected String substParam(String fullpath, String key, String value) {
+        return fullpath.replace((CharSequence)("@{" + key + "}"), (CharSequence)value);
+    }
+
     
     /*
      * FETCHING DATA
@@ -428,6 +473,7 @@ public class DataSource implements IDataSource {
     public ArrayList<String> fetchStringList(String key) {
         return fetchList(String.class, key);
     }
+
 
 
 }
