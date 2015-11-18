@@ -236,6 +236,14 @@ public class DataSource implements IDataSource {
         return this;
     }
     
+    public String getCacheDirectory() {
+        return this.cacher.getDirectory();
+    }
+    
+    public boolean clearENTIRECache() {
+        return this.cacher.clearCache();
+    }
+    
     
     /*
      * HANDLING PARAMETERS
@@ -326,17 +334,20 @@ public class DataSource implements IDataSource {
             this.dataFactory.setOption(e.getKey(), e.getValue());
         }
         
-        // load schema from cached if appropriate and add it to the factory
+        // load schema from cached if appropriate and add it to the factory...
         boolean cachedSchemaLoaded = false;
         String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema");
         if (cachedSchemaPath != null && !forceReload) {
             try {
-                ObjectInputStream schis = new ObjectInputStream(IOUtil.createInput(cachedSchemaPath));
-                ISchema schema =  (ISchema)schis.readObject();
-                schis.close();
-                this.dataFactory.setSchema(schema);  // *** here
-                System.out.println("loaded cached schema: " + schema);
-                cachedSchemaLoaded = true;
+                InputStream cis = IOUtil.createInput(cachedSchemaPath);
+                //if (cis != null) {
+                    ObjectInputStream schis = new ObjectInputStream(cis);
+                    ISchema schema =  (ISchema)schis.readObject();
+                    schis.close();
+                    this.dataFactory.setSchema(schema);  // ... here
+                    //System.out.println("loaded cached schema: " + cachedSchemaPath);
+                    cachedSchemaLoaded = true;
+                //}
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -358,7 +369,9 @@ public class DataSource implements IDataSource {
                 this.cacher.addToCache(this.getFullPathURL(), "schema", pipis);
                 pipis.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                // oh well, didn't work, so just clear it out of the cache completely
+                // in case it was partially stored or something
+                this.cacher.clearCacheData(this.getFullPathURL(), "schema");
             }
         } 
 

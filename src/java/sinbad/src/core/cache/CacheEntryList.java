@@ -77,7 +77,7 @@ public class CacheEntryList implements JSONString {
         this.writeToFile(file.getAbsolutePath());
     }
     
-    public void writeToFile(String path) {
+    public boolean writeToFile(String path) {
         try {
             Writer wr;
             if (path.equals("-")) wr = new PrintWriter(System.out);
@@ -89,9 +89,11 @@ public class CacheEntryList implements JSONString {
             w.endObject();
             wr.write('\n');
             if (path.equals("-")) wr.flush();
-            else wr.close();            
+            else wr.close();   
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
         

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import core.util.IOUtil;
@@ -83,12 +84,27 @@ public class DataCacher {
         return new DataCacher(this.cacheDirectory, value);
     }
 
+    /**
+     * Produces the root directory of the cache managed by this DataCacher
+     * @return the root directory of the cache managed by this DataCacher
+     */
     public String getDirectory() {
         return this.cacheDirectory;
     }
 
     public long getTimeout() {
         return this.cacheExpiration;
+    }
+    
+    public boolean clearCache() {
+        try {
+            File f = new File(this.cacheDirectory);
+            FileUtils.deleteDirectory(f);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private boolean isCacheable(String path, String subtag) {
@@ -115,9 +131,8 @@ public class DataCacher {
         String idxFile = getCacheIndexFile(e.getTag());
         if (idxFile == null) return false;
         CacheEntryList cel = new CacheEntryList(new File(idxFile));
-        boolean result = cel.remove(e);
-        cel.writeToFile(idxFile);
-        return result;
+        return cel.remove(e) 
+                 && cel.writeToFile(idxFile);
     }
 
     public String getCacheIndexFile(String tag) {
@@ -176,9 +191,16 @@ public class DataCacher {
             if (cacheIndexName == null) { return path; }
             
             CacheEntry entry = this.entryFor(path, subtag);
+            if (entry != null && !entry.isDataValid()) {
+                clearCacheData(path, subtag);
+                entry = null;
+            }
+            
             String cachepath = (entry == null ? null : entry.getCacheData());
             
-            if ((cachepath == null && subtag == null) || (entry != null && (entry.isExpired(this.cacheExpiration) || !entry.isDataValid()))) {
+            if (subtag == null &&
+                    (cachepath == null 
+                        || (entry != null && entry.isExpired(this.cacheExpiration)))) {
                 try {
                     String cachedFilePath = readAndCache(path);
                     if (cachepath != null) { // need to remove old cached file
@@ -254,5 +276,6 @@ public class DataCacher {
         }
         return this.removeEntry(entry);
     }
+
     
 }

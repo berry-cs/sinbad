@@ -62,6 +62,9 @@ public class TestDataSource {
         ds.load();
         ds.printUsageString();
         System.out.println(System.currentTimeMillis() - a);
+        
+        System.out.println(ds.getCacheDirectory());
+        //ds.clearENTIRECache();
     }
 
 }

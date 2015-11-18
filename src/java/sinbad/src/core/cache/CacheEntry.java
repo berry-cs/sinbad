@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.json.JSONWriter;
 
+import core.util.IOUtil;
+
 public class CacheEntry {
     private String tag;
     private String subtag; // can be null
@@ -35,7 +37,9 @@ public class CacheEntry {
     }
     
     public boolean isDataValid() {
-        return cachedata != null && (new File(cachedata)).exists();
+        return cachedata != null
+                && (new File(cachedata)).exists() 
+                && IOUtil.createInput(cachedata) != null;
     }
 
     public boolean isExpired(long cacheExpiration) {
