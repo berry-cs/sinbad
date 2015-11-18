@@ -113,7 +113,9 @@ public class IOUtil {
         if (filename.contains("://")) {  // at least smells like URL
             try {
                 URL url = new URL(filename);
+                
                 URLConnection conn = url.openConnection();
+                conn.addRequestProperty("User-Agent", "Mozilla/4.76"); 
                 if (conn instanceof HttpURLConnection) {
                     HttpURLConnection httpConn = (HttpURLConnection) conn;
                     // Will not handle a protocol change (see below)
