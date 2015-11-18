@@ -1,6 +1,5 @@
 package data.csv;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class CsvInfer implements IDataFormatInfer {
     }
     
     @Override
-    public boolean matchedBy(String path, InputStream is) {
+    public boolean matchedBy(String path) {
         if ((path.endsWith(".csv") || path.endsWith(".csv.gz"))
                 && this.delim.equals(",")) {
             // this is default anyway in the factory: options.put("delimiter", ","); 

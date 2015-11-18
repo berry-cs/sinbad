@@ -68,8 +68,8 @@ public class CsvDataTest {
     public void testInfer() {
         CsvInfer ci1 = new CsvInfer();
         CsvInfer ci2 = new CsvInfer("\t");
-        assertEquals(true, ci1.matchedBy("example.csv", null));
-        assertEquals(false, ci2.matchedBy("example.csv", null));
+        assertEquals(true, ci1.matchedBy("example.csv"));
+        assertEquals(false, ci2.matchedBy("example.csv"));
     }
 }
 

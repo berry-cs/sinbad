@@ -1,6 +1,5 @@
 package core.infer;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -11,10 +10,9 @@ public interface IDataFormatInfer {
     /**
      * 
      * @param path the primary path (URL/file name) to the data
-     * @param is an input stream to the data  (could be null)
      * @return
      */
-    boolean matchedBy(String path, InputStream is);
+    boolean matchedBy(String path);
     
     /**
      * Produces a map of inferred options that should be passed to the data
