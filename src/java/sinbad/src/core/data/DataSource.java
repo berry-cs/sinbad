@@ -1,18 +1,12 @@
 package core.data;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -311,26 +305,63 @@ public class DataSource implements IDataSource {
     }
     
     public DataSource load(boolean forceReload) {
-        if (!readyToLoad())
-            throw Errors.exception(DataSourceException.class, "ds:notready-params", StringUtils.join(missingParams().toArray(new String[]{}), ','));
-
+        if (!readyToLoad()) {
+            throw Errors.exception(DataSourceException.class, "ds:notready-params",
+                    StringUtils.join(missingParams().toArray(new String[]{}), ','));
+        }
+        
+        if (this.loaded && !forceReload) {
+            return this;
+        }
+    
+        // get the raw data into/from the cache
         String resolvedPath = this.cacher.resolvePath(this.getFullPathURL());
         if (resolvedPath == null) 
             throw Errors.exception(DataSourceException.class, "ds:no-input", path);
-        InputStream is = IOUtil.createInput(resolvedPath); // first time is for running infer...
         
+        // load any inferred options and add them to the factory
         this.dataInfer.matchedBy(path); // because getOptions is only valid after matchedBy has been invoked
         Map<String,String> options = this.dataInfer.getOptions();
-        for (Entry<String,String> e : options.entrySet()) {
+        for (Entry<String,String> e : options.entrySet()) { 
             this.dataFactory.setOption(e.getKey(), e.getValue());
         }
         
-        is = IOUtil.createInput(resolvedPath);  // reset input stream to beginning 
-        this.dataAccess = this.dataFactory.newInstance(is); // to prepare to actually parse data
+        // load schema from cached if appropriate and add it to the factory
+        boolean cachedSchemaLoaded = false;
+        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema");
+        if (cachedSchemaPath != null && !forceReload) {
+            try {
+                ObjectInputStream schis = new ObjectInputStream(IOUtil.createInput(cachedSchemaPath));
+                ISchema schema =  (ISchema)schis.readObject();
+                schis.close();
+                this.dataFactory.setSchema(schema);  // *** here
+                System.out.println("loaded cached schema: " + schema);
+                cachedSchemaLoaded = true;
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         
-        // TODO: load schema from cache if desired?
-        this.dataAccess.getSchema();  // forces it to be built
+        // now use the factory to generate the data access object
+        InputStream is = IOUtil.createInput(resolvedPath); 
+        this.dataAccess = this.dataFactory.newInstance(is); 
+        ISchema schema = this.dataAccess.getSchema();  // forces it to be built
         
+        // cache the schema for later if it wasn't already
+        if (!cachedSchemaLoaded) {
+            try {
+                PipedInputStream pipis = new PipedInputStream();
+                PipedOutputStream pipos = new PipedOutputStream(pipis);
+                ObjectOutputStream schos = new ObjectOutputStream(pipos);
+                schos.writeObject(schema);
+                schos.close();
+                this.cacher.addToCache(this.getFullPathURL(), "schema", pipis);
+                pipis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } 
+
         this.loaded = true;
         
         return this;

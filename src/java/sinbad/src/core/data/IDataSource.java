@@ -97,8 +97,8 @@ public interface IDataSource {
 	/**
 	 * Attempt to load and parse the data source
 	 * Success may be checked using the hasData() method
-	 * @param forceReload whether to reload data from the source (not cache)
-	 *                    and rebuild the schema (rather than use cached)
+	 * @param forceReload whether to re-analyze the data and 
+	 * build the schema from scratch (rather than use cached copy)
 	 * @return this updated data source
 	 */
 	public IDataSource load(boolean forceReload);

@@ -4,11 +4,14 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.json.*;
 import org.junit.Test;
 
+import core.cache.DataCacher;
 import core.data.DataSource;
+import core.util.IOUtil;
 
 public class TestDataSource {
     
@@ -46,6 +49,19 @@ public class TestDataSource {
         
         assertEquals("Aarhus", names[0]);
         assertEquals("Zurich", names[names.length-1]);
+        
+        ds = DataSource.connect("https://raw.githubusercontent.com/luispedro/BuildingMachineLearningSystemsWithPython/master/ch01/data/web_traffic.tsv");
+        ds.setOption("header", "time,hits-per-hour");
+        ds.load();
+        ds.printUsageString();
+        
+        long a = System.currentTimeMillis();
+        ds = DataSource.connectAs("CSV", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
+        ds.setOption("header", "Airline,ID,Source,SourceID,Dest,DestID,Codeshare,Stops,Equip");
+        //ds.setCacheTimeout(0);
+        ds.load();
+        ds.printUsageString();
+        System.out.println(System.currentTimeMillis() - a);
     }
 
 }

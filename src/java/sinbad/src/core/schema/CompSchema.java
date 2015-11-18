@@ -9,6 +9,8 @@ import java.util.HashMap;
  * the actual base path of those subelements in the underlying data)
  */
 public class CompSchema extends AbsSchema {
+    private static final long serialVersionUID = 1L;
+    
     private String[] fieldNames;
     private HashMap<String, ISchema> fieldMap;
     

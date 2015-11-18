@@ -143,12 +143,17 @@ public class DataCacher {
     
     private String readAndCache(String path) throws IOException {
         InputStream is = IOUtil.createInput(path);
-        if (is == null) {
+        String cachedFile = (is == null ? null : readAndCache(path, is));
+        if (cachedFile == null) {
             throw new IOException("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable");
         }
+        return cachedFile;
+    }
+    
+    private String readAndCache(String path, InputStream is) throws IOException {
         byte[] stuff = IOUtils.toByteArray(is);
         if (stuff == null) {
-            throw new IOException("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable");
+            return null;
         }
         File cacheDir = new File(cacheDirectory, "" + path.hashCode());
         if (!cacheDir.exists()) cacheDir.mkdirs();
@@ -193,6 +198,30 @@ public class DataCacher {
 
             return cachepath;
         }
+    }
+    
+    public boolean addToCache(String path, String subtag, InputStream is) {
+        if (!CachingEnabled) {
+            return false;
+        }
+        String cacheIndexName = getCacheIndexFile(path);
+        if (cacheIndexName == null) { return false; }
+
+        CacheEntry entry = this.entryFor(path, subtag);
+        String cachepath = (entry == null ? null : entry.getCacheData()); // currently cached
+        try {
+            String cachedFilePath = readAndCache(path, is);
+            if (cachepath != null) { // need to remove old cached file
+                File olddata = new File(cachepath);
+                olddata.delete();
+            }
+            entry = new CacheEntry(path, subtag, System.currentTimeMillis(), cachedFilePath);
+            updateEntry(entry);
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;        
     }
     
     public OutputStream resolveOutputStreamFor(String path, String subtag) {
