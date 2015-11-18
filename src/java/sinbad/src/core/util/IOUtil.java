@@ -81,13 +81,25 @@ public class IOUtil {
     public static InputStream createInput(String path) {
         InputStream input = createInputRaw(path);
         final String lower = path.toLowerCase();
-        if ((input != null) &&
-                (lower.endsWith(".gz") || lower.endsWith(".svgz"))) {
-            try {
-                return new GZIPInputStream(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+        if (input != null) {
+            if (lower.endsWith(".gz")) {
+                try {
+                    return new GZIPInputStream(input);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    return null;
+                }
+            } else if (lower.endsWith(".zip")) {
+                try {
+                    ZipInputStream zin = new ZipInputStream(input);
+                    ZipEntry ze = zin.getNextEntry();
+                    ze.getName();
+                    //System.err.println("Using " + ze.getName() + " from zip source");
+                    return zin; 
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    return null;
+                }
             }
         }
         return input;
