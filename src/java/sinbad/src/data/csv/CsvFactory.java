@@ -28,7 +28,7 @@ public class CsvFactory implements IDataAccessFactory {
         if ("header".equals(option)) {
             CsvParserSettings sts = new CsvParserSettings();
             sts.setLineSeparatorDetectionEnabled(true);
-            sts.getFormat().setDelimiter(this.delimiter);
+            //sts.getFormat().setDelimiter(this.delimiter);
             CsvParser q = new CsvParser(sts);
             q.beginParsing(new StringReader(value));
             this.header = q.parseNext();
