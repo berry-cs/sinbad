@@ -1,6 +1,8 @@
 package core.schema;
 
-public interface ISchema {
+import java.io.Serializable;
+
+public interface ISchema extends Serializable {
     /** 
      * The base path of a schema object represents a path (possibly null) in
      * the underlying data source that needs to be traversed in order to get

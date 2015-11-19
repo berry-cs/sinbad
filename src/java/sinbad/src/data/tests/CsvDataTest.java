@@ -52,15 +52,24 @@ public class CsvDataTest {
     @Test
     public void testSchema() {
         InputStream example = IOUtil.createInput("src/data/tests/example.csv");
-        CsvDataSource csv = new CsvFactory().setOption("streaming").newInstance(example);
-        PrimSchema ps = new PrimSchema();
+        CsvDataAccess csv = new CsvFactory().setOption("streaming").newInstance(example);
         
-        assertEquals(new ListSchema(new CompSchema(new CompField("Year", ps),
-                new CompField("Make", ps),
-                new CompField("Model", ps),
-                new CompField("Description", ps),
-                new CompField("Price", ps))),
-                csv.getSchema());
+        ISchema expected = new ListSchema(new CompSchema(
+                new CompField("Year", new PrimSchema("Year")),
+                new CompField("Make", new PrimSchema("Make")),
+                new CompField("Model", new PrimSchema("Model")),
+                new CompField("Description", new PrimSchema("Description")),
+                new CompField("Price", new PrimSchema("Price"))));
+        ISchema actual = csv.getSchema();
+        assertEquals(expected.toString(true), actual.toString(true));
+    }
+    
+    @Test
+    public void testInfer() {
+        CsvInfer ci1 = new CsvInfer();
+        CsvInfer ci2 = new CsvInfer("\t");
+        assertEquals(true, ci1.matchedBy("example.csv"));
+        assertEquals(false, ci2.matchedBy("example.csv"));
     }
 }
 

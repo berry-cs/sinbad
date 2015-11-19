@@ -21,7 +21,7 @@ import static core.log.Errors.*;
 /**
  * A delimiter-separated (usually comma-separated) data access object.
  */
-public class CsvDataSource extends FailAccess {
+public class CsvDataAccess extends FailAccess {
 
     private String[] header;
     private HashMap<String,Integer> headerIndex;
@@ -31,7 +31,7 @@ public class CsvDataSource extends FailAccess {
     private boolean streaming;   // load rows on demand for getAll()
     private ISchema schema;
        
-    public CsvDataSource(InputStream is, String[] header, char delimiter, boolean streaming) {
+    public CsvDataAccess(InputStream is, String[] header, char delimiter, boolean streaming) {
         this.header = header;
         this.delimiter = delimiter;
         this.allRows = new ArrayList<String[]>();
@@ -40,9 +40,11 @@ public class CsvDataSource extends FailAccess {
         CsvParserSettings sts = new CsvParserSettings();
         sts.setLineSeparatorDetectionEnabled(true);
         sts.getFormat().setDelimiter(this.delimiter);
+        
         p = new CsvParser(sts);
         //System.err.println(p.parseAll(new InputStreamReader(is)));
         p.beginParsing(new InputStreamReader(new BufferedInputStream(is)));
+        
         if (this.header == null) {
             this.header = p.parseNext();
         }
@@ -67,6 +69,13 @@ public class CsvDataSource extends FailAccess {
             this.schema = buildSchema();
         }
         return this.schema;
+    }
+    
+    /**
+     * Provide a predefined schema for this data set
+     */
+    public void setSchema(ISchema schema) {
+        this.schema = schema;
     }
     
     private ISchema buildSchema() {
@@ -237,7 +246,7 @@ public class CsvDataSource extends FailAccess {
     public static void main(String[] args) {
         //InputStream in = IOUtil.createInput("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
          InputStream in = IOUtil.createInput("/Users/nhamid/Downloads/routes.dat");
-         CsvDataSource csv = (CsvDataSource)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
+         CsvDataAccess csv = (CsvDataAccess)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
                  .newInstance(in);
          long millis = System.currentTimeMillis();
          Stream<IDataAccess> s = csv.getAll(null);

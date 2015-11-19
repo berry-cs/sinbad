@@ -1,6 +1,8 @@
 package core.schema;
 
 public class ListSchema extends AbsSchema {
+    private static final long serialVersionUID = 1L;
+
     private ISchema elementSchema;
 
     public ListSchema(ISchema elementSchema) {

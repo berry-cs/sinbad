@@ -1,7 +1,7 @@
 package core.schema;
 
 public abstract class AbsSchema implements ISchema {
-    //private static boolean verboseToString = false;
+    private static final long serialVersionUID = 1L;
     
     protected String path;          // can be null
     protected String description;   // can be null

@@ -81,13 +81,25 @@ public class IOUtil {
     public static InputStream createInput(String path) {
         InputStream input = createInputRaw(path);
         final String lower = path.toLowerCase();
-        if ((input != null) &&
-                (lower.endsWith(".gz") || lower.endsWith(".svgz"))) {
-            try {
-                return new GZIPInputStream(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+        if (input != null) {
+            if (lower.endsWith(".gz")) {
+                try {
+                    return new GZIPInputStream(input);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    return null;
+                }
+            } else if (lower.endsWith(".zip")) {
+                try {
+                    ZipInputStream zin = new ZipInputStream(input);
+                    ZipEntry ze = zin.getNextEntry();
+                    ze.getName();
+                    //System.err.println("Using " + ze.getName() + " from zip source");
+                    return zin; 
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    return null;
+                }
             }
         }
         return input;
@@ -110,10 +122,12 @@ public class IOUtil {
 
         // First check whether this looks like a URL. This will prevent online
         // access logs from being spammed with GET /sketchfolder/http://blahblah
-        if (filename.contains(":")) {  // at least smells like URL
+        if (filename.contains("://")) {  // at least smells like URL
             try {
                 URL url = new URL(filename);
+                
                 URLConnection conn = url.openConnection();
+                conn.addRequestProperty("User-Agent", "Mozilla/4.76"); 
                 if (conn instanceof HttpURLConnection) {
                     HttpURLConnection httpConn = (HttpURLConnection) conn;
                     // Will not handle a protocol change (see below)
@@ -129,7 +143,7 @@ public class IOUtil {
                 } else if (conn instanceof JarURLConnection) {
                     return url.openStream();
                 }
-            } catch (MalformedURLException mfue) {
+            } catch (MalformedURLException | UnknownHostException ue) {
                 // not a url, that's fine
 
             } catch (FileNotFoundException fnfe) {

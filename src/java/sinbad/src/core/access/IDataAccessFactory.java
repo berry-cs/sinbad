@@ -2,6 +2,8 @@ package core.access;
 
 import java.io.InputStream;
 
+import core.schema.ISchema;
+
 public interface IDataAccessFactory {
     /**
      * Set a parameter of this factory. The available
@@ -9,6 +11,11 @@ public interface IDataAccessFactory {
      * @return this factory
      */
     IDataAccessFactory setOption(String option, String value);
+    
+    /**
+     * Provide a predefined schema for the data source
+     */
+    IDataAccessFactory setSchema(ISchema schema);
     
     /**
      * Create a new instance of a data access object.

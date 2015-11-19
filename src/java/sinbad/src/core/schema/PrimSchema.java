@@ -5,7 +5,8 @@ package core.schema;
  * Represents a data element that contains unstructured, "raw" data
  */
 public class PrimSchema extends AbsSchema {
-    
+    private static final long serialVersionUID = 1L;
+
     /**
      * Construct a primitive schema with null base path and description
      */
