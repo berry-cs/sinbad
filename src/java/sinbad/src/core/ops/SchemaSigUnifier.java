@@ -48,7 +48,7 @@ public class SchemaSigUnifier {
 							@SuppressWarnings("unchecked") 
 							@Override
 							public IDataOp<T> visit(PrimSig s) {
-								System.out.println("Attempting to unify prim schema with primSig");
+								//System.out.println("Attempting to unify prim schema with primSig");
 								if(s == PrimSig.BOOLEAN_SIG)
 									return (IDataOp<T>) opf.makeParseBool();
 								else if(s == PrimSig.BYTE_SIG)
@@ -76,7 +76,7 @@ public class SchemaSigUnifier {
                             @Override
 							public IDataOp<T> visit(CompSig<?> sig) {
 
-								System.out.println("Attempting to unify prim schema with compSig");
+								//System.out.println("Attempting to unify prim schema with compSig");
 								if(sig.getFieldCount() != 1)
 									throw new RuntimeException("Cannot unify a Primitive with a compound of more than 1 field.");
 								else 
@@ -98,7 +98,7 @@ public class SchemaSigUnifier {
                             @Override
 							public IDataOp<T> visit(ListSig s) {
 								try{
-									System.out.println(schema.toString()+" "+ s.getElemType().toString());
+									//System.out.println(schema.toString()+" "+ s.getElemType().toString());
 									return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(schema,s.getElemType()),f.getPath()); 
 								}catch(RuntimeException e){
 									e.printStackTrace();
@@ -120,7 +120,7 @@ public class SchemaSigUnifier {
 
 							@Override
 							public IDataOp<T> visit(PrimSig s) {
-								System.out.println("Unifying Compound Schema with a prim sig");
+								//System.out.println("Unifying Compound Schema with a prim sig");
 
 								HashMap<String, ISchema> fieldMap = f.getFieldMap();
 								if(fieldMap.size() == 1)
@@ -150,7 +150,7 @@ public class SchemaSigUnifier {
                             @Override
 							@SuppressWarnings("unchecked")
 							public IDataOp<T> visit(CompSig<?> s) {
-								System.out.println("Attempting to unify comp schema with compSig");
+								//System.out.println("Attempting to unify comp schema with compSig");
 								return ruleCompComp(f, s);
 							}
 							
@@ -289,11 +289,11 @@ public class SchemaSigUnifier {
         // a new rule (COMP-FLATTEN) --- handle paths to nested structures
         else if ( fieldName.indexOf('/') >= 0) {
             String[] pieces = fieldName.split("/");
-            System.out.println("pieces: " + pieces.length);
+            //System.out.println("pieces: " + pieces.length);
             for (int i = 1; i < pieces.length; i++) {
                 String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
                 String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
-                System.out.println(prefix + "--" + rest);
+                //System.out.println(prefix + "--" + rest);
                 if (fieldMap.containsKey(prefix)) {
                     ISchema theFieldSchema = fieldMap.get(prefix);
                     IDataOp<T> theOp =
