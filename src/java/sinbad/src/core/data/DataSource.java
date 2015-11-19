@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+
 import core.access.*;
 import core.cache.DataCacher;
 import core.infer.IDataFormatInfer;
@@ -19,6 +20,8 @@ import core.schema.*;
 import core.sig.*;
 import core.util.*;
 import data.csv.*;
+import data.xml.XmlInfer;
+import data.xml.XmlFactory;
 
 public class DataSource implements IDataSource {
 
@@ -36,6 +39,9 @@ public class DataSource implements IDataSource {
         plugins.put("TSV", new IDataSourcePlugin() {
             public IDataFormatInfer getInfer() { return new CsvInfer("\t"); }
             public IDataAccessFactory getFactory() { return new CsvFactory(); } });
+        plugins.put("XML", new IDataSourcePlugin() {
+            public IDataFormatInfer getInfer() { return new XmlInfer(); }
+            public IDataAccessFactory getFactory() { return new XmlFactory(); } });
     }
     
     public static void initializeProcessing(Object papp) {
