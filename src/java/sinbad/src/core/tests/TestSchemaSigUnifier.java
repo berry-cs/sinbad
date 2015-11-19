@@ -17,7 +17,7 @@ import core.sig.*;
 import data.raw.*;
 
 public class TestSchemaSigUnifier {
-	SchemaSigUnifier unifier = new SchemaSigUnifier();
+	private SchemaSigUnifier unifier = new SchemaSigUnifier();
 	static final ISig BAR_SIG = 
 			new CompSig<Bar>(Bar.class, 
 					new ArgSpec("x", INT_SIG),
@@ -54,7 +54,7 @@ public class TestSchemaSigUnifier {
 	@Test
 	public void testCompPrim(){
 		/*=======  Test case : Compound || Prim */
-		CompSchema fld2 = new CompSchema("somePath","A description", new CompField("n", new PrimSchema()));
+		CompSchema fld2 = new CompSchema("somePath","A description", new CompField("n", new PrimSchema("somePath","")));
 		IDataOp<Integer> dop = unifier.unifyWith(fld2, INT_SIG); 
 		assertEquals((Integer) 123,dop.apply(new RawPrim("123")));
 	}
@@ -64,8 +64,8 @@ public class TestSchemaSigUnifier {
 	@Test
 	public void testComp_0Comp_0(){
 		/*=======  subcase 1 : Compound{f0} || Compound{f0} */
-		CompSchema cSch = new CompSchema(new CompField("n",new PrimSchema()));
-		IDataOp<Foo> dop = unifier.unifyWith(cSch, FOO_SIG);
+		CompSchema cSch = new CompSchema(new CompField("n",new PrimSchema("n")));
+		IDataOp<Foo> dop = unifier.unifyWith(cSch, FOO_SIG);		
 		assertEquals(new Foo(2),dop.apply(
 				new RawStruct(new RawStructField[]{new RawStructField("n",new RawPrim("2"))})));
 	}
@@ -159,11 +159,11 @@ public class TestSchemaSigUnifier {
 	@Test
 	public void testListPrimStrip(){
 		/*======= Test case : List || Prim (List STRIP)*/
-		PrimSchema listFldPrimTest = new PrimSchema("","");
-		ListSchema listfld1 = new ListSchema("list","n",listFldPrimTest);
+		PrimSchema listFldPrimTest = new PrimSchema("n");
+		ListSchema listfld1 = new ListSchema("list/","test",listFldPrimTest);
 		IDataOp<Integer> dop = unifier.unifyWith(listfld1, INT_SIG);
-		assertEquals((Integer) 1337,dop.apply(
-				new RawStruct(new RawStructField("list",new RawPrim("1337")))));
+		System.out.println(dop);
+		assertEquals((Integer) 1337,dop.apply(new RawList("list/",new RawStruct(new RawStructField("n",new RawPrim("1337"))))));
 	}
 
 	@Test
@@ -200,19 +200,20 @@ public class TestSchemaSigUnifier {
 	@Test
 	public void testList_CompList_Comp(){
 		/*======== Test Case : List[t] || List[t], && t = Comp{Prim's only} */
-		CompSchema foo = new CompSchema(new CompField("n",new PrimSchema()));
-		ListSchema list = new ListSchema("","",foo);
+		CompSchema foo = new CompSchema("foo","",new CompField("n",new PrimSchema("n")));
+		ListSchema list = new ListSchema(foo);
 		ListSig listSig2 = new ListSig(FOO_SIG);
 		IDataOp<Stream<Foo>> listOFoos = unifier.unifyWith(list, listSig2);
 		IRawAccess[] testData2 = new IRawAccess[10];
 		List<Foo> l = new ArrayList<Foo>();
 		for(int j = 0; j < testData2.length; j++){
 			l.add(new Foo(j));
-			testData2[j] = new RawStruct(
-					new RawStructField("",new RawStruct(				//TODO Extra wrap up?...
-							new RawStructField("n",new RawPrim(""+j)))));
+			testData2[j] = new RawStruct( //make the foo object with j as the data
+							new RawStructField("n",new RawPrim(""+j)));
 		}
-		assertEquals(l,listOFoos.apply(new RawList("",testData2)).collect(Collectors.toList()));
+		System.out.println(listOFoos);
+		System.out.println(new RawList("foo",testData2));
+		assertEquals(l,listOFoos.apply(new RawList("foo",testData2)).collect(Collectors.toList()));
 	}
 	
 	@Test

@@ -227,7 +227,7 @@ public class DataOpFactory {
 	<T> IDataOp<T> makeSelectOp(IDataOp<T> op, String path) {
 	    if (path == null || path.equals("")) {   // this is a no-op
 	        return op;
-	    }
+	    }else
 		return new IDataOp<T>() {
 			public T apply(IDataAccess d) {
 				return op.apply(d.get(path));
