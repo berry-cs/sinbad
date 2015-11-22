@@ -10,7 +10,7 @@ public class XmlSchemaBuilder {
 	public static ISchema inferSchema(XML xml) {
 		XML firstChild = firstNonemptyChild(xml);
 		if (firstChild != null) {
-			return inferComp(xml);
+			return inferComp(xml, false);
 		} else {
 			if (isEmptyXML(xml) || xml.getName().equals("#text")) {
 				System.err.println("No data in XML (" + xml.getName() + ")");
@@ -21,7 +21,7 @@ public class XmlSchemaBuilder {
 		}
 	}
 	
-	static CompSchema inferComp(XML xml) {
+	static CompSchema inferComp(XML xml, boolean addBasePath) {
 	    HashMap<String, ISchema> hm = new HashMap<String, ISchema>();
 	    
 		//System.out.println("inferCompField:\n" + xml);
@@ -29,14 +29,14 @@ public class XmlSchemaBuilder {
 			if (!isEmptyXML(t) && !t.getName().equals("#text") 
 					&& !hm.containsKey(t.getName())) {
 				ISchema sf;  // inferred schema for t
-				boolean isPrim = t.getChildCount() <= 1;
-				   // looks like t subnode has no nested nodes
+				boolean isPrim = t.getChildCount() <= 1;   // looks like t subnode has no nested nodes
+				boolean areMultiple = xml.getChildren(t.getName()).length > 1;  // there are several children like <t>...</t>
 				
 				if (isPrim) sf = new PrimSchema(t.getName());
-				else sf = inferComp(t);
+				else sf = inferComp(t, !areMultiple);
 
-				if (xml.getChildren(t.getName()).length > 1) {  // there are several children like <t>...</t>
-					hm.put(t.getName(), new ListSchema(xml.getName(), t.getName(), sf)); // TODO: should basepath be xml.getName() or t.getName() ?
+				if (areMultiple) {  
+					hm.put(t.getName(), new ListSchema(t.getName(), sf)); 
 				} else {
 					hm.put(t.getName(), sf);
 				}
@@ -47,7 +47,7 @@ public class XmlSchemaBuilder {
 		for (Entry<String,ISchema> e : hm.entrySet()) {
 		    flds[i++] = new CompField(e.getKey(), e.getValue());
 		}
-        CompSchema cs = new CompSchema(xml.getName(), flds);
+        CompSchema cs = new CompSchema(addBasePath ? xml.getName() : null, flds);
 		return cs;
 	}
 

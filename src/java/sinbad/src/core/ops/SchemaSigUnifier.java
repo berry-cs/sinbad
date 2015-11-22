@@ -67,8 +67,7 @@ public class SchemaSigUnifier {
 							public IDataOp<T> visit(CompSig<?> s) {return ruleCompComp(f,s);}
 
 							@Override
-							public IDataOp<T> visit(ListSig ls) {return ruleCompList(f,ls);}
-						});
+							public IDataOp<T> visit(ListSig ls) {return ruleCompList(f,ls);}});
 					}
 
 					@Override
@@ -186,38 +185,203 @@ public class SchemaSigUnifier {
 	/**
 	 * Implementation of the COMP-COMP rule
 	 */
-	protected static <T> IDataOp<T> ruleCompComp(CompSchema f, CompSig<?> s) {
-		IDataOp<T>[] listOps = new IDataOp[s.getFieldCount()];
-		HashMap<String, ISchema> fieldMap = f.getFieldMap(); 
+    protected static <T> IDataOp<T> ruleCompComp(CompSchema f, CompSig<?> s) {
+	    System.err.println(f.toString(true) + "\n" + s);
+	    
+	    IDataOp<T>[] listOps = new IDataOp[s.getFieldCount()];
+        HashMap<String, ISchema> fieldMap = f.getFieldMap(); 
 
-		for(int i = 0; i < s.getFieldCount(); i++){
-			try {
-				listOps[i] = unwrapAndUnify(fieldMap, s.getFieldName(i), s.getFieldSig(i));
-			} catch(RuntimeException e){
-				e.printStackTrace();
-				throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",s.getFieldName(i)));
-			}
+        for(int i = 0; i < s.getFieldCount(); i++){
+            try {
+                listOps[i] = f.apply(new FieldSelectUnifier<T>(s.getFieldName(i), s.getFieldSig(i)));
+                //listOps[i] = unwrapAndUnify(fieldMap, s.getFieldName(i), s.getFieldSig(i));
+            } catch(RuntimeException e){
+                e.printStackTrace();
+                throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",s.getFieldName(i)));
+            }
+                
+            if (listOps[i] == null) {
+                throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",s.getFieldName(i)));
+            }
+        }
 
-			if (listOps[i] == null) {
-				throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",s.getFieldName(i)));
-			}
-		}
-
-		/* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
-		ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
-		return opf.makeConstructor(csp.constructor, listOps);
+        /* At this point we should have a list of IDataOp's to apply and build up the compound data with. */
+        ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
+        return opf.makeConstructor(csp.constructor, listOps);
 	}
+	
+	
 
-	/**
-	 * Handle the implementation of Comp || List rule
-	 */
-	@SuppressWarnings("unchecked")
+    /**
+     * Handle the implementation of Comp || List rule
+     */
+    @SuppressWarnings("unchecked")
 	protected static <T> IDataOp<T> ruleCompList(CompSchema schema,ListSig ls) {
-		return (IDataOp<T>) opf.makeIndexAllOp(opf.makeSelectOp(unifyWith(schema,ls.getElemType()),""),schema.getPath());
+        System.err.println("running ruleCompList");
+        
+        ISig eltSig = ls.getElemType();
+        
+        IDataOp<T> dop
+        = eltSig.apply(new ISigVisitor<IDataOp<T>>() {
+            public IDataOp<T> visit(PrimSig s) { return defaultVisit(s); }
+            public IDataOp<T> visit(ListSig s) { return defaultVisit(s); }
+            
+            public IDataOp<T> defaultVisit(ISig s) {
+                IDataOp<T> dop
+                    = (IDataOp<T>) opf.makeIndexAllOp(
+                            opf.makeSelectOp(unifyWith(schema,ls.getElemType()),""),
+                            schema.getPath());
+                return dop;
+            }
+
+            public IDataOp<T> visit(CompSig<?> cs) { // here the eltSig is this 'cs'
+                // TODO: maybe need to handle single-field case specially? see XMLInstantiator in old version...
+                String[] csFlds = new String[cs.getFieldCount()];
+                for (int i = 0; i < csFlds.length; i++) csFlds[i] = cs.getFieldName(i);
+                
+                String commonPrefix = longestCommonPrefix(csFlds);
+                if (commonPrefix == null || (csFlds.length > 1 && !commonPrefix.endsWith("/")))
+                    return defaultVisit(cs);
+                
+                String[] pieces = commonPrefix.split("/");
+                for (int i = 1; i < pieces.length; i++) {
+                    // try longer and longer pieces of the prefix...
+                    String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
+
+                    if (schema.getFieldMap().containsKey(prefix)) {
+                        ISchema fldSchema = schema.getFieldMap().get(prefix);
+                        CompSig<?> newSig = cs.trimPrefix(prefix + "/");
+                        IDataOp<T> fld_dop = unifyWith(fldSchema, new ListSig(newSig));
+                        System.err.printf("fld_dop: %s (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
+                        if (fld_dop != null) {
+                            IDataOp<T> dop = null;
+                            if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
+                                dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
+                            } else {
+                                dop = opf.makeSelectOp(fld_dop, fldSchema.getPath());
+                            }
+                             return dop;
+                        }
+                    }
+                }
+                
+                return defaultVisit(cs);
+            }
+          });
+        
+        System.err.println("Got dop: " + dop);
+	    return dop;
 	}
+    
+    protected static String longestCommonPrefix(String[] strings) {
+        if (strings.length <= 0) {
+            return null;
+        }
+        
+        for (int prefixLen = 0; prefixLen < strings[0].length(); prefixLen++) {
+            char c = strings[0].charAt(prefixLen);
+            for (int i = 1; i < strings.length; i++) {
+                if ( prefixLen >= strings[i].length() ||
+                     strings[i].charAt(prefixLen) != c ) {
+                    // Mismatch found
+                    return strings[i].substring(0, prefixLen);
+                }
+            }
+        }
+        return strings[0];
+    }    
+	
 	/**
 	 * Handle the unification of fields for the COMP-COMP rule
 	 */
+	protected static class FieldSelectUnifier<T> implements ISchemaVisitor<IDataOp<T>> {
+	    String fieldName;  // corresponding to the signature
+	    ISig fieldSig;
+
+        FieldSelectUnifier(String fieldName, ISig fieldSig) {
+            this.fieldName = fieldName;
+            this.fieldSig = fieldSig;
+        }
+
+        public IDataOp<T> defaultVisit(ISchema s) { return null; }
+        public IDataOp<T> visit(PrimSchema s) { return defaultVisit(s); }
+
+        public IDataOp<T> visit(CompSchema s) {
+            HashMap<String, ISchema> fieldMap = s.getFieldMap();
+            
+            // (BASE) rule
+            if (fieldMap.containsKey(fieldName)) {
+                ISchema theFieldSchema = fieldMap.get(fieldName);
+                IDataOp<T> fieldOp = unifyWith(theFieldSchema, fieldSig);
+                return opf.makeSelectOp(fieldOp, theFieldSchema.getPath());
+            } else  // (PREFIX) rule
+                if ( fieldName.indexOf('/') >= 0) {
+                String[] pieces = fieldName.split("/");
+                //System.out.println("pieces: " + pieces.length);
+                for (int i = 1; i < pieces.length; i++) {
+                    String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
+                    String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
+                    //System.out.println(prefix + "--" + rest);
+                    if (fieldMap.containsKey(prefix)) {
+                        ISchema theFieldSchema = fieldMap.get(prefix);
+                        IDataOp<T> theOp = theFieldSchema.apply(new FieldSelectUnifier<T>(rest, fieldSig));
+                        if (theOp != null) {
+                            return theFieldSchema.apply(new ISchemaVisitor<IDataOp<T>>() {
+                                public IDataOp<T> visit(PrimSchema s) { return defaultVisit(s); }
+                                public IDataOp<T> visit(CompSchema s) { return defaultVisit(s); }
+                                public IDataOp<T> defaultVisit(ISchema s) { 
+                                    return opf.makeSelectOp(theOp, theFieldSchema.getPath());
+                                }
+                                public IDataOp<T> visit(ListSchema s) {
+                                    return theOp;
+                                }
+                            });
+                        }
+                        else {
+                            return null;
+                        }
+                    }                                       
+                }
+                return null;
+                }
+
+            return null;
+        }
+
+        public IDataOp<T> visit(ListSchema sch) {
+            return fieldSig.apply(new ISigVisitor<IDataOp<T>>() {
+                public IDataOp<T> visit(PrimSig s) { return defaultVisit(s); }
+                public IDataOp<T> visit(CompSig<?> s) { return defaultVisit(s); }
+
+                // (LIST_UNWRAP) rule
+                public IDataOp<T> defaultVisit(ISig s) { 
+                    ISchema eltSchema = sch.getElementSchema();
+                    IDataOp<T> theOp = eltSchema.apply(FieldSelectUnifier.this);
+                    if (theOp != null) {
+                        return opf.makeIndexOp(theOp, sch.getPath(), 0);
+                    } else {
+                        return null;
+                    }
+                }
+
+                // (LIST) rule
+                @SuppressWarnings("unchecked")
+                public IDataOp<T> visit(ListSig s) {
+                    ISchema eltSchema = sch.getElementSchema();
+                    ISig eltSig = s.getElemType();
+                    IDataOp<T> theOp = eltSchema.apply(new FieldSelectUnifier<T>(fieldName, eltSig));
+                    if (theOp != null) {
+                        return (IDataOp<T>) opf.makeIndexAllOp(theOp, sch.getPath());
+                    } else {
+                        return null;
+                    }
+                }
+                
+            });
+        }
+	}
+	
+	
 	protected static <T> IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
 		// normal (COMP-COMP) rule behavior
 		if (fieldMap.containsKey(fieldName)) {
@@ -294,8 +458,12 @@ public class SchemaSigUnifier {
 					// (LIST-LIST) rule -> this is for a list of things that are all the same object
 					@SuppressWarnings("unchecked")
 					public IDataOp<T> defaultVisit(ISig ss) {
-						return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
-								f.getElementSchema().getPath());
+					    if (f.getElementSchema().getPath() == null) {
+					        return unifyWith(f.getElementSchema(), ss);  // TODO: examine this; is this assuming the list index all happens somewhere earlier?
+					    } else {
+					        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
+					                f.getElementSchema().getPath());
+					    }
 					}
 					public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }
 					public IDataOp<T> visit(ListSig ss) { return defaultVisit(ss); }
@@ -325,7 +493,7 @@ public class SchemaSigUnifier {
 								CompSig<?> newSig = new CompSig(ss.getAssociatedClass(), newArgs);
 								return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), newSig), pathPrefix);
 							} else {
-								throw new RuntimeException("What happened here?");
+							    return defaultVisit(ss);
 								// TODO: fix ^^^^
 							}
 						}

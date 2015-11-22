@@ -74,6 +74,19 @@ public class CompSig<C> implements ISig {
     public int getFieldCount() {
         return args.length;
     }
+    
+    /**
+     * Produces a new signature resulting from removing
+     * a given prefix from every field's name of this signature
+     */
+    public CompSig<C> trimPrefix(String prefix) {
+        ArgSpec[] argsCopy = new ArgSpec[args.length];
+        for (int i = 0; i < args.length; i++) {
+            argsCopy[i] = new ArgSpec(args[i].name.substring(prefix.length()), 
+                                      args[i].type);
+        }
+        return new CompSig<C>(cls, argsCopy);        
+    }
 	
     /**
      * Produces a string representation of this compound signature
