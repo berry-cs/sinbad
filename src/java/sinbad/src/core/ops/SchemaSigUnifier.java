@@ -255,6 +255,7 @@ public class SchemaSigUnifier {
                         System.err.printf("fld_dop: %s (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
                         if (fld_dop != null) {
                             IDataOp<T> dop = null;
+// TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
                             if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
                                 dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
                             } else {

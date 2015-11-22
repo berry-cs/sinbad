@@ -65,12 +65,12 @@ public class XmlDataTest {
         System.out.println(" op: " + SchemaSigUnifier.unifyWith(ds.getDataAccess().getSchema(), sig));
 
         System.out.println(ds.fetchString("range/item/text"));
-        System.out.println(ds.fetchString("cache"));
+        System.out.println(ds.fetchString("title"));
         
         String[] verses = ds.fetchStringArray("range/item/text");
         
         System.out.println(verses.length);
-        System.out.println(verses[0]);
+        System.out.println(String.join("\n  ", verses));
     }
     
     
