@@ -386,7 +386,7 @@ public class DataSource implements IDataSource {
         return this;
     }
     
-    protected String getFullPathURL() {
+    public String getFullPathURL() {
         if (!readyToLoad()) 
             throw new RuntimeException("Cannot finalize path: not ready to load");
 
