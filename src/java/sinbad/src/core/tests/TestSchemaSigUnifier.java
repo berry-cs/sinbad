@@ -75,9 +75,9 @@ public class TestSchemaSigUnifier {
 		/*======= subcase 2 : Compound{f0,...,fn} || Compound{f0...fm} n = m*/
 		CompSchema barField = 
 				new CompSchema(
-						new CompField("x", new PrimSchema()),
-						new CompField("y", new PrimSchema()),
-						new CompField("s", new PrimSchema()));
+						new CompField("x", new PrimSchema("x")),
+						new CompField("y", new PrimSchema("y")),
+						new CompField("s", new PrimSchema("s")));
 		IDataOp<Bar> dop = unifier.unifyWith(barField, BAR_SIG);
 
 		assertEquals(new Bar(10,11,"BarString"),
@@ -94,9 +94,9 @@ public class TestSchemaSigUnifier {
 		/*======= subcase 3 : Compound{f0,...,fm} || Compound{f0...fn} n < m */
 		CompSchema fooBarSchema = 
 				new CompSchema(new CompField("n",new PrimSchema()),
-						new CompField("x",new PrimSchema()),
-						new CompField("y",new PrimSchema()),
-						new CompField("s",new PrimSchema()));
+						new CompField("x",new PrimSchema("x")),
+						new CompField("y",new PrimSchema("y")),
+						new CompField("s",new PrimSchema("s")));
 		IDataOp<Bar> dop = unifier.unifyWith(fooBarSchema,BAR_SIG);
 		assertEquals(new Bar(10,11,"AnotherString"),
 				dop.apply(new RawStruct(
@@ -130,14 +130,13 @@ public class TestSchemaSigUnifier {
 		CompSig<FooToo> fooTooSig = new CompSig<FooToo>(FooToo.class,
 				new ArgSpec("foo",FOO_SIG),
 				new ArgSpec("too",INT_SIG));
-		CompSchema fooTooField = new CompSchema(new CompField("too",new PrimSchema("n","")),
-				new CompField("foo",new CompSchema("foo","",new CompField("n", new PrimSchema("n",null)))));
+		CompSchema fooTooField = new CompSchema(new CompField("too",new PrimSchema("too")),
+				new CompField("foo",new CompSchema("foo","",new CompField("n", new PrimSchema("n")))));
 
 		IDataOp<FooToo> dop = unifier.unifyWith(fooTooField, fooTooSig);
 		assertEquals(new FooToo(new Foo(1),17),dop.apply(
 				new RawStruct(new RawStructField[]{
-						new RawStructField("foo",
-								new RawStruct(new RawStructField("n",new RawPrim("1")))),
+						new RawStructField("foo",new RawStruct(new RawStructField("n",new RawPrim("1")))),
 						new RawStructField("too",new RawPrim("17"))})));
 
 
@@ -145,63 +144,66 @@ public class TestSchemaSigUnifier {
 
 	@Test
 	public void testCompList_Comp(){
-		/*======= Test case : Comp || List(List WRAP Comp)*/
-		CompSchema wrapField = new CompSchema("foo","Dec",new CompField("n",new PrimSchema()));
+		/*======= Test case : Comp || List => (List WRAP Comp)*/
+		CompSchema wrapField = new CompSchema("foo","Dec",new CompField("n",new PrimSchema("n")));
 		ListSig listWrapComp = new ListSig(FOO_SIG);
 		IDataOp<Stream<Foo>> dop = unifier.unifyWith(wrapField, listWrapComp);
 		List<Foo> l = new ArrayList<Foo>();
 		l.add(new Foo(521));
-		assertEquals(l,dop.apply(
-				new RawList("foo",new RawStruct(new RawStructField("",
-						new RawStruct(new RawStructField("n",new RawPrim("521"))))))).collect(Collectors.toList()));
+		System.out.println(dop);
+		assertEquals(l,dop.apply(new RawStruct(new RawStructField("n",new RawPrim("521")))).collect(Collectors.toList()));
 	}
 
 	@Test
 	public void testListPrimStrip(){
 		/*======= Test case : List || Prim (List STRIP)*/
-		PrimSchema listFldPrimTest = new PrimSchema("n");
+		PrimSchema listFldPrimTest = new PrimSchema();
 		ListSchema listfld1 = new ListSchema("list/","test",listFldPrimTest);
 		IDataOp<Integer> dop = unifier.unifyWith(listfld1, INT_SIG);
 		System.out.println(dop);
-		assertEquals((Integer) 1337,dop.apply(new RawList("list/",new RawStruct(new RawStructField("n",new RawPrim("1337"))))));
+		assertEquals((Integer) 1337,dop.apply(new RawList("list/",new RawPrim("1337"))));
 	}
 
 	@Test
 	public void testListCompStrip(){
 		/*======= Test case : List || Comp (List STRIP)*/
 		CompSchema listCompSchema = 
-				new CompSchema("","",new CompField("x",new PrimSchema()),
-						new CompField("y",new PrimSchema()),new CompField("s",new PrimSchema()));
-		ListSchema listfld2 = new ListSchema("","",listCompSchema);
+				new CompSchema(
+						new CompField("x",new PrimSchema("x")),
+						new CompField("y",new PrimSchema("y")),
+						new CompField("s",new PrimSchema("s")));
+		ListSchema listfld2 = new ListSchema("list","",listCompSchema);
 		IDataOp<Bar> dop = unifier.unifyWith(listfld2, BAR_SIG);
-		assertEquals(new Bar(156,4657,"AStringforS"),dop.apply(new RawStruct(
-				new RawStructField("",new RawStruct(new RawStructField[]
+		System.out.println(dop);
+		assertEquals(new Bar(156,4657,"AStringforS"),dop.apply(new RawList("list",
+				new RawStruct(new RawStructField[]
 						{new RawStructField("x",new RawPrim("156")),
-								new RawStructField("y",new RawPrim("4657")),
-								new RawStructField("s",new RawPrim("AStringforS"))})))));		
+						 new RawStructField("y",new RawPrim("4657")),
+						 new RawStructField("s",new RawPrim("AStringforS"))}))));		
 	}
 	
 	@Test
 	public void testList_PrimList_Prim(){
 	/*======= Test Case : List[t] || List[t], && t = Prim */
 	//Asking for a list of ints have a list of ints
-	ListSchema listfld3 = new ListSchema("","",new PrimSchema());
+	ListSchema listfld3 = new ListSchema("list","",new PrimSchema(null,null));
 	ListSig listSig = new ListSig(INT_SIG);
 	IDataOp<Stream<Integer>> listOints = unifier.unifyWith(listfld3, listSig);
 	IRawAccess[] testData = new IRawAccess[10];
 	List<Integer> l = new ArrayList<Integer>();
 	for(int j = 0; j < testData.length; j++){
-		testData[j] = new RawStruct(new RawStructField("",new RawPrim(""+j)));
+		testData[j] = new RawPrim(""+j);
 		l.add(j);
 	}
-	assertEquals(l,listOints.apply(new RawList("",testData)).collect(Collectors.toList()));
+	System.out.println(listOints);
+	assertEquals(l,listOints.apply(new RawList("list",testData)).collect(Collectors.toList()));
 	}
 	
 	@Test
 	public void testList_CompList_Comp(){
 		/*======== Test Case : List[t] || List[t], && t = Comp{Prim's only} */
 		CompSchema foo = new CompSchema("foo","",new CompField("n",new PrimSchema("n")));
-		ListSchema list = new ListSchema(foo);
+		ListSchema list = new ListSchema("list",foo);
 		ListSig listSig2 = new ListSig(FOO_SIG);
 		IDataOp<Stream<Foo>> listOFoos = unifier.unifyWith(list, listSig2);
 		IRawAccess[] testData2 = new IRawAccess[10];
@@ -213,13 +215,13 @@ public class TestSchemaSigUnifier {
 		}
 		System.out.println(listOFoos);
 		System.out.println(new RawList("foo",testData2));
-		assertEquals(l,listOFoos.apply(new RawList("foo",testData2)).collect(Collectors.toList()));
+		assertEquals(l,listOFoos.apply(new RawList("list",testData2)).collect(Collectors.toList()));
 	}
 	
 	@Test
 	public void testList_ListList_List(){
 		/*======= Test Case : List[t] || List[t], && t = ListSig (Recursive call list) */
-		PrimSchema listFldPrimTest = new PrimSchema("ctest","");
+		PrimSchema listFldPrimTest = new PrimSchema();
 		ListSchema listfld3 = new ListSchema("baseB","btest",listFldPrimTest);
 		ListSchema listoListFld = new ListSchema("baseA","Atest",listfld3);
 		ListSig listoListSig = new ListSig(new ListSig(PrimSig.INT_SIG));
@@ -229,13 +231,13 @@ public class TestSchemaSigUnifier {
 		for(int j = 0; j < testDataLol.length; j++){
 			IRawAccess[] testData3 = new IRawAccess[10];
 			for(int k = 0; k < testData3.length; k++){
-				testData3[k] = new RawStruct(
-						new RawStructField("ctest",new RawPrim(""+(j+k))));
-			}
-			testDataLol[j] = new RawStruct(new RawStructField("Atest",new RawList("baseA",testData3)));
+				testData3[k] = new RawPrim(""+(j+k));
+			}	
+			testDataLol[j] = new RawList("baseB",testData3);
 		}
+		System.out.println(dop);
 		List<List<Integer>> lol = 
-				dop.apply(new RawList("baseB",testDataLol)).map(item -> 
+				dop.apply(new RawList("baseA",testDataLol)).map(item -> 
 												item.collect(Collectors.toList())).collect(Collectors.toList());
 		List<List<Integer>> l = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 10; i++){

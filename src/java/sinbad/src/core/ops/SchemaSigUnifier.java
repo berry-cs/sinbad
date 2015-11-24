@@ -216,8 +216,8 @@ public class SchemaSigUnifier {
      * Handle the implementation of Comp || List rule
      */
     @SuppressWarnings("unchecked")
-	protected static <T> IDataOp<T> ruleCompList(CompSchema schema,ListSig ls) {
-        System.err.println("running ruleCompList");
+	protected static <T> IDataOp<T> ruleCompList(CompSchema schema,ListSig ls) { // TODO : shouldn't this be list-wrap rule?
+        System.err.println("running ruleCompList"); 
         
         ISig eltSig = ls.getElemType();
         
@@ -424,7 +424,7 @@ public class SchemaSigUnifier {
 	 * @return
 	 */
 	protected static <T> IDataOp<T> ruleListStrip(ListSchema f, PrimSig s) {
-		return opf.makeSelectOp(opf.makeSelectOp(unifyWith(f.getElementSchema(),s),f.getElementSchema().getPath()), f.getPath());
+		return opf.makeIndexOp(unifyWith(f.getElementSchema(),s), f.getPath(),0); //get the item at index 0 in the list
 	}
 
 	/**
@@ -460,10 +460,10 @@ public class SchemaSigUnifier {
 					@SuppressWarnings("unchecked")
 					public IDataOp<T> defaultVisit(ISig ss) {
 					    if (f.getElementSchema().getPath() == null) {
-					        return unifyWith(f.getElementSchema(), ss);  // TODO: examine this; is this assuming the list index all happens somewhere earlier?
+					        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),f.getPath());  
 					    } else {
 					        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
-					                f.getElementSchema().getPath());
+					                f.getPath());
 					    }
 					}
 					public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }
@@ -474,7 +474,7 @@ public class SchemaSigUnifier {
 						// see if all fields in the comp sig start with a common path prefix that matches
 						// f.getElementSchema().getPath
 
-						String pathPrefix = f.getPath(); //the path to the list base??
+						String pathPrefix = f.getPath(); //the path to the list base
 						if (pathPrefix == null) {
 							return defaultVisit(ss);
 						} else {

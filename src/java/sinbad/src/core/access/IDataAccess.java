@@ -45,7 +45,7 @@ public interface IDataAccess extends ISchemaProducer {
     IDataAccess get(String path);
     
     /**
-     * Access a stream of data elementsthat match path
+     * Access a stream of data elements that match path
      * 
      * @param path the path to a collection of data elements 
      * @return a stream of data access objects for the specified elements
