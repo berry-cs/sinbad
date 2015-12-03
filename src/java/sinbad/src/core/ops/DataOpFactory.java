@@ -215,6 +215,14 @@ public class DataOpFactory {
 		};
 	}
 	
+	<T> IDataOp<Stream<T>> makeWrapOp(IDataOp<T> op, String path){
+		return new IDataOp<Stream<T>>(){
+			public Stream<T> apply(IDataAccess d){
+				return Stream.of(op.apply(d));
+			}
+		};
+	}
+	
 	/**
 	 * Produces an operation that when applied to data will attempt to select a piece of data at the given path,
 	 *  and parse it using the provided operation

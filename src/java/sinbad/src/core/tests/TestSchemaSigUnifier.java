@@ -45,9 +45,9 @@ public class TestSchemaSigUnifier {
 		ISchema pSch = new PrimSchema("n");
 		IDataOp<Stream<Integer>> dop = unifier.unifyWith(pSch, lSig);
 		List<Integer> l = new ArrayList<Integer>();
+		System.out.println(dop);
 		l.add(0);
-		assertEquals(l,dop.apply(
-				new RawList("n",new IRawAccess[]{new RawPrim("0")})).collect(Collectors.toList()));
+		assertEquals(l,dop.apply(new RawPrim("0")).collect(Collectors.toList()));
 	}
 
 

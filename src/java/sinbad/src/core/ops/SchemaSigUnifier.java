@@ -59,7 +59,7 @@ public class SchemaSigUnifier {
     public static <T> IDataOp<T> unifyWith(PrimSchema sch, ListSig sig) {
         try{
             //System.out.println(sch.toString()+" "+ sig.getElemType().toString());
-            return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
+            return (IDataOp<T>) opf.makeWrapOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
         }catch(RuntimeException e){
             e.printStackTrace();
         }
@@ -107,7 +107,10 @@ public class SchemaSigUnifier {
         System.err.println("running ruleCompList");
         
         ISig eltSig = sig.getElemType();
+        return (IDataOp<T>) opf.makeWrapOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
         
+        
+        /*
         IDataOp<T> dop
         = eltSig.apply(new ISigVisitor<IDataOp<T>>() {
             public IDataOp<T> visit(PrimSig s) { return defaultVisit(s); }
@@ -142,7 +145,7 @@ public class SchemaSigUnifier {
                         System.err.printf("fld_dop: %s (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
                         if (fld_dop != null) {
                             IDataOp<T> dop = null;
-// TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
+                            // TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
                             if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
                                 dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
                             } else {
@@ -159,6 +162,7 @@ public class SchemaSigUnifier {
         
         System.err.println("Got dop: " + dop);
         return dop;
+        */
     }
     
     
