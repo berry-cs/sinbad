@@ -64,8 +64,8 @@ public class XmlDataTest {
         System.out.println("sig: " + sig);
         System.out.println(" op: " + SchemaSigUnifier.unifyWith(ds.getDataAccess().getSchema(), sig));
 
-        System.out.println(ds.fetchString("range/item/text"));
-        System.out.println(ds.fetchString("title"));
+        System.out.println("range/item/text: " + ds.fetchString("range/item/text"));
+        System.out.println("title: " + ds.fetchString("title"));
         
         String[] verses = ds.fetchStringArray("range/item/text");
         
