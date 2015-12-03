@@ -102,18 +102,9 @@ public class SchemaSigUnifier {
         return opf.makeConstructor(csp.constructor, listOps);
     }
 
-<<<<<<< HEAD
-    /**
-     * Handle the implementation of Comp || List rule
-     */
-    @SuppressWarnings("unchecked")
-	protected static <T> IDataOp<T> ruleCompList(CompSchema schema,ListSig ls) { // TODO : shouldn't this be list-wrap rule?
-        System.err.println("running ruleCompList"); 
-=======
     
     public static <T> IDataOp<T> unifyWith(CompSchema sch, ListSig sig) {
         System.err.println("running ruleCompList");
->>>>>>> origin/master
         
         ISig eltSig = sig.getElemType();
         
@@ -172,11 +163,7 @@ public class SchemaSigUnifier {
     
     
     public static <T> IDataOp<T> unifyWith(ListSchema sch, PrimSig sig) {
-        return opf.makeSelectOp(
-                opf.makeSelectOp(
-                        unifyWith(sch.getElementSchema(),sig),
-                        sch.getElementSchema().getPath()),
-                sch.getPath());
+        return opf.makeIndexOp(unifyWith(sch.getElementSchema(),sig), sch.getPath(), 0);
     }
     
     
@@ -207,10 +194,10 @@ public class SchemaSigUnifier {
                         if (sch.getElementSchema().getPath() == null) {
                             //return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
                             //       f.getElementSchema().getPath());
-                            return unifyWith(sch.getElementSchema(), ss);  // TODO: examine this; is this assuming the list index all happens somewhere earlier?
+                            return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(sch.getElementSchema(), ss),sch.getPath()); 
                         } else {
                             return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(sch.getElementSchema(), ss),
-                                    sch.getElementSchema().getPath());
+                                    sch.getPath());
                         }
                     }
                     public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }
@@ -407,129 +394,4 @@ public class SchemaSigUnifier {
         }
 	}
 	
-<<<<<<< HEAD
-	
-	protected static <T> IDataOp<T> unwrapAndUnify(HashMap<String, ISchema> fieldMap, String fieldName, ISig fieldSig) {
-		// normal (COMP-COMP) rule behavior
-		if (fieldMap.containsKey(fieldName)) {
-			ISchema theFieldSchema = fieldMap.get(fieldName);
-			IDataOp<T> fieldOp = unifyWith(theFieldSchema, fieldSig);
-			return opf.makeSelectOp(fieldOp, theFieldSchema.getPath());
-		} 
-		// a new rule (COMP-FLATTEN) --- handle paths to nested structures
-		else if ( fieldName.indexOf('/') >= 0) {
-			String[] pieces = fieldName.split("/");
-			System.out.println("pieces: " + pieces.length);
-			for (int i = 1; i < pieces.length; i++) {
-				String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
-				String rest = StringUtils.join(ArrayUtils.subarray(pieces, i, pieces.length), "/");
-				System.out.println(prefix + "--" + rest);
-				if (fieldMap.containsKey(prefix)) {
-					ISchema theFieldSchema = fieldMap.get(prefix);
-					IDataOp<T> theOp =
-							theFieldSchema.apply(new ISchemaVisitor<IDataOp<T>>() {
-								public IDataOp<T> defaultVisit(ISchema s) { return null; }
-								public IDataOp<T> visit(PrimSchema s) { return null; }
-								public IDataOp<T> visit(ListSchema s) { return null; }
-								public IDataOp<T> visit(CompSchema s) {
-									return unwrapAndUnify(s.getFieldMap(), rest, fieldSig);
-								}
-							});
-					if (theOp != null) return opf.makeSelectOp(theOp, theFieldSchema.getPath());
-				}                                       
-			}
-		}
-
-		return null;    // means COMP-COMP failed
-	}
-
-	/**
-	 * Implementation of the ListStrip rule for Primitives
-	 * @param f
-	 * @param s
-	 * @return
-	 */
-	protected static <T> IDataOp<T> ruleListStrip(ListSchema f, PrimSig s) {
-		return opf.makeIndexOp(unifyWith(f.getElementSchema(),s), f.getPath(),0); //get the item at index 0 in the list
-	}
-
-	/**
-	 * Implementation of the ListStrip rule for Primitives
-	 * @param f
-	 * @param s
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	protected static <T> IDataOp<T> ruleListStrip(ListSchema f, CompSig<?> s) {
-		try{
-			// (LIST-STRIP) rule
-			return opf.makeIndexOp(unifyWith(f.getElementSchema(),s), f.getPath(), 0);  
-		}catch(RuntimeException e){
-			e.printStackTrace();
-			IDataOp<T>[] ops = new IDataOp[s.getFieldCount()];
-			for(int i = 0; i < ops.length; i++){
-				ops[i] = opf.makeIndexOp(unifyWith(f.getElementSchema(),s.getFieldSig(i)),f.getPath(),i);
-			}
-			ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(s);
-			return opf.makeConstructor(csp.constructor, ops);
-		}
-	}
-	/**
-	 * Implementation of the List || List Rule
-	 */
-	protected static <T> IDataOp<T> ruleListList(ListSchema f, ListSig s) {
-		return 
-				s.getElemType().apply(new ISigVisitor<IDataOp<T>>() {
-					// in all of these, 'ss' == s.getElemType()
-
-					// (LIST-LIST) rule -> this is for a list of things that are all the same object
-					@SuppressWarnings("unchecked")
-					public IDataOp<T> defaultVisit(ISig ss) {
-					    if (f.getElementSchema().getPath() == null) {
-					        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),f.getPath());  
-					    } else {
-					        return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
-					                f.getPath());
-					    }
-					}
-					public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }
-					public IDataOp<T> visit(ListSig ss) { return defaultVisit(ss); }
-
-					@SuppressWarnings({ "unchecked", "rawtypes" })
-					public IDataOp<T> visit(CompSig<?> ss) {
-						// see if all fields in the comp sig start with a common path prefix that matches
-						// f.getElementSchema().getPath
-
-						String pathPrefix = f.getPath(); //the path to the list base
-						if (pathPrefix == null) {
-							return defaultVisit(ss);
-						} else {
-							// this is a new rule,  (LIST-PREFIX) this is for a list of things that are PARAMETERS OF A CONSTRUCTOR for a particular object
-							int pplen = pathPrefix.length() + 1;
-							boolean commonPrefix = true;
-							ArgSpec[] newArgs = new ArgSpec[ss.getFieldCount()];
-							for (int i = 0; i < ss.getFieldCount(); i++) {
-								String iname = ss.getFieldName(i);
-								if (!iname.startsWith(pathPrefix + "/")) {
-									commonPrefix = false;
-									break;
-								}
-								newArgs[i] = new ArgSpec(iname.substring(pplen), ss.getFieldSig(i));
-							}
-							if (commonPrefix) {
-								CompSig<?> newSig = new CompSig(ss.getAssociatedClass(), newArgs);
-								return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), newSig), pathPrefix);
-							} else {
-							    return defaultVisit(ss);
-								// TODO: fix ^^^^
-							}
-						}
-					}
-
-
-				});
-
-	}
-=======
->>>>>>> origin/master
 }
