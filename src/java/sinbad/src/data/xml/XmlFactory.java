@@ -20,6 +20,11 @@ public class XmlFactory implements IDataAccessFactory {
         this.schema = schema;
         return this;
     }
+    
+    @Override
+    public boolean hasSchema() {
+        return this.schema != null;
+    }
 
     @Override
     public IDataAccess newInstance(InputStream is) {

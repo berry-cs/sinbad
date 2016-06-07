@@ -343,7 +343,7 @@ public class DataSource implements IDataSource {
         // load schema from cached if appropriate and add it to the factory...
         boolean cachedSchemaLoaded = false;
         String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema");
-        if (cachedSchemaPath != null && !forceReload) {
+        if (!this.dataFactory.hasSchema() && cachedSchemaPath != null && !forceReload) {
             try {
                 InputStream cis = IOUtil.createInput(cachedSchemaPath);
                 //if (cis != null) {
@@ -369,12 +369,27 @@ public class DataSource implements IDataSource {
             try {
                 PipedInputStream pipis = new PipedInputStream();
                 PipedOutputStream pipos = new PipedOutputStream(pipis);
-                ObjectOutputStream schos = new ObjectOutputStream(pipos);
-                schos.writeObject(schema);
-                schos.close();
+                
+                Thread thr =
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    ObjectOutputStream schos = new ObjectOutputStream(pipos);
+                                    schos.writeObject(schema);
+                                    schos.close();
+                                } catch (IOException e) {
+                                    DataSource.this.cacher.clearCacheData(DataSource.this.getFullPathURL(), 
+                                                                          "schema");
+                                }
+                            }
+                        };
+                thr.start();
+                
                 this.cacher.addToCache(this.getFullPathURL(), "schema", pipis);
                 pipis.close();
-            } catch (IOException e) {
+                
+                thr.join();
+            } catch (IOException | InterruptedException e) {
                 // oh well, didn't work, so just clear it out of the cache completely
                 // in case it was partially stored or something
                 this.cacher.clearCacheData(this.getFullPathURL(), "schema");
@@ -429,7 +444,8 @@ public class DataSource implements IDataSource {
         if (!this.hasData())
             throw Errors.exception(DataSourceException.class, "ds:no-data", this.getName());
         
-        ISig sig = SigUtils.buildCompSig(cls, keys).apply(new SigClassUnifier(cls));
+        ISig presig = SigUtils.buildCompSig(cls, keys);
+        ISig sig = presig.apply(new SigClassUnifier(cls));
         ISchema sch = this.dataAccess.getSchema();
         IDataOp<T> op = SchemaSigUnifier.unifyWith(sch, sig);
         return op.apply(this.dataAccess);

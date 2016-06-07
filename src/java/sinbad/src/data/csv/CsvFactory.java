@@ -45,6 +45,10 @@ public class CsvFactory implements IDataAccessFactory {
         this.schema = schema;
         return this;
     }
+    
+    public boolean hasSchema() {
+        return this.schema != null;
+    }
 
     @Override
     public CsvDataAccess newInstance(InputStream is) {

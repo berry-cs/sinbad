@@ -17,6 +17,12 @@ public interface IDataAccessFactory {
      */
     IDataAccessFactory setSchema(ISchema schema);
     
+    
+    /**
+     * Does this factory have a schema
+     */
+    boolean hasSchema();
+    
     /**
      * Create a new instance of a data access object.
      */
