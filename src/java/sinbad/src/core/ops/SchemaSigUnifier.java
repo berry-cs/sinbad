@@ -80,7 +80,7 @@ public class SchemaSigUnifier {
     
     
     public static <T> IDataOp<T> unifyWith(CompSchema sch, CompSig<?> sig) {
-        System.err.println(sch.toString(true) + "\n" + sig);
+        //System.err.println(sch.toString(true) + "\n" + sig);
         
         IDataOp<T>[] listOps = new IDataOp[sig.getFieldCount()];
 
@@ -104,24 +104,25 @@ public class SchemaSigUnifier {
 
     
     public static <T> IDataOp<T> unifyWith(CompSchema sch, ListSig sig) {
-        System.err.println("running ruleCompList");
+        //System.err.println("running ruleCompList");
         
         ISig eltSig = sig.getElemType();
-        return (IDataOp<T>) opf.makeWrapOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
+        //return (IDataOp<T>) opf.makeWrapOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
         
-        
-        /*
         IDataOp<T> dop
         = eltSig.apply(new ISigVisitor<IDataOp<T>>() {
             public IDataOp<T> visit(PrimSig s) { return defaultVisit(s); }
             public IDataOp<T> visit(ListSig s) { return defaultVisit(s); }
             
             public IDataOp<T> defaultVisit(ISig s) {
+                return (IDataOp<T>) opf.makeWrapOp(unifyWith(sch,sig.getElemType()),sch.getPath()); 
+                /*
                 IDataOp<T> dop
                     = (IDataOp<T>) opf.makeIndexAllOp(
                             opf.makeSelectOp(unifyWith(sch, sig.getElemType()),""),
                             sch.getPath());
                 return dop;
+                */
             }
 
             public IDataOp<T> visit(CompSig<?> cs) { // here the eltSig is this 'cs'
@@ -134,24 +135,26 @@ public class SchemaSigUnifier {
                     return defaultVisit(cs);
                 
                 String[] pieces = commonPrefix.split("/");
-                for (int i = 1; i < pieces.length; i++) {
+                for (int i = 0; i < pieces.length; i++) {
                     // try longer and longer pieces of the prefix...
-                    String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i), "/");
+                    String prefix = StringUtils.join(ArrayUtils.subarray(pieces, 0, i+1), "/");
 
                     if (sch.getFieldMap().containsKey(prefix)) {
                         ISchema fldSchema = sch.getFieldMap().get(prefix);
                         CompSig<?> newSig = cs.trimPrefix(prefix + "/");
                         IDataOp<T> fld_dop = unifyWith(fldSchema, new ListSig(newSig));
-                        System.err.printf("fld_dop: %s (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
+                        //System.err.printf("fld_dop: %s          (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
                         if (fld_dop != null) {
-                            IDataOp<T> dop = null;
+                            return fld_dop;
+                            
+                            //IDataOp<T> dop = null;
                             // TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
-                            if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
-                                dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
-                            } else {
-                                dop = opf.makeSelectOp(fld_dop, fldSchema.getPath());
-                            }
-                             return dop;
+                            //if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
+                            //    dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
+                            //} else {
+                            //    dop = opf.makeSelectOp(fld_dop, fldSchema.getPath());
+                            //}
+                            // return dop;
                         }
                     }
                 }
@@ -160,9 +163,8 @@ public class SchemaSigUnifier {
             }
           });
         
-        System.err.println("Got dop: " + dop);
+        //System.err.println("Got dop: " + dop);
         return dop;
-        */
     }
     
     
