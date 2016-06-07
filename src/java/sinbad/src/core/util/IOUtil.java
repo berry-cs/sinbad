@@ -79,6 +79,7 @@ public class IOUtil {
      *
      */
     public static InputStream createInput(String path) {
+        //System.err.println("IOUtil::createInput(" + path + ")");
         InputStream input = createInputRaw(path);
         final String lower = path.toLowerCase();
         if (input != null) {

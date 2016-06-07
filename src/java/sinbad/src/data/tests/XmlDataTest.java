@@ -24,6 +24,7 @@ public class XmlDataTest {
     @Test
     public void testXmlAccess() {
         DataCacher dc = DataCacher.defaultCacher();
+        System.out.println(dc.getDirectory());
         
         InputStream is = IOUtil.createInput(dc.resolvePath("http://xisbn.worldcat.org/webservices/xid/isbn/9780201038019?method=getMetadata&fl=*&format=xml"));
         XmlDataAccess xda = new XmlDataAccess(is);

@@ -44,7 +44,7 @@ public class DataCacher {
     /* STATIC METHODS */
     
     private static DataCacher makeDefaultDataCacher() {
-        //if (ProcessingDetector.inProcessing()) 
+        //if (ProcessingDetector.inProcessing())  // disabled, because caching in the sketch dir is annoying, especially if it is shared on dropbox for example
         //    return new DataCacher(ProcessingDetector.sketchPath(DEFAULT_CACHE_DIR), NEVER_RELOAD);
         //else 
         return new DataCacher(DEFAULT_CACHE_DIR, NEVER_RELOAD); 
@@ -92,10 +92,17 @@ public class DataCacher {
         return this.cacheDirectory;
     }
 
+    /**
+     * @return milliseconds since last access of the actual data
+     */
     public long getTimeout() {
         return this.cacheExpiration;
     }
     
+    /**
+     * Completely remove all cache data
+     * @return whether the operation was successful
+     */
     public boolean clearCache() {
         try {
             File f = new File(this.cacheDirectory);

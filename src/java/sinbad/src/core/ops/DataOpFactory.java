@@ -215,10 +215,22 @@ public class DataOpFactory {
 		};
 	}
 	
+	/**
+	 * Produces an operation that when applied to data will expect to produce a single result,
+	 * but wraps it up as a stream (i.e. sequence/list) of data results
+	 * 
+	 * @param op
+	 * @param path
+	 * @return
+	 */
 	<T> IDataOp<Stream<T>> makeWrapOp(IDataOp<T> op, String path){
 		return new IDataOp<Stream<T>>(){
 			public Stream<T> apply(IDataAccess d){
 				return Stream.of(op.apply(d));
+			}
+			
+			public String toString() {
+			    return String.format("wrapop(%s, %s)", op, path);
 			}
 		};
 	}
