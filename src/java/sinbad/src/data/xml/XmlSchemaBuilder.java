@@ -8,6 +8,7 @@ import core.schema.*;
 public class XmlSchemaBuilder {
 
 	public static ISchema inferSchema(XML xml) {
+	    //System.err.println("XmlSchemaBuilder::inferSchema(" + xml.getName() + ")");
 		XML firstChild = firstNonemptyChild(xml);
 		if (firstChild != null) {
 			return inferComp(xml, false);
@@ -24,7 +25,7 @@ public class XmlSchemaBuilder {
 	static CompSchema inferComp(XML xml, boolean addBasePath) {
 	    HashMap<String, ISchema> hm = new HashMap<String, ISchema>();
 	    
-		//System.out.println("inferCompField:\n" + xml);
+		//System.out.println("XmlSchemaBuilder::inferComp(" + xml.getName() + ")");
 		for (XML t : xml.getChildren()) {  // for each subnode of xml
 			if (!isEmptyXML(t) && !t.getName().equals("#text") 
 					&& !hm.containsKey(t.getName())) {
@@ -39,6 +40,11 @@ public class XmlSchemaBuilder {
 					hm.put(t.getName(), new ListSchema(t.getName(), sf)); 
 				} else {
 					hm.put(t.getName(), sf);
+				}
+				
+				if (xml.getChildren(t.getName()).length == xml.getChildren().length) {
+				    // because all the children are the same tag
+				    break;
 				}
 			}
 		}	
