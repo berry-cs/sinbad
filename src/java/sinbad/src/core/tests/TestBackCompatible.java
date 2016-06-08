@@ -2,20 +2,13 @@ package core.tests;
 
 import static org.junit.Assert.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.json.*;
 import org.junit.Test;
 
-import core.cache.DataCacher;
+import core.data.CacheConstants;
 import core.data.DataSource;
-import core.util.IOUtil;
-import core.schema.*;
 
 public class TestBackCompatible {
     
@@ -36,7 +29,7 @@ public class TestBackCompatible {
         }   
     }
     
-    @Test
+    //@Test
     public void testVehiclesXML() {
         DataSource ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.xml.zip");
         System.out.println("About to load...");
@@ -71,7 +64,8 @@ public class TestBackCompatible {
     public void testVehiclesCSV() {
         DataSource ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip");
         System.out.println("About to load...");
-        
+        //ds.setCacheTimeout(CacheConstants.NEVER_CACHE);
+        System.out.println(ds.getCacheTimeout());
         ds.load();
         
         System.out.println("Loaded!");

@@ -9,29 +9,27 @@ import java.io.OutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import core.data.CacheConstants;
 import core.util.IOUtil;
 
 
 public class DataCacher {
 
-    /* CONSTANTS */
-   
-    public static final String DEFAULT_CACHE_DIR = getDefaultCacheDir();
-    public static final int NEVER_CACHE = 0;
-    public static final int NEVER_RELOAD = -1;
+    /* Other constants in core.data.CacheConstants  */
     public static final long MINIMUM_CACHE_VALUE = 1000;  // disallow setting cacheExpiration to less than this  
-
+    
+    /* singleton object */
     private static final DataCacher DC = makeDefaultDataCacher(); 
 
-    /* GLOBAL SETTINGS */
-    
+    /* Global setting */
     private static boolean CachingEnabled = true;
     
-    /* INDIVIDUAL CACHE SETTINGS */
-    
+    /* Per cacher settings */
     private String cacheDirectory;
     private long cacheExpiration;  // how many millis from lastRead;  0 = no cache;  -1 = never update if cache
 
+    
+    
     private DataCacher(String cacheDirectory, long cacheExpiration) {
         this.cacheDirectory = cacheDirectory;
         if (cacheExpiration > 0 && cacheExpiration < MINIMUM_CACHE_VALUE) {
@@ -47,12 +45,12 @@ public class DataCacher {
         //if (ProcessingDetector.inProcessing())  // disabled, because caching in the sketch dir is annoying, especially if it is shared on dropbox for example
         //    return new DataCacher(ProcessingDetector.sketchPath(DEFAULT_CACHE_DIR), NEVER_RELOAD);
         //else 
-        return new DataCacher(DEFAULT_CACHE_DIR, NEVER_RELOAD); 
+        return new DataCacher(CacheConstants.DEFAULT_CACHE_DIR, CacheConstants.NEVER_RELOAD); 
     }
 
     public static DataCacher defaultCacher() { return DC; }
     
-    private static String getDefaultCacheDir() {
+    public static String getDefaultCacheDir() {
         try {
            return new File(System.getProperty("java.io.tmpdir", "."), "sinbad_cache").getCanonicalPath();
         } catch (IOException e) {
@@ -116,7 +114,7 @@ public class DataCacher {
 
     private boolean isCacheable(String path, String subtag) {
         // for now, only things that look like URLs are cacheable
-        return (path.contains("://") && cacheExpiration != NEVER_CACHE) || (subtag != null); 
+        return (path.contains("://") && cacheExpiration != CacheConstants.NEVER_CACHE) || (subtag != null); 
     }
     
     private CacheEntry entryFor(String tag, String subtag) {
