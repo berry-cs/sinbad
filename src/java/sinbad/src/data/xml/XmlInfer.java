@@ -10,7 +10,9 @@ public class XmlInfer implements IDataFormatInfer {
     @Override
     public boolean matchedBy(String path) {
         return path.toLowerCase().contains(".xml")
-                || path.toLowerCase().contains("=xml");
+                || path.toLowerCase().contains("=xml")
+                || path.toLowerCase().endsWith(".xml.gz")
+                || path.toLowerCase().endsWith(".xml.zip");
     }
 
     @Override
