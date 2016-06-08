@@ -393,6 +393,7 @@ public class DataSource implements IDataSource {
                 pipis.close();
                 
                 thr.join();
+                pipos.close();
             } catch (IOException | InterruptedException e) {
                 // oh well, didn't work, so just clear it out of the cache completely
                 // in case it was partially stored or something
