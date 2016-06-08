@@ -23,7 +23,7 @@ public class CsvInfer implements IDataFormatInfer {
     
     @Override
     public boolean matchedBy(String path) {
-        if ((path.endsWith(".csv") || path.endsWith(".csv.gz"))
+        if ((path.endsWith(".csv") || path.endsWith(".csv.gz") || path.endsWith(".csv.zip"))
                 && this.delim.equals(",")) {
             // this is default anyway in the factory: options.put("delimiter", ","); 
             return true;
