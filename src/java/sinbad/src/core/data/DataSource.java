@@ -231,19 +231,23 @@ public class DataSource implements IDataSource {
     /**
      * Sets the cache timeout value, in <em>minutes</em>.
      */
-    public IDataSource setCacheTimeout(int val) {
-        this.cacher = this.cacher.updateTimeout(val * 1000 * 60);
+    public DataSource setCacheTimeout(int val) {
+        this.cacher = this.cacher.updateTimeout((long)val * 1000L * 60L);
         return this;
     }
 
     @Override
-    public IDataSource setCacheDirectory(String path) {
+    public DataSource setCacheDirectory(String path) {
         this.cacher = this.cacher.updateDirectory(path);
         return this;
     }
     
     public String getCacheDirectory() {
         return this.cacher.getDirectory();
+    }
+    
+    public long getCacheTimeout() {
+        return this.cacher.getTimeout();
     }
     
     public boolean clearENTIRECache() {

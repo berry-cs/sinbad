@@ -80,6 +80,9 @@ public interface IDataSource {
 	 */
 	public IDataSource setCacheTimeout(int val);
 	
+	/**
+	 * Sets the cache directory path. This should be called before load() to have effect.
+	 */
 	public IDataSource setCacheDirectory(String path);
 
 	/**
