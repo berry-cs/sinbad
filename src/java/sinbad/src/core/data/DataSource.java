@@ -62,9 +62,10 @@ public class DataSource implements IDataSource {
     public static DataSource connect(String path) {
 
         // TODO: DataSourceLoader.isValidDataSourceSpec(path)
-        for (IDataSourcePlugin dsp : plugins.values()) {
+        for (String typeExt : plugins.keySet()) {
+            IDataSourcePlugin dsp = plugins.get(typeExt);
             if (dsp.getInfer().matchedBy(path)) {
-                return connect(path, dsp);
+                return connect(path, typeExt, dsp);
             } 
         }
         
@@ -83,11 +84,11 @@ public class DataSource implements IDataSource {
         if (!plugins.containsKey(typeExt)) {
             throw Errors.exception(DataSourceException.class, "ds:notype", typeExt);
         } 
-        return connect(path, plugins.get(typeExt));
+        return connect(path, typeExt, plugins.get(typeExt));
     }
     
-    public static DataSource connect(String path, IDataSourcePlugin plugin) {
-        return new DataSource(path, path, plugin);
+    public static DataSource connect(String path, String typeExt, IDataSourcePlugin plugin) {
+        return new DataSource(path, path, typeExt, plugin);
     }
     
     /**
@@ -113,10 +114,12 @@ public class DataSource implements IDataSource {
     protected String path;  
     protected String description;
     protected String infoURL;
+    protected String formatType;  // should correspond to the keys in the <code>plugins</code> map
     
-    protected HashMap<String, Param> params;
-    protected ArrayList<String> paramValueKeys;
-    protected HashMap<String, String> paramValues;
+    /* params are connection-related parameters, either in a query string or filling in part of the path */
+    protected HashMap<String, Param> params; // keeps track of *all* parameters available for this data source
+    protected ArrayList<String> paramValueKeys; // keeps track of which parameters have been supplied so far
+    protected HashMap<String, String> paramValues; // keeps track of the values of the supplied parameters
 
     protected boolean readyToLoad;
     protected boolean loaded;
@@ -126,11 +129,12 @@ public class DataSource implements IDataSource {
     protected IDataAccess dataAccess;
     protected DataCacher cacher;
     
-    protected DataSource(String name, String path, IDataSourcePlugin plugin) {
+    protected DataSource(String name, String path, String typeExt, IDataSourcePlugin plugin) {
         this.name = name;
         this.path = path;
         this.description = null;
         this.infoURL = null;
+        this.formatType = typeExt;
         
         this.params = new HashMap<String, Param>();
         this.paramValues = new HashMap<String, String>();
@@ -157,11 +161,12 @@ public class DataSource implements IDataSource {
             s += "Data Source: " + this.name + "\n";
         if (description != null && !description.equals("")) s += description + "\n";
         if (infoURL != null) s += "(See " + infoURL + " for more information about this data.)\n";
+        if (verbose && formatType != null) s += "Format: " + formatType + "\n";
         
         String[] paramKeys = params.keySet().toArray(new String[]{});
         if (paramKeys.length > 0) {
             Arrays.sort(paramKeys);
-            s += "\nThe following options may/must be set on this data source:\n";
+            s += "\nThe following (connection) parameters may/must be set on this data source:\n";
             for (String key : paramKeys) {
                 Param p = params.get(key);
                 String v = paramValues.get(key);
@@ -172,6 +177,16 @@ public class DataSource implements IDataSource {
                         + ((desc==null)?"":" : " + desc) + ((v==null && req)?" [*required]":"")
                         + "\n";
             }
+        }
+        
+        String[] optionKeys = this.dataFactory.getOptions();
+        if (verbose && optionKeys.length > 0) {
+            Arrays.sort(optionKeys);
+            s += "\nThe following options are available for this data source format:\n";
+            for (String key : optionKeys) {
+                s += "   - " + key + "\n";
+            }
+
         }
         
         ISchema schema = null;
@@ -265,7 +280,7 @@ public class DataSource implements IDataSource {
         return this;
     }
 
-    public DataSource set(String op, String value) {
+    public DataSource setParam(String op, String value) {
         if (op != null && value != null) {
             paramValues.put(op, value);
             paramValueKeys.add(op);

@@ -68,12 +68,12 @@ public interface IDataSource {
 	public IDataSource addParam(Param param);
 	
 	/** 
-	 * Sets a value for a parameter (either query or path)
+	 * Sets a value for a connection parameter (either query or path)
 	 * @param op key for the parameter
 	 * @param val value for the parameter
 	 * @return this updated data source
 	 */
-	public IDataSource set(String op, String val);
+	public IDataSource setParam(String op, String val);
 	
 	/**
 	 * Sets the cache timeout value, in <em>minutes</em>. This should be called before load() to have effect.

@@ -69,7 +69,7 @@ public class TestBackCompatible {
         ds.load();
         
         System.out.println("Loaded!");
-        ds.printUsageString();
+        ds.printUsageString(true);
         
         System.out.println("Schema: " + ds.getDataAccess().getSchema().toString(true));
         
@@ -83,13 +83,14 @@ public class TestBackCompatible {
             if (c.mpgCity > max.mpgCity) max = c;
         }
         System.out.println("max mpg: " + max);
+        
     }
     
     
     
     @Test
     public void testAirport() {
-        DataSource ds = DataSource.connectAs("XML", "http://services.faa.gov/airport/status/ATL").set("format", "application/xml").setCacheTimeout(1).load();
+        DataSource ds = DataSource.connectAs("XML", "http://services.faa.gov/airport/status/ATL").setParam("format", "application/xml").setCacheTimeout(1).load();
         ds.printUsageString();
         APStatus x = ds.fetch("core.tests.APStatus", "Name", "State", "Delay", "Weather/Weather");
         System.out.println(x);
@@ -105,7 +106,7 @@ public class TestBackCompatible {
     public void testOpenFlights() {
         DataSource ds = DataSource.connectAs("CSV", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat");
         ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
-        ds.set("format", "raw");
+        ds.setParam("format", "raw");
         ds.printUsageString();
         ds.load();
         ds.printUsageString();

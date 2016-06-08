@@ -2,8 +2,10 @@ package data.xml;
 
 import java.io.InputStream;
 
+import core.access.DataAccessException;
 import core.access.IDataAccess;
 import core.access.IDataAccessFactory;
+import core.log.Errors;
 import core.schema.ISchema;
 
 public class XmlFactory implements IDataAccessFactory {
@@ -33,5 +35,15 @@ public class XmlFactory implements IDataAccessFactory {
             da.setSchema(schema);
         }
         return da;
+    }
+
+    @Override
+    public String[] getOptions() {
+        return new String[] {};
+    }
+
+    @Override
+    public String getOption(String option) {
+        throw Errors.exception(DataAccessException.class, "da:no-such-option", option);
     }
 }

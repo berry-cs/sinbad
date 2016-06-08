@@ -34,7 +34,7 @@ public class XmlDataTest {
         String isbn = "9780201038019"; // in.nextLine();
         
         DataSource ds = DataSource.connectAs("xml", "http://xisbn.worldcat.org/webservices/xid/isbn/" + isbn);
-        ds.set("method", "getMetadata").set("fl", "*").set("format", "xml").load();
+        ds.setParam("method", "getMetadata").setParam("fl", "*").setParam("format", "xml").load();
         //ds.printUsageString();
         
         ISchema sch = ds.getDataAccess().getSchema();
@@ -55,7 +55,7 @@ public class XmlDataTest {
     public void testBible() {
         String PASSAGE = "Psalms121";
         DataSource ds = DataSource.connectAs("xml", "http://api.preachingcentral.com/bible.php");
-        ds.set("passage", PASSAGE).load(true); 
+        ds.setParam("passage", PASSAGE).load(true); 
         ds.printUsageString();
         System.out.println(ds.fetchString("range/result"));
         
