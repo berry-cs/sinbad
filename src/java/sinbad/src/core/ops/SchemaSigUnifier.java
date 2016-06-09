@@ -145,7 +145,7 @@ public class SchemaSigUnifier {
                         IDataOp<T> fld_dop = unifyWith(fldSchema, new ListSig(newSig));
                         //System.err.printf("fld_dop: %s          (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
                         if (fld_dop != null) {
-                            return fld_dop;
+                            return opf.makeSelectOp(fld_dop, prefix);
                             
                             //IDataOp<T> dop = null;
                             // TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
