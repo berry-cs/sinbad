@@ -255,8 +255,61 @@ public class TestBackCompatible {
         System.out.println("30165: valid? " + status);
     }
 
+    
+    @Test
+    public void testSchools() {
+        DataSource dsForScores = DataSource.connect("https://data.cityofnewyork.us/api/views/zt9s-n5aj/rows.xml?accessType=DOWNLOAD");
+        dsForScores.load(); 
+        dsForScores.printUsageString();
+
+        School[] schools = dsForScores.fetchArray("core.tests.School", "row/row/school_name", //gets data
+                "row/row/critical_reading_mean", 
+                "row/row/writing_mean", 
+                "row/row/mathematics_mean", 
+                "row/row/dbn");
+       System.out.println(schools.length);
+    }
+    
 }
 
+
+class School {
+    String name;
+    int reading;
+    int writing;
+    int math;
+    String dbn;
+    String boro;
+
+    
+    School(String n, int r, int w, int m, String d) {
+      name = n;
+      reading = r;
+      writing = w;
+      math = m;
+      dbn = d;
+      
+    }
+    
+    // determines if this school has all three scores available
+    boolean hasScores() {
+       if (reading > 0 && writing > 0 && math > 0) {
+         return true;
+         
+        
+       } else {
+         return false;
+       }
+    }
+    
+    boolean hasBoro() {
+      return ! boro.equals(""); 
+    }
+    
+    public String toString() {
+      return name + " (" + dbn + ") - " + boro;
+    }
+ }
 
 class Movie {
     String title;

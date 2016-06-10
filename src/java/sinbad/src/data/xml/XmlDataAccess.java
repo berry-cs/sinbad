@@ -50,6 +50,8 @@ public class XmlDataAccess implements IDataAccess {
 
     @Override
     public String getContents() {
+        if (xml == null) 
+            return "";
         return xml.getContent("").trim();
     }
 
