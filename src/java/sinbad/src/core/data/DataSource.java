@@ -562,19 +562,15 @@ public class DataSource implements IDataSource {
         return fetchList(String.class, key);
     }
 
-    @Override
     public DataSourceIterator iterator() {
         return new GenDataSourceIterator(this);
     }
 
-    @Override
     public long size() {
         if (!hasData()) 
             return 0;
         else
             return (long) this.dataAccess.getAll(this.dataAccess.getSchema().getPath()).count();
     }
-
-
 
 }
