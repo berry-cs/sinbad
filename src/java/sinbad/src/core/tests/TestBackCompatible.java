@@ -227,8 +227,37 @@ public class TestBackCompatible {
         //}
     }
     
+    @Test
+    public void testMovies() {
+        Movie[] movies;
+
+        DataSource ds = DataSource.connect("http://bigscreen.com/xml/nowshowing_new.xml");
+        ds.setCacheTimeout(15);
+        ds.load();
+        ds.printUsageString();
+        movies = ds.fetchArray("core.tests.Movie", "channel/item/title", "channel/item/description", "channel/item/link");
+        // println(description);
+        System.out.println(movies.length);
+        Movie m = movies[0];
+        System.out.println(m.title + "\n" + m.descrip + "\n" + m.id);
+    }
+    
+    
 
 }
+
+
+class Movie {
+    String title;
+    String descrip;
+    String id;
+
+    Movie(String initTitle, String initDescrip, String link) {
+      title = initTitle;
+      descrip = initDescrip;
+      id = link;
+    }
+  }
 
 
 class APStatus {

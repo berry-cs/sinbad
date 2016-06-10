@@ -143,18 +143,13 @@ public class SchemaSigUnifier {
                         ISchema fldSchema = sch.getFieldMap().get(prefix);
                         CompSig<?> newSig = cs.trimPrefix(prefix + "/");
                         IDataOp<T> fld_dop = unifyWith(fldSchema, new ListSig(newSig));
-                        //System.err.printf("fld_dop: %s          (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
+                        //System.out.printf("fld_dop: %s          (fldSchema: %s)\n", fld_dop, fldSchema.toString(true));
                         if (fld_dop != null) {
-                            return opf.makeSelectOp(fld_dop, prefix);
-                            
-                            //IDataOp<T> dop = null;
-                            // TODO: this is very messy -- need to carefully reexamine the interaction of this rule with others... 
-                            //if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
-                            //    dop = (IDataOp<T>)opf.makeIndexAllOp(fld_dop, fldSchema.getPath());
-                            //} else {
-                            //    dop = opf.makeSelectOp(fld_dop, fldSchema.getPath());
-                            //}
-                            // return dop;
+                            if (fldSchema instanceof ListSchema && ((ListSchema)fldSchema).getElementSchema().getPath() == null) {
+                                return fld_dop;   // assume the field will be selected out
+                            } else {
+                                return opf.makeSelectOp(fld_dop, prefix);
+                            }                            
                         }
                     }
                 }

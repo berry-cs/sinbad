@@ -104,14 +104,14 @@ public class SigClassUnifier implements ISigVisitor<ISig> {
         } else if (paramTys.length != s.getFieldCount()) {
             return null;   // no way to unify because the number of parameters is different
         }
-        
+                
         ArgSpec[] newArgs = new ArgSpec[s.getFieldCount()]; // for the specialized signature
         for (int i = start; i < paramTys.length; i++) {
             Class<?> ci = paramTys[i];
-            ISig si = s.getFieldSig(i);
+            ISig si = s.getFieldSig(i-start);
             try {
                 ISig siSpec = si.apply(new SigClassUnifier(ci));
-                newArgs[i] = new ArgSpec(s.getFieldName(i), siSpec);
+                newArgs[i-start] = new ArgSpec(s.getFieldName(i-start), siSpec);
             } catch (SignatureUnificationException e) {  // something didn't unify...
                 return null;
             }

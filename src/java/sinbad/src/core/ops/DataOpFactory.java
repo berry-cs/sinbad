@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import core.access.IDataAccess;
+import core.util.ProcessingDetector;
 
 /**
  * An object for making new IDataOp objects, used to create functions that index, select, and parse the data as
@@ -153,9 +154,20 @@ public class DataOpFactory {
 			@SuppressWarnings("unchecked")
             @Override
 			public T apply(IDataAccess d) {
-				Object[] args = new Object[consParamOps.length];
-				for(int i = 0; i < args.length; i++) {
-					args[i] = consParamOps[i].apply(d);
+				Object[] args;
+				int start;
+				if (ProcessingDetector.inProcessing() 
+				        && cons.getParameterTypes().length == consParamOps.length + 1) {
+				    args = new Object[consParamOps.length + 1];
+				    args[0] = ProcessingDetector.getPapplet();
+				    start = 1;
+				} else {				
+				    args = new Object[consParamOps.length];
+				    start = 0;
+				}
+				
+				for(int i = start; i < args.length; i++) {
+					args[i] = consParamOps[i-start].apply(d);
 				}
 				try {
 				    cons.setAccessible(true);
