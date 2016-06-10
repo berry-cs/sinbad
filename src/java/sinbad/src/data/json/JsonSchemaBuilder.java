@@ -9,34 +9,40 @@ import core.access.DataAccessException;
 import core.schema.*;
 
 public class JsonSchemaBuilder {
+    
     // could be a Boolean, Double, Integer, Long, String, JSONArray, JSONObject, or null
     public static ISchema inferSchema(Object data) {
+        return inferSchema(data, null);
+    }
+    
+    // path could be null, or a field selector (coming from inferCompSchema)
+    public static ISchema inferSchema(Object data, String path) {
         if (isNull(data)) {
             throw exception(DataAccessException.class, "da:schema");
         } else if (isPrimitiveOrWrapperOrJsonNull(data.getClass())) {
-            return new PrimSchema();
+            return new PrimSchema(path);
         } else if (data instanceof JSONArray) {
-            return inferArraySchema( (JSONArray) data );
+            return inferArraySchema( (JSONArray) data, path );
         } else if (data instanceof JSONObject) {
-            return inferCompSchema( (JSONObject) data );
+            return inferCompSchema( (JSONObject) data, path );
         } else {
             System.err.println("Problem: " + data);
             throw exception(DataAccessException.class, "da:schema");
         }
     }
 
-    private static ISchema inferCompSchema(JSONObject data) {
+    private static ISchema inferCompSchema(JSONObject data, String path) {
         String[] fieldNames = JSONObject.getNames(data);
         CompField[] flds = new CompField[fieldNames.length];
         int i = 0;
         for (String field : fieldNames) {
-            flds[i++] = new CompField(field, inferSchema(data.get(field)));
+            flds[i++] = new CompField(field, inferSchema(data.get(field), field)); // this is where path gets passed down
         }
-        CompSchema cs = new CompSchema(flds);
+        CompSchema cs = new CompSchema(path, flds);
         return cs;
     }
 
-    private static ISchema inferArraySchema(JSONArray data) {
+    private static ISchema inferArraySchema(JSONArray data, String path) {
         final int N = data.length();
         // first see if everything is the same type of thing
         boolean allSame = true;
@@ -47,7 +53,7 @@ public class JsonSchemaBuilder {
         }
         
         if (allSame) {
-            ListSchema ls = new ListSchema(inferSchema(first));
+            ListSchema ls = new ListSchema(path, inferSchema(first));
             return ls;
         } else {
             CompField[] flds = new CompField[N];
@@ -55,7 +61,7 @@ public class JsonSchemaBuilder {
                 // use index as field name
                 flds[i] = new CompField(""+i, inferSchema(data.get(i)));
             }
-            CompSchema cs = new CompSchema(flds);
+            CompSchema cs = new CompSchema(path, flds);
             return cs;
         }
     }

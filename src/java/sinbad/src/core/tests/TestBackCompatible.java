@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.junit.Test;
 
+import core.cache.DataCacher;
 import core.data.CacheConstants;
 import core.data.DataSource;
 import core.data.DataSourceIterator;
@@ -31,7 +32,7 @@ public class TestBackCompatible {
     }
     
     //@Test
-    public void testVehiclesXML() {
+    public void testVehiclesXML() {        
         DataSource ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.xml.zip");
         System.out.println("About to load...");
         
@@ -208,7 +209,8 @@ public class TestBackCompatible {
 
         DataSource ds = DataSource.connect("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson");
         ds.setCacheTimeout(DELAY);        
-
+        //ds.clearENTIRECache();
+        
         HashSet<String> quakes = new HashSet<String>();
 
         //while (true) {
@@ -242,7 +244,16 @@ public class TestBackCompatible {
         System.out.println(m.title + "\n" + m.descrip + "\n" + m.id);
     }
     
-    
+    @Test
+    public void testZip() {
+        DataSource ds2 = DataSource.connectAs("JSON","https://api.bring.com/shippingguide/api/postalCode.json?clientUrl=insertYourClientUrlHere&country=us&pnr=30165");
+        //ds2.clearENTIRECache();
+        ds2.setCacheTimeout(0); 
+        ds2.load();
+        ds2.printUsageString();
+        String status = ds2.fetchString("valid"); 
+        System.out.println("30165: valid? " + status);
+    }
 
 }
 
