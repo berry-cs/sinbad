@@ -145,7 +145,7 @@ public class TestBackCompatible {
     }
     
     
-    //@Test
+    @Test
     public void testBartQuake() {
         int DELAY = 5;   // 5 minute cache delay
 
@@ -157,8 +157,8 @@ public class TestBackCompatible {
         //while (true) {
             ds.load();
             
-            List<Q> qs = ds.fetchList("test.Q", "features/properties/title");
-            for (Q q : qs) System.out.println(q);
+            //List<Q> qs = ds.fetchList("core.tests.Q", "features/properties/title");
+            //for (Q q : qs) System.out.println(q);
             
             List<String> latest = ds.fetchStringList("features/properties/title");
             for (String t : latest) {

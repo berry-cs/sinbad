@@ -30,7 +30,8 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ import java.util.Set;
  * </ul>
  *
  * @author JSON.org
- * @version 2015-10-29
+ * @version 2016-05-20
  */
 public class JSONObject {
     /**
@@ -165,10 +166,6 @@ public class JSONObject {
      *            A JSONObject.
      * @param names
      *            An array of strings.
-     * @throws JSONException
-     * @exception JSONException
-     *                If a value is a non-finite number or if a name is
-     *                duplicated.
      */
     public JSONObject(JSONObject jo, String[] names) {
         this();
@@ -241,7 +238,6 @@ public class JSONObject {
      * @param map
      *            A map object that can be used to initialize the contents of
      *            the JSONObject.
-     * @throws JSONException
      */
     public JSONObject(Map<?, ?> map) {
         this.map = new HashMap<String, Object>();
@@ -905,7 +901,9 @@ public class JSONObject {
                 return myE;
             }
             return Enum.valueOf(clazz, val.toString());
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        } catch (NullPointerException e) {
             return defaultValue;
         }
     }
@@ -1341,6 +1339,46 @@ public class JSONObject {
     }
 
     /**
+     * Creates a JSONPointer using an intialization string and tries to 
+     * match it to an item within this JSONObject. For example, given a
+     * JSONObject initialized with this document:
+     * <pre>
+     * {
+     *     "a":{"b":"c"}
+     * }
+     * </pre>
+     * and this JSONPointer string: 
+     * <pre>
+     * "/a/b"
+     * </pre>
+     * Then this method will return the String "c".
+     * A JSONPointerException may be thrown from code called by this method.
+     *   
+     * @param jsonPointer string that can be used to create a JSONPointer
+     * @return the item matched by the JSONPointer, otherwise null
+     */
+    public Object query(String jsonPointer) {
+        return new JSONPointer(jsonPointer).queryFrom(this);
+    }
+    
+    /**
+     * Queries and returns a value from this object using {@code jsonPointer}, or
+     * returns null if the query fails due to a missing key.
+     * 
+     * @param jsonPointer the string representation of the JSON pointer
+     * @return the queried value or {@code null}
+     * @throws IllegalArgumentException if {@code jsonPointer} has invalid syntax
+     */
+    public Object optQuery(String jsonPointer) {
+        JSONPointer pointer = new JSONPointer(jsonPointer);
+        try {
+            return pointer.queryFrom(this);
+        } catch (JSONPointerException e) {
+            return null;
+        }
+    }
+
+    /**
      * Produce a string in double quotes with backslash sequences in all the
      * right places. A backslash will be inserted within </, producing <\/,
      * allowing JSON text to be delivered in HTML. In JSON text, a string cannot
@@ -1482,7 +1520,6 @@ public class JSONObject {
      * @return A simple JSON value.
      */
     public static Object stringToValue(String string) {
-        Double d;
         if (string.equals("")) {
             return string;
         }
@@ -1501,23 +1538,23 @@ public class JSONObject {
          * produced, then the value will just be a string.
          */
 
-        char b = string.charAt(0);
-        if ((b >= '0' && b <= '9') || b == '-') {
+        char initial = string.charAt(0);
+        if ((initial >= '0' && initial <= '9') || initial == '-') {
             try {
                 if (string.indexOf('.') > -1 || string.indexOf('e') > -1
-                        || string.indexOf('E') > -1) {
-                    d = Double.valueOf(string);
+                        || string.indexOf('E') > -1
+                        || "-0".equals(string)) {
+                    Double d = Double.valueOf(string);
                     if (!d.isInfinite() && !d.isNaN()) {
                         return d;
                     }
                 } else {
                     Long myLong = new Long(string);
                     if (string.equals(myLong.toString())) {
-                        if (myLong == myLong.intValue()) {
-                            return myLong.intValue();
-                        } else {
-                            return myLong;
+                        if (myLong.longValue() == myLong.intValue()) {
+                            return Integer.valueOf(myLong.intValue());
                         }
+                        return myLong;
                     }
                 }
             } catch (Exception ignore) {
@@ -1786,10 +1823,16 @@ public class JSONObject {
      * <p>
      * Warning: This method assumes that the data structure is acyclical.
      *
+     * @param writer
+     *            Writes the serialized JSON
+     * @param indentFactor
+     *            The number of spaces to add to each level of indentation.
+     * @param indent
+     *            The indention of the top level.
      * @return The writer.
      * @throws JSONException
      */
-    Writer write(Writer writer, int indentFactor, int indent)
+    public Writer write(Writer writer, int indentFactor, int indent)
             throws JSONException {
         try {
             boolean commanate = false;
@@ -1834,5 +1877,32 @@ public class JSONObject {
         } catch (IOException exception) {
             throw new JSONException(exception);
         }
+    }
+
+    /**
+     * Returns a java.util.Map containing all of the entrys in this object.
+     * If an entry in the object is a JSONArray or JSONObject it will also
+     * be converted.
+     * <p>
+     * Warning: This method assumes that the data structure is acyclical.
+     *
+     * @return a java.util.Map containing the entrys of this object
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> results = new HashMap<String, Object>();
+        for (Entry<String, Object> entry : this.map.entrySet()) {
+            Object value;
+            if (entry.getValue() == null || NULL.equals(entry.getValue())) {
+                value = null;
+            } else if (entry.getValue() instanceof JSONObject) {
+                value = ((JSONObject) entry.getValue()).toMap();
+            } else if (entry.getValue() instanceof JSONArray) {
+                value = ((JSONArray) entry.getValue()).toList();
+            } else {
+                value = entry.getValue();
+            }
+            results.put(entry.getKey(), value);
+        }
+        return results;
     }
 }

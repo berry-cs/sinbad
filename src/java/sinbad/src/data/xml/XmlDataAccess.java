@@ -55,17 +55,29 @@ public class XmlDataAccess implements IDataAccess {
 
     @Override
     public IDataAccess get(String path, int i) {
+        if (path == null) {
+            throw exception(DataAccessException.class, "da:get-index", i, path);
+        }
+        
         XML[] cs = xml.getChildren(path);
         return new XmlDataAccess(cs[i]);
     }
 
     @Override
     public IDataAccess get(String path) {
+        if (path == null) {
+            throw exception(DataAccessException.class, "da:get-path", path);
+        }
+        
         return new XmlDataAccess(xml.getChild(path));
     }
 
     @Override
     public Stream<IDataAccess> getAll(String path) {
+        if (path == null) {
+            throw exception(DataAccessException.class, "da:get-list", path);
+        }
+        
         XML[] cs = xml.getChildren(path);
         return IntStream.range(0, cs.length).mapToObj(i -> new XmlDataAccess(cs[i]));
     }

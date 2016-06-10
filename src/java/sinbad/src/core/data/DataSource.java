@@ -20,6 +20,8 @@ import core.schema.*;
 import core.sig.*;
 import core.util.*;
 import data.csv.*;
+import data.json.JsonFactory;
+import data.json.JsonInfer;
 import data.xml.XmlInfer;
 import data.xml.XmlFactory;
 
@@ -42,6 +44,9 @@ public class DataSource implements IDataSource {
         plugins.put("XML", new IDataSourcePlugin() {
             public IDataFormatInfer getInfer() { return new XmlInfer(); }
             public IDataAccessFactory getFactory() { return new XmlFactory(); } });
+        plugins.put("JSON", new IDataSourcePlugin() {
+            public IDataFormatInfer getInfer() { return new JsonInfer(); }
+            public IDataAccessFactory getFactory() { return new JsonFactory(); } });
     }
     
     public static void initializeProcessing(Object papp) {

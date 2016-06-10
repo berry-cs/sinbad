@@ -1,8 +1,11 @@
 package data.xml;
 
+import static core.log.Errors.exception;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import core.access.DataAccessException;
 import core.schema.*;
 
 public class XmlSchemaBuilder {
@@ -14,8 +17,9 @@ public class XmlSchemaBuilder {
 			return inferComp(xml, false);
 		} else {
 			if (isEmptyXML(xml) || xml.getName().equals("#text")) {
-				System.err.println("No data in XML (" + xml.getName() + ")");
-				return null;
+			    throw exception(DataAccessException.class, "da:schema");
+				//System.err.println("No data in XML (" + xml.getName() + ")");
+				//return null;
 			} else {
 				return new PrimSchema(xml.getName());
 			}
