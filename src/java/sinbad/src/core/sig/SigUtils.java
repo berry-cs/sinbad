@@ -1,5 +1,6 @@
 package core.sig;
 
+import core.log.Errors;
 import core.ops.SigClassUnifier;
 import core.ops.SignatureUnificationException;
 import core.util.ProcessingDetector;
@@ -25,13 +26,11 @@ public class SigUtils {
                 String sketchName = ProcessingDetector.getProcessingSketchClassName();
                 if (sketchName != null && !clsName.startsWith(sketchName + "$"))
                     return classFor(sketchName + "$" + clsName); 
-                else 
-                    e.printStackTrace();
-            } else {
-                e.printStackTrace();
-            }
+            } 
+            // otherwise...
+            //e.printStackTrace();
+            throw Errors.exception(SignatureUnificationException.class, "ds:no-class", clsName);
         }
-        return null;
     }
 
     

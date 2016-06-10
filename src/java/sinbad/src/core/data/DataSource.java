@@ -479,7 +479,6 @@ public class DataSource implements IDataSource {
     public <T> ArrayList<T> fetchList(Class<T> cls, String... keys) {
         if (!this.hasData())
             throw Errors.exception(DataSourceException.class, "ds:no-data", this.getName());
-
         ISig sig = SigUtils.buildCompSig(cls, keys).apply(new SigClassUnifier(cls));
         ISig lsig = new ListSig(sig);
         ISchema sch = this.dataAccess.getSchema();
