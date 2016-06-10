@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import core.data.CacheConstants;
 import core.data.DataSource;
+import core.data.DataSourceIterator;
 
 public class TestBackCompatible {
     
@@ -105,8 +106,8 @@ public class TestBackCompatible {
     @Test
     public void testOpenFlights() {
         DataSource ds = DataSource.connectAs("CSV", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat");
-        ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
         ds.setParam("format", "raw");
+        ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
         ds.printUsageString();
         ds.load();
         ds.printUsageString();
@@ -132,6 +133,30 @@ public class TestBackCompatible {
         */
     }
 
+    
+    @Test
+    public void testIterator() {
+        DataSource ds = DataSource.connectAs("CSV", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat");
+        ds.setParam("format", "raw");
+        ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
+        ds.load();
+        System.out.println(ds.getFullPathURL());
+        System.out.println("Amount of data: " + ds.size());
+        DataSourceIterator iter = ds.iterator();
+        System.out.println(iter.usageString());
+        int count = 0;
+        while (iter.hasData() && count<10) {
+            String name = iter.fetchString("Name");
+            boolean active = iter.fetchBoolean("Active");
+            String country = iter.fetch("String", "Country");
+            if (!country.isEmpty() && active) {
+                System.out.println(name + " (" + country + ")");
+                count++;
+            }
+            iter.loadNext();
+        }
+    }
+    
     
     @Test
     public void testTSV() {

@@ -6,9 +6,12 @@ package core.data;
  * @author Nadeem Abdul Hamid
  *
  */
+// not using the IDataSourceIterator naming convention just to make it
+// more convenient and less confusing for students using this
 public interface DataSourceIterator {
 	public boolean hasData();
-	public DataSourceIterator loadNext();
+    public DataSourceIterator loadNext();
+    public DataSourceIterator reset();
 	
 	public <T> T fetch(String clsName, String... keys);
 	public <T> T fetch(Class<T> cls, String... keys);

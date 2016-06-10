@@ -116,16 +116,14 @@ public interface IDataSource {
 	 * data source. Produces 0 if data not loaded.
 	 * @return number of elements of data available
 	 */
-	// TODO
-	//public int size();
+	public long size();
 	
 	/**
 	 * Produce an iterator over this data source
 	 * 
 	 * @return an iterator object
 	 */
-	// TODO
-	//public DataSourceIterator iterator();
+	public DataSourceIterator iterator();
 	
 	public <T> T fetch(String clsName, String... keys);
 	public <T> T fetch(Class<T> cls, String... keys);
