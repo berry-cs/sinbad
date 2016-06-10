@@ -132,6 +132,25 @@ public class TestBackCompatible {
         System.out.println(IOUtil.join(ArrayUtils.subarray(names, 0, 20), ","));
         */
     }
+    
+    
+    static class Airport {
+        String name;
+        boolean active;
+        String country;
+        
+        public Airport(String name, boolean active, String country) {
+            super();
+            this.name = name;
+            this.active = active;
+            this.country = country;
+        }
+
+        public String toString() {
+            return "Airport [name=" + name + ", active=" + active + ", country="
+                    + country + "]";
+        }
+    }
 
     
     @Test
@@ -154,6 +173,19 @@ public class TestBackCompatible {
                 count++;
             }
             iter.loadNext();
+        }
+        
+        iter.reset();
+        System.out.println("Again");
+        ArrayList<Airport> aps = new ArrayList<Airport>();
+        while (iter.hasData() && aps.size() < 10) {
+            Airport a = iter.fetch("core.tests.TestBackCompatible$Airport", "Name", "Active", "Country");
+            if (!a.country.isEmpty() && a.active)
+                aps.add(a);
+            iter.loadNext();
+        }
+        for (Airport a : aps) {
+            System.out.println(a);
         }
     }
     
