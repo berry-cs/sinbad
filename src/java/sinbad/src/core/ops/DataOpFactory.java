@@ -53,11 +53,17 @@ public class DataOpFactory {
 	IDataOp<Boolean> makeParseBool(){
 		return new IDataOp<Boolean>(){
 			public Boolean apply(IDataAccess d){
-				String s = d.getContents();
+				String s = d.getContents().toLowerCase();
+                boolean b = false;
 				if(s == null || s.equals(""))
 					return false;
-				else
-					return Boolean.parseBoolean(s);
+				else if (s.equals("true") || s.equals("1") || s.equals("y") || s.equals("yes"))
+		            b = true;
+		        else if (s.equals("false") || s.equals("0") || s.equals("n") || s.equals("no"))
+		            b = false;
+		        else 
+					b = Boolean.parseBoolean(s);
+				return b;
 			};
 		};
 	}
