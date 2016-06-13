@@ -32,10 +32,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -137,6 +140,7 @@ public class JSONObject {
         }
     }
 
+    
     /**
      * The map where the JSONObject's properties are kept.
      */
@@ -1649,6 +1653,7 @@ public class JSONObject {
             return this.write(w, indentFactor, 0).toString();
         }
     }
+    
 
     /**
      * Make a JSON text of an Object value. If the object has an
@@ -1832,12 +1837,13 @@ public class JSONObject {
      * @return The writer.
      * @throws JSONException
      */
+    
     public Writer write(Writer writer, int indentFactor, int indent)
             throws JSONException {
         try {
             boolean commanate = false;
             final int length = this.length();
-            Iterator<String> keys = this.keys();
+            Iterator<String> keys = getOrderedKeys(JSONWriter.keyOrder); // hack .nah. this.keys();
             writer.write('{');
 
             if (length == 1) {
@@ -1877,6 +1883,24 @@ public class JSONObject {
         } catch (IOException exception) {
             throw new JSONException(exception);
         }
+    }
+        
+    /* (This is a real hack! .nah.) */
+    private Iterator<String> getOrderedKeys(String[] keyOrder) {
+        if (keyOrder == null) {
+            return this.keys();
+        }
+        
+        Set<String> keys = new HashSet<String>(this.keySet());
+        List<String> orderedKeys = new ArrayList<String>();
+        for (String key : keyOrder) {
+            if (keys.contains(key)) {
+                orderedKeys.add(key);
+                keys.remove(key);
+            }
+        }
+        orderedKeys.addAll(keys);
+        return orderedKeys.iterator();
     }
 
     /**

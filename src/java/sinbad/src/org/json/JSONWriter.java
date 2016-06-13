@@ -91,6 +91,12 @@ public class JSONWriter {
     protected Writer writer;
 
     /**
+     * Controls the preferred order of keys when this option is written out to a string
+     * (This is a real hack! .nah.)
+     */
+    public static String[] keyOrder;
+
+    /**
      * Make a fresh JSONWriter. It can be used to build one JSON text.
      */
     public JSONWriter(Writer w) {

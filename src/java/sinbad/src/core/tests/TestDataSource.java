@@ -19,8 +19,11 @@ public class TestDataSource {
     public void testExport() {
         DataSource ds = DataSource.connect("src/core/tests/example.csv");
         ds.load();
-        // System.out.println(ds.export());
+        System.out.println(ds.export());
+        
         JSONObject jobj = new JSONObject(ds.export());
+        JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", "value", "description", "required", "elements", "fields", "options", "params", "cache", "schema" };
+        System.out.println(jobj);
         System.out.println(jobj.toString(3));
 
     }
