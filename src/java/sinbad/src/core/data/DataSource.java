@@ -18,6 +18,8 @@ import core.log.Errors;
 import core.ops.*;
 import core.schema.*;
 import core.sig.*;
+import core.spec.DataSpecException;
+import core.spec.DataSpecLoader;
 import core.util.*;
 import data.csv.*;
 import data.json.JsonFactory;
@@ -97,14 +99,17 @@ public class DataSource implements IDataSource {
     }
     
     /**
-     * Connect to a data source using the spec file at the given
-     * path
-     * @param path path to a spec file
+     * Connect to a data source using the spec file at the given path
+     * @param specpath path to a spec file
      * @return a prepared data source
      */
-    public static DataSource connectUsing(String path) {
-        // TODO
-        return null;
+    public static DataSource connectUsing(String specpath) {
+        specpath = ProcessingDetector.tryToFixPath(specpath);
+        try {
+            return new DataSpecLoader(specpath).getDataSource();
+        } catch (DataSpecException e) {
+            throw Errors.exception(DataSourceException.class, "ds:invalid-spec-file", specpath);
+        }
     }
     
     
@@ -162,9 +167,12 @@ public class DataSource implements IDataSource {
         String s = "-----\n";
         if (this.name != null) 
             s += "Data Source: " + this.name + "\n";
+        s += "URL: " + this.getFullPathURL() + "\n";
+        if (verbose && formatType != null) s += "Format: " + formatType + "\n";
+
+        s += "\n";
         if (description != null && !description.equals("")) s += description + "\n";
         if (infoURL != null) s += "(See " + infoURL + " for more information about this data.)\n";
-        if (verbose && formatType != null) s += "Format: " + formatType + "\n";
         
         String[] paramKeys = params.keySet().toArray(new String[]{});
         if (paramKeys.length > 0) {
@@ -177,7 +185,7 @@ public class DataSource implements IDataSource {
                 boolean req = p.isRequired();
                 s += "   - " + key
                         + ((v==null)?" (not set)":" (currently set to: " + v + ")") 
-                        + ((desc==null)?"":" : " + desc) + ((v==null && req)?" [*required]":"")
+                        + ((desc==null)?"":" : " + desc) + (req ? " [*required]":"")
                         + "\n";
             }
         }
@@ -187,7 +195,11 @@ public class DataSource implements IDataSource {
             Arrays.sort(optionKeys);
             s += "\nThe following options are available for this data source format:\n";
             for (String key : optionKeys) {
-                s += "   - " + key + "\n";
+                s += "   - " + key;
+                if (this.dataFactory.getOption(key) != null) {
+                    s += " (currently set to: " + this.dataFactory.getOption(key) + ")";
+                }
+                s += "\n";
             }
 
         }
@@ -223,6 +235,11 @@ public class DataSource implements IDataSource {
      */
     
     public String getName() { return this.name; }
+    
+    public DataSource setName(String name) {
+        this.name = name;
+        return this;
+    }
 
     public String getDescription() { return this.description; }
     
@@ -597,11 +614,11 @@ public class DataSource implements IDataSource {
     }
 
     private void exportOptions(Map<String, Object> spec) {
-        List<Object> optList = new ArrayList<Object>();
+        List<Map<String, String>> optList = new ArrayList<Map<String, String>>();
         
         for (String name : this.dataFactory.getOptions()) {
             if (this.dataFactory.getOption(name) != null) {
-                Map<String, Object> m = new HashMap<String, Object>();
+                Map<String, String> m = new HashMap<String, String>();
                 m.put("name", name);
                 m.put("value", this.dataFactory.getOption(name));
                 optList.add(m);
@@ -612,7 +629,7 @@ public class DataSource implements IDataSource {
     }
 
     private void exportParams(Map<String, Object> spec) {
-        List<Object> paramList = new ArrayList<Object>();
+        List<Map<String,String>> paramList = new ArrayList<Map<String,String>>();
         
         for (String key : params.keySet()) {
             Param p = params.get(key);

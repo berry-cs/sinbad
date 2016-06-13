@@ -16,6 +16,14 @@ import core.util.IOUtil;
 public class TestDataSource {
     
     @Test
+    public void testLoadSpec() {
+        DataSource ds = DataSource.connectUsing("src/core/tests/example.spec");
+        ds.load();
+        ds.printUsageString(true);
+        System.out.println("first airline: " + ds.fetchString("Name"));
+    }
+    
+    //@Test
     public void testExport() {
         DataSource ds = DataSource.connect("src/core/tests/example.csv");
         ds.load();
@@ -25,6 +33,13 @@ public class TestDataSource {
         JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", "value", "description", "required", "elements", "fields", "options", "params", "cache", "schema" };
         System.out.println(jobj);
         System.out.println(jobj.toString(3));
+        
+        String s = jobj.toString(3);
+        JSONTokener jt = new JSONTokener(s);
+        Object obj = jt.nextValue();
+        if (obj instanceof JSONObject) {
+            System.out.println("Back as map:\n" + ((JSONObject) obj).toMap());
+        }
 
     }
     

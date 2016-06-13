@@ -33,6 +33,15 @@ public class Param {
 	}
 
 	/**
+	 * Import information to construct a param from the given map
+	 */
+	public Param(Map<String, String> pm) {
+        this(pm.get("key"), ParamType.fromString(pm.get("type")));
+        this.description = pm.getOrDefault("description", null);
+        this.required = pm.containsKey("required") && pm.get("required").equals("true");
+    }
+
+    /**
 	 * @return the key
 	 */
 	public String getKey() {
@@ -78,14 +87,14 @@ public class Param {
      * @value a value for this parameter, or null if not set
      * @return
      */
-    public Map<String, Object> export(String value) {
-        Map<String, Object> m = new HashMap<String, Object>();
+    public Map<String, String> export(String value) {
+        Map<String, String> m = new HashMap<String, String>();
         
         m.put("key", this.key);
         if (this.type == ParamType.PATH) m.put("type", "path"); 
         else if (this.type == ParamType.QUERY) m.put("type", "query");
         
-        if (this.required) m.put("required", true);
+        if (this.required) m.put("required", "true");
         if (this.description != null) m.put("description", this.description);
         if (value != null) m.put("value",  value);
         
