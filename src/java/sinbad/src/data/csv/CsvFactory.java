@@ -27,13 +27,14 @@ public class CsvFactory implements IDataAccessFactory {
 
     @Override
     public String[] getOptions() {
-        return new String[] { "header (optional)", "delimiter (default: ',')", "streaming (default: false)" };
+        return new String[] { "header", "delimiter", "streaming" };
     }
     
     @Override
     public String getOption(String option) {
         if ("header".equals(option)) {
-            return String.join(",", this.header);
+            if (this.header == null) return null;
+            else return String.join(",", this.header);
         } else if ("delimiter".equals(option)) {
             return ""+this.delimiter;
         } else if ("streaming".equals(option)) {

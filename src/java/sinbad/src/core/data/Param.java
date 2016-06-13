@@ -3,6 +3,9 @@
  */
 package core.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Nadeem Abdul Hamid
  *
@@ -68,6 +71,25 @@ public class Param {
 
     public int hashCode() {
         return (41 * (this.key.hashCode() + this.type.hashCode()));
+    }
+
+    /**
+     * Exports a representation of this object's data
+     * @value a value for this parameter, or null if not set
+     * @return
+     */
+    public Map<String, Object> export(String value) {
+        Map<String, Object> m = new HashMap<String, Object>();
+        
+        m.put("key", this.key);
+        if (this.type == ParamType.PATH) m.put("type", "path"); 
+        else if (this.type == ParamType.QUERY) m.put("type", "query");
+        
+        if (this.required) m.put("required", true);
+        if (this.description != null) m.put("description", this.description);
+        if (value != null) m.put("value",  value);
+        
+        return m;
     }
 	
 }

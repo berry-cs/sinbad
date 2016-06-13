@@ -15,6 +15,16 @@ import core.util.IOUtil;
 
 public class TestDataSource {
     
+    @Test
+    public void testExport() {
+        DataSource ds = DataSource.connect("src/core/tests/example.csv");
+        ds.load();
+        // System.out.println(ds.export());
+        JSONObject jobj = new JSONObject(ds.export());
+        System.out.println(jobj.toString(3));
+
+    }
+    
     
     @Test
     public void testCSVDataSource() {

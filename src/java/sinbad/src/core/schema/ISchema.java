@@ -1,6 +1,7 @@
 package core.schema;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public interface ISchema extends Serializable {
     /** 
@@ -20,4 +21,6 @@ public interface ISchema extends Serializable {
     public <T> T apply(ISchemaVisitor<T> sv);
 
     public String toString(boolean verbose);
+
+    public Map<String, Object> export();
 }

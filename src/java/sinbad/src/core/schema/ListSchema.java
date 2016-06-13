@@ -1,5 +1,8 @@
 package core.schema;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ListSchema extends AbsSchema {
     private static final long serialVersionUID = 1L;
 
@@ -69,5 +72,11 @@ public class ListSchema extends AbsSchema {
         return true;
     }
 
-
+    public Map<String, Object> export() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("type", "list");
+        this.exportCommon(m);
+        m.put("elements", this.elementSchema.export());
+        return m;
+    }
 }

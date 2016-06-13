@@ -123,7 +123,6 @@ public class DataSource implements IDataSource {
     
     /* params are connection-related parameters, either in a query string or filling in part of the path */
     protected HashMap<String, Param> params; // keeps track of *all* parameters available for this data source
-    protected ArrayList<String> paramValueKeys; // keeps track of which parameters have been supplied so far
     protected HashMap<String, String> paramValues; // keeps track of the values of the supplied parameters
 
     protected boolean readyToLoad;
@@ -143,7 +142,6 @@ public class DataSource implements IDataSource {
         
         this.params = new HashMap<String, Param>();
         this.paramValues = new HashMap<String, String>();
-        this.paramValueKeys = new ArrayList<String>();
 
         this.readyToLoad = false;
         this.loaded = false;
@@ -288,7 +286,6 @@ public class DataSource implements IDataSource {
     public DataSource setParam(String op, String value) {
         if (op != null && value != null) {
             paramValues.put(op, value);
-            paramValueKeys.add(op);
         }
         return this;
     }
@@ -435,7 +432,7 @@ public class DataSource implements IDataSource {
         // add query params to request URL...
         if (URLPrepper.isURL(this.path)) {
             URLPrepper prepper = new URLPrepper(this.path);
-            for (String k : paramValueKeys) {
+            for (String k : paramValues.keySet()) {
                 Param p = params.get(k);
                 if (p == null || p.getType() == ParamType.QUERY) {
                     String v = paramValues.get(k);
@@ -446,7 +443,7 @@ public class DataSource implements IDataSource {
         }
         
         // fill in substitutions
-        for (String k : paramValueKeys) {
+        for (String k : paramValues.keySet()) {
             Param p = params.get(k);
             if (p != null && p.getType() == ParamType.PATH) {
                 fullpath = substParam(fullpath, k, paramValues.get(k));
@@ -570,6 +567,63 @@ public class DataSource implements IDataSource {
             return 0;
         else
             return (long) this.dataAccess.getAll(this.dataAccess.getSchema().getPath()).count();
+    }
+
+    @Override
+    public Map<String, Object> export() {
+        Map<String, Object> spec = new HashMap<String, Object>();
+        
+        exportIfNotNull(spec, "path", this.path);
+        exportIfNotNull(spec, "name", this.name);
+        exportIfNotNull(spec, "format", this.formatType);
+        exportIfNotNull(spec, "infourl", this.infoURL);
+        exportIfNotNull(spec, "description", this.description);
+
+        exportParams(spec);
+        if (this.dataFactory != null) exportOptions(spec);
+        exportCacheInfo(spec);
+        if (this.dataAccess != null && this.dataAccess.getSchema() != null) 
+            spec.put("schema", this.dataAccess.getSchema().export());
+        
+        return spec;
+    }
+    
+    private void exportCacheInfo(Map<String, Object> spec) {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("timeout", this.getCacheTimeout());
+        if (!this.getCacheDirectory().equals(DataCacher.getDefaultCacheDir()))
+            m.put("directory", this.getCacheDirectory());
+        spec.put("cache", m);
+    }
+
+    private void exportOptions(Map<String, Object> spec) {
+        List<Object> optList = new ArrayList<Object>();
+        
+        for (String name : this.dataFactory.getOptions()) {
+            Map<String, Object> m = new HashMap<String, Object>();
+            m.put("name", name);
+            m.put("value", this.dataFactory.getOption(name));
+            optList.add(m);
+        }
+        
+        spec.put("options", optList);
+    }
+
+    private void exportParams(Map<String, Object> spec) {
+        List<Object> paramList = new ArrayList<Object>();
+        
+        for (String key : params.keySet()) {
+            Param p = params.get(key);
+            paramList.add(p.export(paramValues.getOrDefault(key, null)));
+        }
+        
+        spec.put("params", paramList);
+    }
+
+    private void exportIfNotNull(Map<String, Object> map, String key, Object val) {
+        if (val != null) {
+            map.put(key, val);
+        }
     }
 
 }

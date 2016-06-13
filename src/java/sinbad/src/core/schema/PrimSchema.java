@@ -1,5 +1,7 @@
 package core.schema;
 
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a data element that contains unstructured, "raw" data
@@ -45,6 +47,14 @@ public class PrimSchema extends AbsSchema {
         } else {
             return "*"; 
         }
+    }
+
+    @Override
+    public Map<String, Object> export() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("type", "prim");
+        this.exportCommon(m);
+        return m;
     }
 }
 

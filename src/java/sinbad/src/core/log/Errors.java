@@ -23,7 +23,7 @@ public class Errors {
         addError("ds:no-data", "No data available: %s --- make sure you called .load()", 1);
         addError("ds:no-class", "Could not find a class named: %s", 1);
         
-        addError("ds:no-such-option", "no such option: %s", 1);
+        addError("da:no-such-option", "no such option: %s", 1);
         addError("da:getcontents", "could not access contents as a primitive (string)", 0);
         addError("da:get-index", "could not access index %d of path %s", 2);
         addError("da:get-path", "could not access path %s", 1);

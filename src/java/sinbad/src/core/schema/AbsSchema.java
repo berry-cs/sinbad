@@ -1,5 +1,9 @@
 package core.schema;
 
+import java.util.Map;
+
+import org.json.JSONObject;
+
 public abstract class AbsSchema implements ISchema {
     private static final long serialVersionUID = 1L;
     
@@ -77,14 +81,10 @@ public abstract class AbsSchema implements ISchema {
         return true;
     }
 
-    /*
-    public static boolean verboseToString() {
-        return verboseToString;
+   
+    protected void exportCommon(Map<String, Object> m) {
+        m.put("path", this.path);
+        m.put("description", this.description);
     }
-
-    public static void setVerboseToString(boolean verboseToString) {
-        AbsSchema.verboseToString = verboseToString;
-    }
-    */
     
 }

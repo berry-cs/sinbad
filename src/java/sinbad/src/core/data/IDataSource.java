@@ -2,6 +2,7 @@ package core.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import core.access.IDataAccess;
 import core.schema.ISchema;
@@ -157,4 +158,11 @@ public interface IDataSource {
 	public ArrayList<String> fetchStringList(String key);
 
 	public String usageString(boolean verbose);
+	
+	/**
+	 * Produces a representation of this data source's information
+	 * using standard Java classes (Map, List). Useful for serialization
+	 * and exporting to other formats, e.g. JSON.
+	 */
+	public Map<String,Object> export();
 }

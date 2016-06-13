@@ -1,7 +1,10 @@
 package core.schema;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a structured data element whose subelements
@@ -11,8 +14,8 @@ import java.util.HashMap;
 public class CompSchema extends AbsSchema {
     private static final long serialVersionUID = 1L;
     
-    private String[] fieldNames;
-    private HashMap<String, ISchema> fieldMap;
+    private String[] fieldNames;   // this is kept to maintain the order of the fields
+    private HashMap<String, ISchema> fieldMap; // schema of each field
     
     /**
      * Construct a compound schema with null base path and description
@@ -93,5 +96,22 @@ public class CompSchema extends AbsSchema {
         if (!Arrays.equals(fieldNames, other.fieldNames))
             return false;
         return true;
+    }
+    
+    public Map<String, Object> export() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("type", "struct");
+        this.exportCommon(m);
+
+        List<Object> fields = new ArrayList<Object>();
+        for (String field : this.fieldNames) {
+            Map<String, Object> fm = new HashMap<String, Object>();
+            fm.put("name", field);
+            fm.put("schema", fieldMap.get(field));
+            fields.add(fm);
+        }
+        m.put("fields", fields);
+        
+        return m;
     }
 }
