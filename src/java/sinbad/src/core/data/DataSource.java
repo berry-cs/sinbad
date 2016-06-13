@@ -600,10 +600,12 @@ public class DataSource implements IDataSource {
         List<Object> optList = new ArrayList<Object>();
         
         for (String name : this.dataFactory.getOptions()) {
-            Map<String, Object> m = new HashMap<String, Object>();
-            m.put("name", name);
-            m.put("value", this.dataFactory.getOption(name));
-            optList.add(m);
+            if (this.dataFactory.getOption(name) != null) {
+                Map<String, Object> m = new HashMap<String, Object>();
+                m.put("name", name);
+                m.put("value", this.dataFactory.getOption(name));
+                optList.add(m);
+            }
         }
         
         spec.put("options", optList);

@@ -107,7 +107,7 @@ public class CompSchema extends AbsSchema {
         for (String field : this.fieldNames) {
             Map<String, Object> fm = new HashMap<String, Object>();
             fm.put("name", field);
-            fm.put("schema", fieldMap.get(field));
+            fm.put("schema", fieldMap.get(field).export());
             fields.add(fm);
         }
         m.put("fields", fields);

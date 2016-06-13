@@ -49,11 +49,10 @@ public class PrimSchema extends AbsSchema {
         }
     }
 
-    @Override
     public Map<String, Object> export() {
         Map<String, Object> m = new HashMap<String, Object>();
         m.put("type", "prim");
-        this.exportCommon(m);
+        exportCommon(m);
         return m;
     }
 }
