@@ -14,6 +14,7 @@ import core.access.*;
 import core.ops.*;
 import core.schema.*;
 import core.sig.*;
+import core.util.FileLoader;
 import core.util.IOUtil;
 
 import static core.log.Errors.*;
@@ -31,7 +32,7 @@ public class CsvDataAccess extends FailAccess {
     private boolean streaming;   // load rows on demand for getAll()
     private ISchema schema;
        
-    public CsvDataAccess(InputStream is, String[] header, char delimiter, boolean streaming) {
+    public CsvDataAccess(InputStream is, String[] header, char delimiter, boolean streaming, int skipRows) {
         this.header = header;
         this.delimiter = delimiter;
         this.allRows = new ArrayList<String[]>();
@@ -45,6 +46,10 @@ public class CsvDataAccess extends FailAccess {
         //System.err.println(p.parseAll(new InputStreamReader(is)));
         p.beginParsing(new InputStreamReader(new BufferedInputStream(is)));
         
+        for (int i = 0; i < skipRows; i++) {
+            p.parseNext();
+        }
+        
         if (this.header == null) {
             this.header = p.parseNext();
         }
@@ -54,7 +59,9 @@ public class CsvDataAccess extends FailAccess {
         
         this.headerIndex = new HashMap<String, Integer>();
         for (int i = 0; i < this.header.length; i++) {
-            this.headerIndex.put(this.header[i], i);
+            if (this.header[i] != null) {
+                this.headerIndex.put(this.header[i], i);
+            }
         }
         
         this.schema = null; // build it later on demand
@@ -79,10 +86,17 @@ public class CsvDataAccess extends FailAccess {
     }
     
     private ISchema buildSchema() {
-        CompField[] fields = new CompField[this.header.length];
+        int nonNull = 0;
+        for (String h : this.header) {
+            if (h != null) nonNull++;
+        }
+        
+        CompField[] fields = new CompField[nonNull];
         for (int i = 0; i < this.header.length; i++) {
-            PrimSchema ps = new PrimSchema(this.header[i]);  // basepath
-            fields[i] = new CompField(this.header[i], ps);
+            if (this.header[i] != null) {
+                PrimSchema ps = new PrimSchema(this.header[i]);  // basepath
+                fields[i] = new CompField(this.header[i], ps);
+            }
         }
         return new ListSchema(new CompSchema(fields));
     }
@@ -245,7 +259,7 @@ public class CsvDataAccess extends FailAccess {
     
     public static void main(String[] args) {
         //InputStream in = IOUtil.createInput("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat");
-         InputStream in = IOUtil.createInput("/Users/nhamid/Downloads/routes.dat");
+         InputStream in = new FileLoader().createInput("/Users/nhamid/Downloads/routes.dat");
          CsvDataAccess csv = (CsvDataAccess)new CsvFactory().setOption("header", "Airline,ID,Source Airport,Source ID,Dest Airport,Dest ID,Code Share,Stops,Equipment")
                  .newInstance(in);
          long millis = System.currentTimeMillis();

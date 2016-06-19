@@ -16,6 +16,7 @@ public class CsvFactory implements IDataAccessFactory {
     private String[] header; // if null, should be read from the input
     private char delimiter = ',';  // default is comma
     private boolean streaming = false;
+    private int skipRows = 0;   // number of initial rows to skip
     private ISchema schema = null;
     
     public CsvFactory() {
@@ -27,7 +28,7 @@ public class CsvFactory implements IDataAccessFactory {
 
     @Override
     public String[] getOptions() {
-        return new String[] { "header", "delimiter", "streaming" };
+        return new String[] { "header", "delimiter", "streaming", "skiprows" };
     }
     
     @Override
@@ -39,6 +40,8 @@ public class CsvFactory implements IDataAccessFactory {
             return ""+this.delimiter;
         } else if ("streaming".equals(option)) {
             return ""+this.streaming;
+        } else if ("skiprows".equals(option)) {
+            return ""+this.skipRows;
         } else {
             throw Errors.exception(DataAccessException.class, "da:no-such-option", option);
         }
@@ -58,6 +61,8 @@ public class CsvFactory implements IDataAccessFactory {
             delimiter = value.charAt(0);
         } else if ("streaming".equals(option)) {
             streaming = true;
+        } else if ("skiprows".equals(option)) {
+            skipRows = Integer.parseInt(value);
         }
         return this;
     }
@@ -73,7 +78,7 @@ public class CsvFactory implements IDataAccessFactory {
 
     @Override
     public CsvDataAccess newInstance(InputStream is) {
-        CsvDataAccess da =  new CsvDataAccess(is, header, delimiter, streaming);
+        CsvDataAccess da =  new CsvDataAccess(is, header, delimiter, streaming, skipRows);
         if (this.schema != null) { 
             da.setSchema(schema);
         }
