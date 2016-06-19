@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 
 import core.data.CacheConstants;
 import core.util.FileLoader;
-import core.util.IOUtil;
 
 
 public class DataCacher {

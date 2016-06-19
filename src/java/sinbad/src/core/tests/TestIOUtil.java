@@ -10,7 +10,7 @@ import org.junit.rules.ExpectedException;
 import core.ops.SigClassUnifier;
 import core.ops.SignatureUnificationException;
 import core.util.FileLoader;
-import core.util.IOUtil;
+
 
 public class TestIOUtil {
     @Rule

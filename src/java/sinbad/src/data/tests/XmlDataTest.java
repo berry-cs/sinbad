@@ -15,7 +15,7 @@ import core.ops.SchemaSigUnifier;
 import core.ops.SigClassUnifier;
 import core.schema.*;
 import core.sig.*;
-import core.util.IOUtil;
+import core.util.FileLoader;
 import data.xml.XmlDataAccess;
 
 
@@ -25,8 +25,9 @@ public class XmlDataTest {
     public void testXmlAccess() {
         DataCacher dc = DataCacher.defaultCacher();
         System.out.println(dc.getDirectory());
+        FileLoader fl = new FileLoader();
         
-        InputStream is = IOUtil.createInput(dc.resolvePath("http://xisbn.worldcat.org/webservices/xid/isbn/9780201038019?method=getMetadata&fl=*&format=xml"));
+        InputStream is = fl.createInput(dc.resolvePath("http://xisbn.worldcat.org/webservices/xid/isbn/9780201038019?method=getMetadata&fl=*&format=xml", fl));
         XmlDataAccess xda = new XmlDataAccess(is);
         System.out.println(xda.get("isbn/author").getContents());
         System.out.println(xda.getSchema().toString(true));

@@ -22,7 +22,6 @@ import core.schema.ISchema;
 import core.schema.ListSchema;
 import core.schema.PrimSchema;
 import core.util.FileLoader;
-import core.util.IOUtil;
 
 public class DataSpecLoader {
 

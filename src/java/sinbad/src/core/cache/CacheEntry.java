@@ -5,7 +5,6 @@ import java.io.File;
 import org.json.JSONWriter;
 
 import core.util.FileLoader;
-import core.util.IOUtil;
 
 public class CacheEntry {
     private String tag;

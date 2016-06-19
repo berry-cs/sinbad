@@ -15,7 +15,6 @@ import core.ops.*;
 import core.schema.*;
 import core.sig.*;
 import core.util.FileLoader;
-import core.util.IOUtil;
 
 import static core.log.Errors.*;
 

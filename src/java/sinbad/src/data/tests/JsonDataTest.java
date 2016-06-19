@@ -7,14 +7,14 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import core.access.IDataAccess;
-import core.util.IOUtil;
+import core.util.FileLoader;
 import data.json.JsonFactory;
 
 public class JsonDataTest {
 
     @Test
     public void testSingleResult() {
-        InputStream example = IOUtil.createInput("src/data/tests/example.json");
+        InputStream example = new FileLoader().createInput("src/data/tests/example.json");
         IDataAccess json = new JsonFactory().newInstance(example);
         
         assertEquals("FeatureCollection", json.get("type").getContents());

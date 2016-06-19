@@ -9,14 +9,14 @@ import org.junit.Test;
 
 import core.access.*;
 import core.schema.*;
-import core.util.IOUtil;
+import core.util.FileLoader;
 import data.csv.*;
 
 public class CsvDataTest {
 
     @Test
     public void testSingleRow() {
-        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
         IDataAccess csv = new CsvFactory().newInstance(example);
         
         assertEquals("1997", csv.get(null, 0).get("Year").getContents());
@@ -27,7 +27,7 @@ public class CsvDataTest {
     
     @Test
     public void testGetAll() {
-        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
         IDataAccess csv = new CsvFactory().newInstance(example);
         Stream<IDataAccess> s = csv.getAll(null);
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
@@ -39,7 +39,7 @@ public class CsvDataTest {
 
     @Test
     public void testGetAllStreaming() {
-        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
         IDataAccess csv = new CsvFactory().setOption("streaming").newInstance(example);
         Stream<IDataAccess> s = csv.getAll(null);
         IDataAccess[] rows = s.toArray(IDataAccess[]::new);
@@ -51,7 +51,7 @@ public class CsvDataTest {
     
     @Test
     public void testSchema() {
-        InputStream example = IOUtil.createInput("src/data/tests/example.csv");
+        InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
         CsvDataAccess csv = new CsvFactory().setOption("streaming").newInstance(example);
         
         ISchema expected = new ListSchema(new CompSchema(
