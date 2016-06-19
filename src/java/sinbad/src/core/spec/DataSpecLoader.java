@@ -21,6 +21,7 @@ import core.schema.CompSchema;
 import core.schema.ISchema;
 import core.schema.ListSchema;
 import core.schema.PrimSchema;
+import core.util.FileLoader;
 import core.util.IOUtil;
 
 public class DataSpecLoader {
@@ -28,7 +29,7 @@ public class DataSpecLoader {
     private DataSource ds;
 
     public DataSpecLoader(String specpath) {
-        this(IOUtil.createInput(specpath));
+        this(new FileLoader().createInput(specpath));
     }
 
     @SuppressWarnings("unchecked")

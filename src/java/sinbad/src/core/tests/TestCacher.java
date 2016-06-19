@@ -8,6 +8,7 @@ import org.json.*;
 import org.junit.Test;
 
 import core.cache.*;
+import core.util.FileLoader;
 
 public class TestCacher {
 
@@ -24,17 +25,17 @@ public class TestCacher {
         dc = dc.updateTimeout(120000);
         
         System.out.println(dc.getCacheIndexFile("http://cs.berry.edu/null"));
-        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data"));
-        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema"));
+        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", new FileLoader()));
+        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema", new FileLoader()));
         
         OutputStream os = dc.resolveOutputStreamFor("http://cs.berry.edu/big-data", "schema");
         PrintWriter pr = new PrintWriter(os);
         pr.println("hi there " + System.currentTimeMillis());
         pr.close();
 
-        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema"));
+        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema", new FileLoader()));
         System.out.println(dc.clearCacheData("http://cs.berry.edu/big-data", "schema"));
-        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema"));
+        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema", new FileLoader()));
 
     }
 

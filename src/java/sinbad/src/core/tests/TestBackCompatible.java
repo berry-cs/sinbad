@@ -31,7 +31,20 @@ public class TestBackCompatible {
         }   
     }
     
-    //@Test
+    
+    @Test
+    public void testPeru() {
+        DataSource ds = DataSource.connect("http://api.worldbank.org/v2/en/country/per?downloadformat=csv");
+        //ds.clearENTIRECache();
+        ds.setOption("skiprows", "2");
+        ds.setOption("fileentry", "API_PER_DS2_en_csv_v2.csv");
+        ds.load();
+        ds.printUsageString();
+    }
+    
+    
+    
+    @Test
     public void testVehiclesXML() {        
         DataSource ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.xml.zip");
         System.out.println("About to load...");
@@ -253,6 +266,12 @@ public class TestBackCompatible {
         ds2.printUsageString();
         String status = ds2.fetchString("valid"); 
         System.out.println("30165: valid? " + status);
+        
+        DataSource ds = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/425/0bd09951-c381-4bec-bea0-58f98d56ecfa.zip");
+        ds.setOption("fileentry", "FACTDATA_MAR2016.TXT");
+        ds.load();
+        ds.printUsageString();
+
     }
 
     

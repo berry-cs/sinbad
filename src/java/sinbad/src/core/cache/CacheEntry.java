@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.json.JSONWriter;
 
+import core.util.FileLoader;
 import core.util.IOUtil;
 
 public class CacheEntry {
@@ -39,7 +40,7 @@ public class CacheEntry {
     public boolean isDataValid() {
         return cachedata != null
                 && (new File(cachedata)).exists() 
-                && IOUtil.createInput(cachedata) != null;
+                && new FileLoader().createInput(cachedata) != null;
     }
 
     public boolean isExpired(long cacheExpiration) {

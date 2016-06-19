@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import core.data.CacheConstants;
+import core.util.FileLoader;
 import core.util.IOUtil;
 
 
@@ -161,8 +162,8 @@ public class DataCacher {
         return null;
     }
     
-    private String readAndCache(String path) throws IOException {
-        InputStream is = IOUtil.createInput(path);
+    private String readAndCache(String path, FileLoader iomanager) throws IOException {
+        InputStream is = iomanager.createInput(path);
         String cachedFile = (is == null ? null : readAndCache(path, is));
         if (cachedFile == null) {
             throw new IOException("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable");
@@ -184,11 +185,11 @@ public class DataCacher {
         return tempFile.getCanonicalPath();
     }
     
-    public String resolvePath(String path) {
-        return this.resolvePath(path, null);
+    public String resolvePath(String path, FileLoader iomanager) {
+        return this.resolvePath(path, null, iomanager);
     }
     
-    public String resolvePath(String path, String subtag) {
+    public String resolvePath(String path, String subtag, FileLoader iomanager) {
         if (!CachingEnabled || !isCacheable(path, subtag)) {
             return path;
         } else  {
@@ -207,7 +208,7 @@ public class DataCacher {
                     (cachepath == null 
                         || (entry != null && entry.isExpired(this.cacheExpiration)))) {
                 try {
-                    String cachedFilePath = readAndCache(path);
+                    String cachedFilePath = readAndCache(path, iomanager);
                     if (cachepath != null) { // need to remove old cached file
                         File olddata = new File(cachepath);
                         olddata.delete();

@@ -1,20 +1,44 @@
 package core.util;
 
-import java.io.*;
-import java.net.*;
-import java.nio.file.FileSystems;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import core.log.Errors;
 
 /**
- * Contains utility methods for handling I/O. Some methods have been
- * cannibalized from the Processing project.
- *
+ * Takes care of low-level details of actually producing an input stream
+ * from a file or URL with utility methods for IO. Some methods have been
+ * cannibalized from the Processing project. 
  */
-public class IOUtil {
+public class FileLoader {
 
+    private String zipFileEntry;   // controls which entry is loaded from a zip file
+
+    public FileLoader() {
+        
+    }
     
+    public void setZipFileEntry(String zipFileEntry) {
+        this.zipFileEntry = zipFileEntry;
+    }
+    
+    
+
     /**
      * Ripped from processing/core/PApplet.java (http://processing.org)
      *
@@ -91,7 +115,7 @@ public class IOUtil {
         String path; 
     }
     
-    private static InputStream createInput(String path) {
+    public InputStream createInput(String path) {
         //System.err.println("IOUtil::createInput(" + path + ")");
 
         InputInfo inputInfo = createInputRaw(path);
@@ -110,16 +134,30 @@ public class IOUtil {
             } else if (lower.endsWith(".zip")) {
                 try {
                     ZipInputStream zin = new ZipInputStream(input);
-                    ZipEntry ze = zin.getNextEntry();
-                    System.err.println("Using " + ze.getName() + " from zip source");
+                    ZipEntry ze;
+                    String dirlist = "";
                     
-                    while ( (ze = zin.getNextEntry()) != null ) {
-                        System.err.println("entry: " + ze.getName());
+                    if (this.zipFileEntry == null) {   // no file entry option was specified
+                        int count = 0;
+                        while ( (ze = zin.getNextEntry()) != null ) {
+                            count++;
+                            dirlist = dirlist + "   " + ze.getName() + "\n";
+                        }
+                        if (count == 1) { // try to reopen
+                            zin = new ZipInputStream(createInputRaw(path).input);
+                            zin.getNextEntry();
+                            return zin;
+                        }
+                        
+                        throw Errors.exception(DataIOException.class, "io:zipentry", path, dirlist);
+                    } if (this.zipFileEntry != null) {
+                        while ( (ze = zin.getNextEntry()) != null ) {
+                            if (ze.getName().equals(this.zipFileEntry)) {
+                                return zin;
+                            }
+                        }
+                        throw Errors.exception(DataIOException.class, "io:nozipentry", this.zipFileEntry, path);
                     }
-                    
-                    
-                    
-                    return zin; 
                 } catch (IOException e) {
                     //e.printStackTrace();
                     return null;
@@ -294,5 +332,5 @@ public class IOUtil {
         return null;
     }
 
-
+    
 }

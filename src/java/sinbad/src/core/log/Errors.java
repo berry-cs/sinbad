@@ -16,6 +16,9 @@ public class Errors {
     static {  // static initialization block
         errdb = new HashMap<String, ErrorMessage>(); 
         
+        addError("io:zipentry", "please specify one of the following files to use from %s:\n%s\n(set a \"fileentry\" option on your data source object)", 2);
+        addError("io:nozipentry", "no entry named %s was found in %s", 2);
+        
         addError("ds:notype", "no data source plugin for type %s", 1);
         addError("ds:noinfer", "could not infer the type of data at %s", 1);
         addError("ds:notready-params", "not ready to load; missing parameters: %s", 1);

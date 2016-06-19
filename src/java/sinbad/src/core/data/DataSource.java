@@ -137,6 +137,7 @@ public class DataSource implements IDataSource {
     protected IDataAccessFactory dataFactory;
     protected IDataAccess dataAccess;
     protected DataCacher cacher;
+    protected FileLoader iomanager; // io manager
     
     protected DataSource(String name, String path, String typeExt, IDataSourcePlugin plugin) {
         this.name = name;
@@ -155,6 +156,7 @@ public class DataSource implements IDataSource {
         this.dataFactory = plugin.getFactory();
         this.dataAccess = null;
         this.cacher = DataCacher.defaultCacher();
+        this.iomanager = new FileLoader();
     }
     
     
@@ -330,7 +332,11 @@ public class DataSource implements IDataSource {
      */
     
     public DataSource setOption(String op, String value) {
-        this.dataFactory.setOption(op, value);
+        if ("fileentry".equals(op.toLowerCase())) {
+            iomanager.setZipFileEntry(value);
+        } else {
+            this.dataFactory.setOption(op, value);
+        }
         return this;
     }
     
@@ -367,7 +373,7 @@ public class DataSource implements IDataSource {
         }
     
         // get the raw data into/from the cache
-        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL());
+        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL(), iomanager);
         if (resolvedPath == null) 
             throw Errors.exception(DataSourceException.class, "ds:no-input", path);
         
@@ -380,10 +386,10 @@ public class DataSource implements IDataSource {
         
         // load schema from cached if appropriate and add it to the factory...
         boolean cachedSchemaLoaded = false;
-        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema");
+        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema", iomanager);
         if (!this.dataFactory.hasSchema() && cachedSchemaPath != null && !forceReload) {
             try {
-                InputStream cis = IOUtil.createInput(cachedSchemaPath);
+                InputStream cis = iomanager.createInput(cachedSchemaPath);
                 //if (cis != null) {
                     ObjectInputStream schis = new ObjectInputStream(cis);
                     ISchema schema =  (ISchema)schis.readObject();
@@ -398,7 +404,7 @@ public class DataSource implements IDataSource {
         }
         
         // now use the factory to generate the data access object
-        InputStream is = IOUtil.createInput(resolvedPath); 
+        InputStream is = iomanager.createInput(resolvedPath); 
         this.dataAccess = this.dataFactory.newInstance(is); 
         ISchema schema = this.dataAccess.getSchema();  // forces it to be built
         
