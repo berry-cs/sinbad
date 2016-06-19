@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import core.data.CacheConstants;
+import core.util.DotPrinter;
 import core.util.FileLoader;
 
 
@@ -170,18 +171,33 @@ public class DataCacher {
         return cachedFile;
     }
     
+    
     private String readAndCache(String path, InputStream is) throws IOException {
-        byte[] stuff = IOUtils.toByteArray(is);
-        if (stuff == null) {
-            return null;
+        Thread t = null;
+        if (path.contains("://")) {
+            System.out.printf("Downloading %s (this may take a moment)", path);
+            System.out.flush();
+            t = new Thread(new DotPrinter());
+            t.start();
         }
-        File cacheDir = new File(cacheDirectory, "" + path.hashCode());
-        if (!cacheDir.exists()) cacheDir.mkdirs();
-        File tempFile = File.createTempFile("cache", ".dat", cacheDir);
-        OutputStream os = new FileOutputStream(tempFile);
-        IOUtils.write(stuff, os);
-        os.close();
-        return tempFile.getCanonicalPath();
+        
+        try {
+            byte[] stuff = IOUtils.toByteArray(is);
+            if (stuff == null) {
+                return null;
+            }
+            File cacheDir = new File(cacheDirectory, "" + path.hashCode());
+            if (!cacheDir.exists()) cacheDir.mkdirs();
+            File tempFile = File.createTempFile("cache", ".dat", cacheDir);
+            OutputStream os = new FileOutputStream(tempFile);
+            IOUtils.write(stuff, os);
+            os.close();
+            return tempFile.getCanonicalPath();
+        } finally {
+            if (t != null) {
+                t.interrupt();
+            }
+        }
     }
     
     public String resolvePath(String path, FileLoader iomanager) {

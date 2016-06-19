@@ -133,30 +133,44 @@ public class FileLoader {
                 }
             } else if (lower.endsWith(".zip")) {
                 try {
-                    ZipInputStream zin = new ZipInputStream(input);
-                    ZipEntry ze;
-                    String dirlist = "";
+                    Thread t = null;
+                    if (path.contains("://")) {
+                        System.out.printf("Reading zip file: %s (this may take a moment)", path);
+                        System.out.flush();
+                        t = new Thread(new DotPrinter());
+                        t.start();
+                    }
                     
-                    if (this.zipFileEntry == null) {   // no file entry option was specified
-                        int count = 0;
-                        while ( (ze = zin.getNextEntry()) != null ) {
-                            count++;
-                            dirlist = dirlist + "   " + ze.getName() + "\n";
-                        }
-                        if (count == 1) { // try to reopen
-                            zin = new ZipInputStream(createInputRaw(path).input);
-                            zin.getNextEntry();
-                            return zin;
-                        }
+                    try {
+                        ZipInputStream zin = new ZipInputStream(input);
+                        ZipEntry ze;
+                        String dirlist = "";
                         
-                        throw Errors.exception(DataIOException.class, "io:zipentry", path, dirlist);
-                    } if (this.zipFileEntry != null) {
-                        while ( (ze = zin.getNextEntry()) != null ) {
-                            if (ze.getName().equals(this.zipFileEntry)) {
+                        if (this.zipFileEntry == null) {   // no file entry option was specified
+                            int count = 0;
+                            while ( (ze = zin.getNextEntry()) != null ) {
+                                count++;
+                                dirlist = dirlist + "   " + ze.getName() + "\n";
+                            }
+                            if (count == 1) { // try to reopen
+                                zin = new ZipInputStream(createInputRaw(path).input);
+                                zin.getNextEntry();
                                 return zin;
                             }
+                            
+                            throw Errors.exception(DataIOException.class, "io:zipentry", path, dirlist);
+                        } if (this.zipFileEntry != null) {
+                            while ( (ze = zin.getNextEntry()) != null ) {
+                                if (ze.getName().equals(this.zipFileEntry)) {
+                                    return zin;
+                                }
+                            }
+                            throw Errors.exception(DataIOException.class, "io:nozipentry", this.zipFileEntry, path);
                         }
-                        throw Errors.exception(DataIOException.class, "io:nozipentry", this.zipFileEntry, path);
+                    } finally {
+                        if (t != null) {
+                            t.interrupt();
+                        }
                     }
                 } catch (IOException e) {
                     //e.printStackTrace();
