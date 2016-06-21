@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import core.cache.DataCacher;
 import core.data.DataSource;
+import core.spec.DataSpecGenerator;
 
 
 public class TestDataSource {
@@ -23,7 +24,7 @@ public class TestDataSource {
         System.out.println("first airline: " + ds.fetchString("Name"));
     }
     
-    //@Test
+    @Test
     public void testExport() {
         DataSource ds = DataSource.connect("src/core/tests/example.csv");
         ds.load();
@@ -40,7 +41,12 @@ public class TestDataSource {
         if (obj instanceof JSONObject) {
             System.out.println("Back as map:\n" + ((JSONObject) obj).toMap());
         }
+        
+        assertEquals(jobj.toString(), new DataSpecGenerator(ds).getJSONSpec());
+        assertEquals(jobj.toString(5), new DataSpecGenerator(ds).getJSONSpec(5));
 
+        // test write to file
+        //new DataSpecGenerator(ds).saveSpec(new File("/Users/nhamid/Desktop/example-spec.json"));
     }
     
     
