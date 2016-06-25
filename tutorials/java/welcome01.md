@@ -158,7 +158,7 @@ This indicates that *Sinbad* is downloading fresh data from that particular URL,
 
 ### Further Details on the Cache
 
-The *Sinbad* library saves all its cache data in a temporary directory area on your computer. To find out exactly what directory is being used, you can print out the result of the *ds.getCacheDirectory()* method. This directory can start to take up a lot of space on your computer as you download large data sets, so you may want to keep an eye on it. You can clear all cached data from every program that uses *Sinbad* on your computer using the *ds.clearENTIRECache()* method. Note, again, that this will delete cached data for _all_ of the programs that you've written on your computer that use Sinbad, so use it carefully.
+The *Sinbad* library saves all its cache data in a temporary directory area on your computer. To find out exactly what directory is being used, you can print out the result of the `ds.getCacheDirectory()` method. This directory can start to take up a lot of space on your computer as you download large data sets, so you may want to keep an eye on it. You can clear all cached data from every program that uses *Sinbad* on your computer using the `ds.clearENTIRECache()` method. Note, again, that this will delete cached data for _all_ of the programs that you've written on your computer that use Sinbad, so use it carefully.
 
 
 ## Complete Program Files
