@@ -27,6 +27,7 @@ After `ds.load()`:
 
     ds.printUsageString() 
 
+
 ## Other Connection Methods
 Specify a data format (`"CSV"`, `"XML"`, `"JSON"`, etc.):
 
@@ -36,12 +37,14 @@ Connect using a data specification file (e.g. provided by instructor):
 
     DataSource ds = DataSource.connectUsing("<URL>");
 
+
 ## Connection Parameters
 Some data sources may require additional _parameters_ to construct
 the URL. Use `setParam("<name>", "<value>")` after the `connect` and 
 before `load`. For example:
 
     ds.setParam("format", "raw");
+
 
 ## Data Source Options
 Some data sources provide (or require) additional information to
@@ -58,12 +61,39 @@ For example (with a CSV data source):
 
     ds.setOption("header", "ID,Name,Call sign,Country,Active");
 
+
 ## Selecting From a .zip Archive
 To use a file that is one of several in a ZIP archive, set
 the "fileentry" option:
 
     ds.setOption("fileentry", "FACTDATA_MAR2016.TXT");
 
+
+## Cache Control
+Control frequency of caching (or disable it):
+
+    ds.setCacheTimeout(<minutes>); 
+    // may use  CacheConstants.NEVER_CACHE
+    //      or  CacheConstants.NEVER_RELOAD (always caches)
+
+Show where files are cached:
+
+    System.out.println(ds.getCacheDirectory());
+    
+Clear all cached file (for *all* data sources):
+
+    ds.clearENTIRECache();
+
+
+## Using an Iterator
+
+    DataSourceIterator iter = ds.iterator();
+    while (iter.hasData()) {
+        String name = iter.fetchString("Name");
+        boolean active = iter.fetchBoolean("Active");
+        System.out.println(name + ": " + active);
+        iter.loadNext();
+    }
 
 
 ## Fetching Data
