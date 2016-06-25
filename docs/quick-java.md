@@ -1,6 +1,6 @@
 
 Sinbad (Java version)
-# Quick Start
+# Quick Reference
 
 ## Basic Template
 
