@@ -2,6 +2,7 @@ package core.data;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -648,6 +649,24 @@ public class DataSource implements IDataSource {
     private void exportIfNotNull(Map<String, Object> map, String key, Object val) {
         if (val != null) {
             map.put(key, val);
+        }
+    }
+    
+    /**
+     * Display help text
+     */
+    public static void help() {
+        try {
+            URL help = new URL("https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/quick-java.md");
+            BufferedReader in = new BufferedReader(new InputStreamReader(help.openStream()));
+            String line;
+            while((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+            in.close();            
+        } catch (IOException e) {
+            System.err.println("Strange error printing help!");
+            e.printStackTrace();
         }
     }
 

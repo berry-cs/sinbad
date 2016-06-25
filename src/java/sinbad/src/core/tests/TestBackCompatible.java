@@ -119,9 +119,13 @@ public class TestBackCompatible {
     
     @Test
     public void testOpenFlights() {
+        DataSource.help();
+        
         DataSource ds = DataSource.connectAs("CSV", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat");
         ds.setParam("format", "raw");
-        ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
+//        ds.setOption("header", "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active");
+        ds.setOption("header", "ID,Name,Alias,IATA,ICAO,Call sign,Country,Active");
+        ds.setCacheTimeout(CacheConstants.NEVER_CACHE);
         ds.printUsageString();
         ds.load();
         ds.printUsageString();
