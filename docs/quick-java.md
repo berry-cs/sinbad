@@ -27,7 +27,7 @@ After `ds.load()`:
 
     ds.printUsageString() 
 
-## Other Connection Options
+## Other Connection Methods
 Specify a data format (`"CSV"`, `"XML"`, `"JSON"`, etc.):
 
     DataSource ds = DataSource.connectAs("<FORMAT>", "<URL>");
