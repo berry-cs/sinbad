@@ -9,7 +9,19 @@ Sinbad (Java version)
     DataSource ds = DataSource.connect("<URL>");
     ds.load();
     ...
-    ds.fetchXYZ("<field>");
+    ds.fetch...("<field>");  // see fetch...() methods below
+
+### Template for Processing
+
+    import core.data.*;
+    ...
+    void setup() {
+        ...
+        DataSource.initializeProcessing(this);
+        ...
+    }
+Then use `connect`, `load`, and `fetch...` as above.
+
 
 ## Display Summary of Available Data
 After `ds.load()`:
