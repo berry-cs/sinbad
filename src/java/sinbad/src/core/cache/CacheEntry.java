@@ -42,13 +42,10 @@ public class CacheEntry {
                 && new FileLoader().createInput(cachedata) != null;
     }
 
-    public boolean isExpired(long cacheExpiration) {
-        if (subtag != null) return false;
-        
+    public boolean isExpired(long cacheExpiration) {        
         long diff = (System.currentTimeMillis() - this.timestamp);
         return cacheExpiration >= 0 && diff > cacheExpiration; 
     }
-
 
     public void writeJSON(JSONWriter w) {
         w.object();

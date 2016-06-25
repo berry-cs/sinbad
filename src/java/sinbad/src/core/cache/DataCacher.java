@@ -219,9 +219,11 @@ public class DataCacher {
             
             String cachepath = (entry == null ? null : entry.getCacheData());
             
-            if (subtag == null &&
-                    (cachepath == null 
-                        || (entry != null && entry.isExpired(this.cacheExpiration)))) {
+            if (subtag != null && entry.isExpired(this.cacheExpiration)) {
+                return null;
+            } else if (subtag == null &&
+                        (cachepath == null 
+                            || (entry != null && entry.isExpired(this.cacheExpiration)))) {
                 try {
                     String cachedFilePath = readAndCache(path, iomanager);
                     if (cachepath != null) { // need to remove old cached file
