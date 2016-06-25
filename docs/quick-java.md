@@ -13,36 +13,44 @@ Sinbad (Java version)
 
 ## Display Summary of Available Data
 After `ds.load()`:
+
    ds.printUsageString() 
 
 ## Other Connection Options
 Specify a data format (`"CSV"`, `"XML"`, `"JSON"`, etc.):
+
    DataSource ds = DataSource.connectAs("<FORMAT>", "<URL>");
 
 Connect using a data specification file (e.g. provided by instructor):
+
    DataSource ds = DataSource.connectUsing("<URL>");
 
 ## Connection Parameters
 Some data sources may require additional _parameters_ to construct
 the URL. Use `setParam("<name>", "<value>")` after the `connect` and 
 before `load`. For example:
+
    ds.setParam("format", "raw");
 
 ## Data Source Options
 Some data sources provide (or require) additional information to
 process them once they have been downloaded. The available _options_
 are format-specific and are listed by enabling verbose usage info:
+
    ds.printUsageString(true);
 
 Use 
+
    ds.setOption("<name>", "<value>");
 
 For example (with a CSV data source):
+
    ds.setOption("header", "ID,Name,Call sign,Country,Active");
 
 ## Selecting From a .zip Archive
 To use a file that is one of several in a ZIP archive, set
 the "fileentry" option:
+
    ds.setOption("fileentry", "FACTDATA_MAR2016.TXT");
 
 
