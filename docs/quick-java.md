@@ -80,7 +80,7 @@ Show where files are cached:
 
     System.out.println(ds.getCacheDirectory());
     
-Clear all cached file (for *all* data sources):
+Clear all cache files (for *all* data sources):
 
     ds.clearENTIRECache();
 
