@@ -1,0 +1,26 @@
+Sinbad 1.0 Release Notes
+July 2016
+
+A reimplementation of the initial Java prototype that maintains the same overall interface and features while providing major improvements.
+
+Changes
+
+- Reorganization of code package structure
+
+- Implemented abstraction over data sources 
+  Makes it easy to provide "plugins" directly for new data sources/formats (see core.access, core.infer, and data.xml/data.csv/data.json for examples) rather than using XML as the common intermediate format.
+
+- Algorithms for schema inference and data binding reimplemented over this abstraction (see core.ops.*)
+
+- Improved cache control
+
+- Caching of inferred schemas as well as the data itself
+
+- Data source specification files use JSON instead of XML representation (see core.spec)
+
+- Ability to generate and save data source specifications from automatically inferred data (to enable tweaking/refining the exposed data)
+
+- Improvements to zip file handling ("fileentry" option of a data source enables specification of the file to extract and use from a zip file) (known issue: zip files are downloaded twice before being cached)
+
+- Prints dots (....) in console as data is being downloaded/processed
+
