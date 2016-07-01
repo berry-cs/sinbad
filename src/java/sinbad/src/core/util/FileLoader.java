@@ -28,13 +28,19 @@ import core.log.Errors;
 public class FileLoader {
 
     private String zipFileEntry;   // controls which entry is loaded from a zip file
+    private boolean isZip;
 
     public FileLoader() {
-        
+        this.zipFileEntry = null;
+        this.isZip = false;
     }
     
     public void setZipFileEntry(String zipFileEntry) {
         this.zipFileEntry = zipFileEntry;
+    }
+    
+    public void setZip(boolean isZip) {
+        this.isZip = isZip;
     }
     
     
@@ -120,9 +126,9 @@ public class FileLoader {
 
         InputInfo inputInfo = createInputRaw(path);
         InputStream input = inputInfo.input;
-        path = inputInfo.path;
+        String newpath = inputInfo.path;
 
-        final String lower = path.toLowerCase();
+        final String lower = newpath.toLowerCase();
         if (input != null) {
             if (lower.endsWith(".gz")) {
                 try {
@@ -134,8 +140,8 @@ public class FileLoader {
             } else if (lower.endsWith(".zip")) {
                 try {
                     Thread t = null;
-                    if (path.contains("://")) {
-                        System.out.printf("Reading zip file: %s (this may take a moment)", path);
+                    if (newpath.contains("://")) {
+                        System.out.printf("Reading zip file: %s (this may take a moment)", newpath);
                         System.out.flush();
                         t = new Thread(new DotPrinter());
                         t.start();
@@ -158,14 +164,14 @@ public class FileLoader {
                                 return zin;
                             }
                             
-                            throw Errors.exception(DataIOException.class, "io:zipentry", path, dirlist);
+                            throw Errors.exception(DataIOException.class, "io:zipentry", newpath, dirlist);
                         } if (this.zipFileEntry != null) {
                             while ( (ze = zin.getNextEntry()) != null ) {
                                 if (ze.getName().equals(this.zipFileEntry)) {
                                     return zin;
                                 }
                             }
-                            throw Errors.exception(DataIOException.class, "io:nozipentry", this.zipFileEntry, path);
+                            throw Errors.exception(DataIOException.class, "io:nozipentry", this.zipFileEntry, newpath);
                         }
                     } finally {
                         if (t != null) {

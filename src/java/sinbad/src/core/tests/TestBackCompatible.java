@@ -31,6 +31,16 @@ public class TestBackCompatible {
         }   
     }
     
+    @Test
+    public void testPeruXML() {
+        DataSource ds = DataSource.connect("http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=xml");
+        ds.load();
+        ds.printUsageString();
+        
+        String[] projects = ds.fetchStringArray("PROJECT1");
+        System.out.println(projects.length);
+        System.out.println(projects[5]);
+    }
     
     @Test
     public void testPeru() {
