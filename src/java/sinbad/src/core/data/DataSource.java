@@ -281,7 +281,11 @@ public class DataSource implements IDataSource {
     }
     
     public String getCacheDirectory() {
-        return this.cacher.getDirectory();
+        if (this.readyToLoad()) {
+            return this.cacher.getCacheIndexFile(this.getFullPathURL());
+        } else {
+            return this.cacher.getDirectory();
+        }
     }
     
     public long getCacheTimeout() {
