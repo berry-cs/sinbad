@@ -352,5 +352,9 @@ public class FileLoader {
         return null;
     }
 
+    public Object getZipFileEntry() {
+        return this.zipFileEntry;
+    }
+
     
 }

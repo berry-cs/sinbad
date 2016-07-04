@@ -171,7 +171,10 @@ public class DataSource implements IDataSource {
         if (this.name != null) 
             s += "Data Source: " + this.name + "\n";
         s += "URL: " + this.getFullPathURL() + "\n";
-        if (verbose && formatType != null) s += "Format: " + formatType + "\n";
+        if (iomanager.getZipFileEntry() != null)
+            s += "   (Zip file entry: " + iomanager.getZipFileEntry() + ")\n";
+        if (verbose && formatType != null) 
+            s += "Format: " + formatType + "\n";
 
         s += "\n";
         if (description != null && !description.equals("")) s += description + "\n";
@@ -338,6 +341,7 @@ public class DataSource implements IDataSource {
     
     public DataSource setOption(String op, String value) {
         if ("fileentry".equals(op.toLowerCase())) {
+            System.out.println("zip entry: " + value);
             iomanager.setZipFileEntry(value);
         } else {
             this.dataFactory.setOption(op, value);
