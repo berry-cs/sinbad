@@ -141,9 +141,7 @@ public class FileLoader {
                 try {
                     Thread t = null;
                     if (newpath.contains("://")) {
-                        System.out.printf("Reading zip file: %s (this may take a moment)", newpath);
-                        System.out.flush();
-                        t = new Thread(new DotPrinter());
+                        t = new Thread(new DotPrinter(String.format("Reading zip file: %s (this may take a moment)", newpath)));
                         t.start();
                     }
                     

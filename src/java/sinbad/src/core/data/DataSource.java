@@ -377,7 +377,9 @@ public class DataSource implements IDataSource {
                     StringUtils.join(missingParams().toArray(new String[]{}), ','));
         }
         
-        if (this.loaded && !forceReload) {
+        if (this.loaded 
+                && !this.cacher.cacheStale(this.getFullPathURL())
+                && !forceReload) {
             return this;
         }
     

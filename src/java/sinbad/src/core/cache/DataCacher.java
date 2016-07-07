@@ -163,41 +163,65 @@ public class DataCacher {
     }
     
     private String readAndCache(String path, FileLoader iomanager) throws IOException {
-        InputStream is = iomanager.createInput(path);
-        String cachedFile = (is == null ? null : readAndCache(path, is));
-        if (cachedFile == null) {
-            throw new IOException("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable");
-        }
-        return cachedFile;
-    }
-    
-    
-    private String readAndCache(String path, InputStream is) throws IOException {
         Thread t = null;
         if (path.contains("://")) {
-            System.out.printf("Downloading %s (this may take a moment)", path);
-            System.out.flush();
-            t = new Thread(new DotPrinter());
+            t = new Thread(new DotPrinter(String.format("Downloading %s (this may take a moment)", path)));
             t.start();
         }
         
         try {
-            byte[] stuff = IOUtils.toByteArray(is);
-            if (stuff == null) {
-                return null;
+            InputStream is = iomanager.createInput(path);
+            String cachedFile = (is == null ? null : readAndCache(path, is));
+            if (cachedFile == null) {
+                throw new IOException("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable");
             }
-            File cacheDir = new File(cacheDirectory, "" + path.hashCode());
-            if (!cacheDir.exists()) cacheDir.mkdirs();
-            File tempFile = File.createTempFile("cache", ".dat", cacheDir);
-            OutputStream os = new FileOutputStream(tempFile);
-            IOUtils.write(stuff, os);
-            os.close();
-            return tempFile.getCanonicalPath();
+            return cachedFile;
         } finally {
             if (t != null) {
                 t.interrupt();
             }
         }
+    }
+    
+    
+    private String readAndCache(String path, InputStream is) throws IOException {
+        byte[] stuff = IOUtils.toByteArray(is);
+        if (stuff == null) {
+            return null;
+        }
+        File cacheDir = new File(cacheDirectory, "" + path.hashCode());
+        if (!cacheDir.exists()) cacheDir.mkdirs();
+        File tempFile = File.createTempFile("cache", ".dat", cacheDir);
+        OutputStream os = new FileOutputStream(tempFile);
+        IOUtils.write(stuff, os);
+        os.close();
+        return tempFile.getCanonicalPath();
+    }
+    
+    public boolean cacheStale(String path) {
+        return this.cacheStale(path, null);
+    }
+    
+    public boolean cacheStale(String path, String subtag) {
+        if (!CachingEnabled || !isCacheable(path, subtag)) {
+            //System.err.printf("cacheStale %s (%s)\n", path, subtag);
+            return true;
+        } else {
+            String cacheIndexName = getCacheIndexFile(path);
+            if (cacheIndexName == null) { 
+                //System.err.printf("cacheStale %s (%s)\n", path, subtag);
+                return true;           
+            }
+            
+            CacheEntry entry = this.entryFor(path, subtag);
+            if (entry == null 
+                || entry.isExpired(this.cacheExpiration)) {
+                //System.err.printf("cacheStale %s (%s)\n", path, subtag);
+                return true; 
+            }
+
+            return false;
+        }        
     }
     
     public String resolvePath(String path, FileLoader iomanager) {
