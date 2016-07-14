@@ -37,7 +37,7 @@ public class TestBackCompatible {
         ds.load();
         ds.printUsageString();
         
-        String[] projects = ds.fetchStringArray("PROJECT1");
+        String[] projects = ds.fetchStringArray("data/record/field/name");
         System.out.println(projects.length);
         System.out.println(projects[5]);
     }
@@ -54,7 +54,7 @@ public class TestBackCompatible {
     
     
     
-    @Test
+    //@Test
     public void testVehiclesXML() {        
         DataSource ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.xml.zip");
         System.out.println("About to load...");

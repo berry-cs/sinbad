@@ -17,6 +17,11 @@ import core.spec.DataSpecGenerator;
 public class TestDataSource {
     
     @Test
+    public void testHelp() {
+        DataSource.help();
+    }
+    
+    @Test
     public void testLoadSpec() {
         DataSource ds = DataSource.connectUsing("src/core/tests/example.spec");
         ds.load();

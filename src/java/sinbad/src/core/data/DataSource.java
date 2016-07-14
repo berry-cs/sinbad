@@ -60,7 +60,40 @@ public class DataSource implements IDataSource {
             System.err.println("initializeProcessing() should only be called if Processing is being used.");
         }
     }
+    
+    
+    /** 
+     * This constructor is only meant for use in Processing applications.
+     * It should be passed the Processing applet object, i.e. <code>this</code>,
+     * usually in the <code>setup()</code> function.
+     * @param papp the main Processing application object 
+     */
+    public DataSource(Object papp, String path) {
+        DataSource.initializeProcessing(papp);
+        
+        for (String typeExt : plugins.keySet()) {
+            IDataSourcePlugin dsp = plugins.get(typeExt);
+            if (dsp.getInfer().matchedBy(path)) {
+                setupDataSource(path, path, typeExt, dsp);    // success at this point
+                return;                                       // so return now
+            } 
+        }
+        
+        throw Errors.exception(DataSourceException.class, "ds:noinfer", path);
+    }
+    
+    public DataSource(Object papp, String typeExt, String path) {
+        DataSource.initializeProcessing(papp);
 
+        typeExt = typeExt.toUpperCase();
+        if (!plugins.containsKey(typeExt)) {
+            throw Errors.exception(DataSourceException.class, "ds:notype", typeExt);
+        } 
+        
+        setupDataSource(path, path, typeExt, plugins.get(typeExt));
+    }
+    
+    
     /**
      * Attempt to infer the format of the data at the given path and construct
      * a DataSource object for it appropriately 
@@ -68,6 +101,7 @@ public class DataSource implements IDataSource {
      * @return a prepared data source
      */
     public static DataSource connect(String path) {
+        // any changes here should be reflected in the constructor for Processing above 
 
         // TODO: DataSourceLoader.isValidDataSourceSpec(path)
         for (String typeExt : plugins.keySet()) {
@@ -88,6 +122,8 @@ public class DataSource implements IDataSource {
      * @return a prepared data source
      */
     public static DataSource connectAs(String typeExt, String path) {
+        // any changes here should be reflected in the constructor for Processing above 
+
         typeExt = typeExt.toUpperCase();
         if (!plugins.containsKey(typeExt)) {
             throw Errors.exception(DataSourceException.class, "ds:notype", typeExt);
@@ -131,6 +167,7 @@ public class DataSource implements IDataSource {
     protected HashMap<String, Param> params; // keeps track of *all* parameters available for this data source
     protected HashMap<String, String> paramValues; // keeps track of the values of the supplied parameters
 
+    protected boolean connected;   // this might be false if the public constructor (from Processing)
     protected boolean readyToLoad;
     protected boolean loaded;
 
@@ -141,6 +178,10 @@ public class DataSource implements IDataSource {
     protected FileLoader iomanager; // io manager
     
     protected DataSource(String name, String path, String typeExt, IDataSourcePlugin plugin) {
+        this.setupDataSource(name, path, typeExt, plugin);
+    }
+    
+    private void setupDataSource(String name, String path, String typeExt, IDataSourcePlugin plugin) {
         this.name = name;
         this.path = path;
         this.description = null;
@@ -150,6 +191,7 @@ public class DataSource implements IDataSource {
         this.params = new HashMap<String, Param>();
         this.paramValues = new HashMap<String, String>();
 
+        this.connected = (path != null && !path.equals(""));
         this.readyToLoad = false;
         this.loaded = false;
 
@@ -333,6 +375,10 @@ public class DataSource implements IDataSource {
         return this.readyToLoad;
     }
     
+    public boolean isConnected() {
+        return this.connected;
+    }
+    
     
     
     /*
@@ -350,6 +396,10 @@ public class DataSource implements IDataSource {
     }
     
     public boolean hasData() {
+        if (!isConnected()) {
+            throw Errors.exception(DataSourceException.class, "ds:noconnect");
+        }
+
         return this.loaded;
     }
 
@@ -372,6 +422,10 @@ public class DataSource implements IDataSource {
     }
     
     public DataSource load(boolean forceReload) {
+        if (!isConnected()) {
+            throw Errors.exception(DataSourceException.class, "ds:noconnect");
+        }
+        
         if (!readyToLoad()) {
             throw Errors.exception(DataSourceException.class, "ds:notready-params",
                     StringUtils.join(missingParams().toArray(new String[]{}), ','));
@@ -666,6 +720,7 @@ public class DataSource implements IDataSource {
      * Display help text
      */
     public static void help() {
+        System.out.printf("Version: %s (build: %d)\n", Sinbad.VERSION, Sinbad.BUILD_NUMBER);
         try {
             URL help = new URL("https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/quick-java.md");
             BufferedReader in = new BufferedReader(new InputStreamReader(help.openStream()));
@@ -675,8 +730,7 @@ public class DataSource implements IDataSource {
             }
             in.close();            
         } catch (IOException e) {
-            System.err.println("Strange error printing help!");
-            e.printStackTrace();
+            System.err.println("Could not display help (please check your network connection)!");
         }
     }
     
