@@ -1,10 +1,13 @@
 package core.ops;
 
+import static core.log.Errors.exception;
+
 import java.util.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import core.access.DataAccessException;
 import core.schema.*;
 import core.sig.*;
 
@@ -88,12 +91,12 @@ public class SchemaSigUnifier {
             try {
                 listOps[i] = sch.apply(new FieldSelectUnifier<T>(sig.getFieldName(i), sig.getFieldSig(i)));
             } catch(RuntimeException e){
-                e.printStackTrace();
-                throw new RuntimeException(String.format("Error unifiying the requested field \"%s\" with the data",sig.getFieldName(i)));
+                //e.printStackTrace();
+                throw exception(DataAccessException.class, "da:get-path", sig.getFieldName(i));
             }
                 
             if (listOps[i] == null) {
-                throw new RuntimeException(String.format("The field requested \"%s\" was not found in the data.",sig.getFieldName(i)));
+                throw exception(DataAccessException.class, "da:get-path", sig.getFieldName(i));
             }
         }
 
