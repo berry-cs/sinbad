@@ -684,7 +684,7 @@ public class DataSource implements IDataSource {
      * Whether to display download progress (dots/progress bar in separate
      * thread) or not. Note that this is a *global* setting.
      */
-    public static void showProgress(boolean enabled) {
+    public static void showDownloadProgress(boolean enabled) {
         DotPrinter.setEnabled(enabled);
     }
 

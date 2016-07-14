@@ -29,7 +29,7 @@ public class DotPrinter implements Runnable {
     }
     
     public static void setEnabled(boolean enabled) {
-        enabled = false;
+        DotPrinter.enabled = enabled;
     }
 
     @Override
