@@ -35,6 +35,7 @@ public class Errors {
         addError("da:get-list", "could not access %s (not a list?)", 1);
         addError("da:schema", "failed to build schema", 0);
         addError("da:construct", "failed to initialize data: %s", 1);
+        addError("da:mismatch", "could not unify requested field %s with the available data", 1);
 
         addError("em:no-exception", "error instantiating exception class: %s", 1);
         addError("em:no-tag", "error message tag not found: %s", 1);

@@ -303,6 +303,19 @@ public class TestBackCompatible {
        System.out.println(schools.length);
     }
     
+    
+    @Test
+    public void testWeatherGov() {
+        DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/K49A.xml");
+        //ds.setCacheTimeout(15);  
+        ds.load();
+        if (ds.hasFields("temp_f", "location")) {
+           float temp = ds.fetchFloat("temp_f");
+           String loc = ds.fetchString("location");
+           System.out.println("The temperature at " + loc + " is " + temp + "F");
+        }
+    }
+    
 }
 
 

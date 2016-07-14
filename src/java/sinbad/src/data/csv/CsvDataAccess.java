@@ -26,20 +26,24 @@ public class CsvDataAccess extends FailAccess {
     private String[] header;
     private HashMap<String,Integer> headerIndex;
     private char delimiter;
+    private char quote;
     private CsvParser p;
     private List<String[]> allRows;
     private boolean streaming;   // load rows on demand for getAll()
     private ISchema schema;
        
-    public CsvDataAccess(InputStream is, String[] header, char delimiter, boolean streaming, int skipRows) {
+    public CsvDataAccess(InputStream is, String[] header, char delimiter, char quote, boolean streaming, int skipRows) {
         this.header = header;
         this.delimiter = delimiter;
+        this.quote = quote;
         this.allRows = new ArrayList<String[]>();
         this.streaming = streaming;
         
         CsvParserSettings sts = new CsvParserSettings();
         sts.setLineSeparatorDetectionEnabled(true);
         sts.getFormat().setDelimiter(this.delimiter);
+        sts.setMaxCharsPerColumn(10000);
+        sts.getFormat().setQuote(this.quote);
         
         p = new CsvParser(sts);
         //System.err.println(p.parseAll(new InputStreamReader(is)));

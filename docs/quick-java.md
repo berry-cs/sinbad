@@ -85,6 +85,15 @@ Clear all cache files (for *all* data sources):
     ds.clearENTIRECache();
 
 
+## Disable Download Progress Display
+To turn off the dots that are printed while files are being downloaded:
+
+    DataSource.showDownloadProgress(boolean)
+
+Note, this is a global setting and will apply to all data sources that
+are loaded after this statement has been executed.
+
+
 ## Using an Iterator
 
     DataSourceIterator iter = ds.iterator();

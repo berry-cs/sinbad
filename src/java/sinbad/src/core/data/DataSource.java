@@ -171,7 +171,10 @@ public class DataSource implements IDataSource {
         if (this.name != null) 
             s += "Data Source: " + this.name + "\n";
         s += "URL: " + this.getFullPathURL() + "\n";
-        if (verbose && formatType != null) s += "Format: " + formatType + "\n";
+        if (iomanager.getZipFileEntry() != null)
+            s += "   (Zip file entry: " + iomanager.getZipFileEntry() + ")\n";
+        if (verbose && formatType != null) 
+            s += "Format: " + formatType + "\n";
 
         s += "\n";
         if (description != null && !description.equals("")) s += description + "\n";
@@ -281,7 +284,11 @@ public class DataSource implements IDataSource {
     }
     
     public String getCacheDirectory() {
-        return this.cacher.getDirectory();
+        if (this.readyToLoad()) {
+            return this.cacher.getCacheIndexFile(this.getFullPathURL());
+        } else {
+            return this.cacher.getDirectory();
+        }
     }
     
     public long getCacheTimeout() {
@@ -334,6 +341,7 @@ public class DataSource implements IDataSource {
     
     public DataSource setOption(String op, String value) {
         if ("fileentry".equals(op.toLowerCase())) {
+            System.out.println("zip entry: " + value);
             iomanager.setZipFileEntry(value);
         } else {
             this.dataFactory.setOption(op, value);
@@ -369,7 +377,9 @@ public class DataSource implements IDataSource {
                     StringUtils.join(missingParams().toArray(new String[]{}), ','));
         }
         
-        if (this.loaded && !forceReload) {
+        if (this.loaded 
+                && !this.cacher.cacheStale(this.getFullPathURL())
+                && !forceReload) {
             return this;
         }
     
@@ -668,6 +678,14 @@ public class DataSource implements IDataSource {
             System.err.println("Strange error printing help!");
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Whether to display download progress (dots/progress bar in separate
+     * thread) or not. Note that this is a *global* setting.
+     */
+    public static void showDownloadProgress(boolean enabled) {
+        DotPrinter.setEnabled(enabled);
     }
 
 }
