@@ -10,6 +10,7 @@ import org.json.*;
 import org.junit.Test;
 
 import core.cache.DataCacher;
+import core.data.CacheConstants;
 import core.data.DataSource;
 import core.spec.DataSpecGenerator;
 
@@ -104,6 +105,18 @@ public class TestDataSource {
         
         System.out.println(ds.getCacheDirectory());
         //ds.clearENTIRECache();
+    }
+    
+    
+    @Test
+    public void testJSONlists() {
+        //DataSource ds = DataSource.connectAs("JSON", "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson");
+        DataSource ds = DataSource.connectAs("JSON", "src/data/tests/example.json");
+        ds.setCacheTimeout(CacheConstants.NEVER_CACHE);
+        ds.load(true);
+        ds.printUsageString();
+        //System.out.println( ds.fetchStringArray("bbox")[1] );
+        System.out.println( ds.fetchString("bbox") );
     }
 
 }

@@ -82,7 +82,9 @@ public class CompSig<C> implements ISig {
     public CompSig<C> trimPrefix(String prefix) {
         ArgSpec[] argsCopy = new ArgSpec[args.length];
         for (int i = 0; i < args.length; i++) {
-            argsCopy[i] = new ArgSpec(args[i].name.substring(prefix.length()), 
+            int k = prefix.length();
+            if (prefix.equals(args[i].name + "/")) { k--; }
+            argsCopy[i] = new ArgSpec(args[i].name.substring(k), 
                                       args[i].type);
         }
         return new CompSig<C>(cls, argsCopy);        

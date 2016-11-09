@@ -329,7 +329,9 @@ public class SchemaSigUnifier {
             // (BASE) rule
             if (fieldMap.containsKey(fieldName)) {
                 ISchema theFieldSchema = fieldMap.get(fieldName);
-                IDataOp<T> fieldOp = unifyWith(theFieldSchema, fieldSig);
+                // clearPath() in next statement so that the next op doesn't try to use 
+                //    the path of theFieldSchema to select out the field again
+                IDataOp<T> fieldOp = unifyWith(theFieldSchema.clearPath(), fieldSig);
                 return opf.makeSelectOp(fieldOp, theFieldSchema.getPath());
             } else  // (PREFIX) rule
                 if ( fieldName.indexOf('/') >= 0) {

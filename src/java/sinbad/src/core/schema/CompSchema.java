@@ -114,4 +114,12 @@ public class CompSchema extends AbsSchema {
         
         return m;
     }
+
+    @Override
+    public ISchema clearPath() {
+        CompSchema s = new CompSchema(null, description);
+        s.fieldMap = this.fieldMap;
+        s.fieldNames = this.fieldNames;
+        return s;
+    }
 }

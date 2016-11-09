@@ -23,4 +23,9 @@ public interface ISchema extends Serializable {
     public String toString(boolean verbose);
 
     public Map<String, Object> export();
+
+    /*
+     * produces an ISchema with null path
+     */
+    public ISchema clearPath();
 }

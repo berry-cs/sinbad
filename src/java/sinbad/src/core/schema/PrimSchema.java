@@ -55,5 +55,10 @@ public class PrimSchema extends AbsSchema {
         exportCommon(m);
         return m;
     }
+
+    @Override
+    public ISchema clearPath() {
+        return new PrimSchema(null, description);
+    }
 }
 

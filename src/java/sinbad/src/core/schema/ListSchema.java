@@ -79,4 +79,9 @@ public class ListSchema extends AbsSchema {
         m.put("elements", this.elementSchema.export());
         return m;
     }
+
+    @Override
+    public ISchema clearPath() {
+        return new ListSchema(null, description, elementSchema);
+    }
 }
