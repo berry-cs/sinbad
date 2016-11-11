@@ -6,6 +6,7 @@ import java.util.Map;
 
 import core.access.IDataAccess;
 import core.schema.ISchema;
+import core.sig.ISig;
 
 
 /**
@@ -126,6 +127,7 @@ public interface IDataSource {
 	 */
 	public DataSourceIterator iterator();
 	
+	public <T> T fetch(ISig sig);
 	public <T> T fetch(String clsName, String... keys);
 	public <T> T fetch(Class<T> cls, String... keys);
 	public <T> ArrayList<T> fetchList(String clsName, String... keys);

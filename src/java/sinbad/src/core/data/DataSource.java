@@ -550,15 +550,19 @@ public class DataSource implements IDataSource {
      * FETCHING DATA
      */
     
+    public <T> T fetch(ISig sig) {
+        ISchema sch = this.dataAccess.getSchema();
+        IDataOp<T> op = SchemaSigUnifier.unifyWith(sch, sig);
+        return op.apply(this.dataAccess);
+    }
+    
     public <T> T fetch(Class<T> cls, String... keys) {
         if (!this.hasData())
             throw Errors.exception(DataSourceException.class, "ds:no-data", this.getName());
         
         ISig presig = SigUtils.buildCompSig(cls, keys);
         ISig sig = presig.apply(new SigClassUnifier(cls));
-        ISchema sch = this.dataAccess.getSchema();
-        IDataOp<T> op = SchemaSigUnifier.unifyWith(sch, sig);
-        return op.apply(this.dataAccess);
+        return fetch(sig);
     }
 
     public <T> ArrayList<T> fetchList(Class<T> cls, String... keys) {

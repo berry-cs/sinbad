@@ -16,3 +16,6 @@ DataSource
  - connect: 
  	
  
+ 
+ Ifactory class version of fetch(...)
+ 
