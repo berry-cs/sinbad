@@ -61,6 +61,13 @@ public class DataSource implements IDataSource {
         }
     }
     
+    public static void addPlugin(String tag, IDataSourcePlugin plugin) {
+        if (tag.length() > 0) {
+            // do we need to sanity check for anything?
+            plugins.put(tag, plugin);
+        }
+    }
+    
     
     /** 
      * This constructor is only meant for use in Processing applications.
