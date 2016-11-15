@@ -2,10 +2,15 @@ package data.tests;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 
 import core.access.*;
 import core.schema.*;
@@ -14,6 +19,22 @@ import data.csv.*;
 
 public class CsvDataTest {
 
+    @Test
+    public void testUsdaData() {
+        InputStream example = new FileLoader().createInput("src/data/tests/usda.csv");
+        CsvParserSettings sts = new CsvParserSettings();
+        sts.setLineSeparatorDetectionEnabled(true);
+        sts.getFormat().setDelimiter(',');
+        sts.setMaxCharsPerColumn(10000);
+        sts.getFormat().setQuote('\"');
+        
+        CsvParser p = new CsvParser(sts);
+        //System.err.println(p.parseAll(new InputStreamReader(is)));
+        p.beginParsing(new InputStreamReader(example));
+        String[] row =             p.parseNext();
+        for (String s : row) { System.out.println(s); }
+    }
+    
     @Test
     public void testSingleRow() {
         InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
