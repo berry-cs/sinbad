@@ -21,8 +21,9 @@ public class JsonDataAccess extends FailAccess {
     private Object data;  // could be a Boolean, Double, Integer, Long, String, JSONArray, JSONObject, or null
     private ISchema schema;
 
-    public JsonDataAccess(InputStream is) {
+    public JsonDataAccess(InputStream is, int skipChars) {
         JSONTokener jt = new JSONTokener(is);
+        for (int i = 0; i < skipChars; i++) { jt.next(); }  // allow skipping past some initial characters
         data = jt.nextValue();
     }
     

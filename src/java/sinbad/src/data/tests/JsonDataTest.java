@@ -24,7 +24,20 @@ public class JsonDataTest {
         assertEquals("3km SSE of The Geysers, California", json.get("features").get(null, 2).get("properties").get("place").getContents());
     }
     
+    @Test
+    public void testListLists() {
+        InputStream example = new FileLoader().createInput("src/data/tests/censuspop.json");
+        IDataAccess json = new JsonFactory().newInstance(example);
+        
+        assertEquals("POP", json.get(null, 0).get(null, 0).getContents());
+    }
     
-    
+    @Test 
+    public void testSkipChars() {
+        InputStream example = new FileLoader().createInput("src/data/tests/stocks.json");
+        IDataAccess json = new JsonFactory().setOption("skipchars",  "3").newInstance(example);
+        
+        assertEquals("AAPL", json.get(null, 0).get("t").getContents());
+    }
     
 }
