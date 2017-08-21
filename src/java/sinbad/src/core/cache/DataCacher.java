@@ -148,7 +148,7 @@ public class DataCacher {
 
         File cacheIndexFile = null;
         try {
-            cacheIndexFile = new File(cacheDir, tag.hashCode() + ".json");
+            cacheIndexFile = new File(cacheDir, "idx" + tag.hashCode() + ".json");
 
             if (!cacheIndexFile.exists()) {
                 CacheEntryList cel = new CacheEntryList();
