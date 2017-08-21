@@ -22,7 +22,7 @@ public class TestSig {
     
     @Test
     public void testApply() {
-        assertEquals(1, BOOLEAN_SIG.apply(intVisitor));
+        assertEquals(1, (int) BOOLEAN_SIG.apply(intVisitor));
     }
     
     @Test

@@ -37,9 +37,14 @@ public class TestBackCompatible {
         ds.load();
         ds.printUsageString();
         
+        
         String[] projects = ds.fetchStringArray("data/record/field/name");
         System.out.println(projects.length);
         System.out.println(projects[5]);
+        
+        System.out.println(ds.getDataAccess().getSchema().toString(true));
+        System.out.println(ds.getCacheDirectory());
+
     }
     
     @Test
@@ -281,8 +286,8 @@ public class TestBackCompatible {
         String status = ds2.fetchString("valid"); 
         System.out.println("30165: valid? " + status);
         
-        DataSource ds = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/425/0bd09951-c381-4bec-bea0-58f98d56ecfa.zip");
-        ds.setOption("fileentry", "FACTDATA_MAR2016.TXT");
+        DataSource ds = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/494/1dda0280-390b-4c86-9484-14278783ffdc.zip");
+        ds.setOption("fileentry", "FACTDATA_MAR2017.TXT");
         ds.load();
         ds.printUsageString();
 
