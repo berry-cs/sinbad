@@ -189,7 +189,7 @@ public class DataCacher {
         if (stuff == null) {
             return null;
         }
-        File cacheDir = new File(cacheDirectory, "" + path.hashCode());
+        File cacheDir = new File(cacheDirectory, "dat" + path.hashCode());
         if (!cacheDir.exists()) cacheDir.mkdirs();
         File tempFile = File.createTempFile("cache", ".dat", cacheDir);
         OutputStream os = new FileOutputStream(tempFile);
@@ -310,7 +310,7 @@ public class DataCacher {
     }
     
     public OutputStream resolveOutputStreamFor(String path, String subtag) {
-        File cacheDir = new File(cacheDirectory, "" + path.hashCode());
+        File cacheDir = new File(cacheDirectory, "dat" + path.hashCode());
         if (!cacheDir.exists()) cacheDir.mkdirs();
         try {
             CacheEntry entry = this.entryFor(path, subtag);
