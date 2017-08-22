@@ -225,10 +225,24 @@ public class DataCacher {
     }
     
     public String resolvePath(String path, FileLoader iomanager) {
-        return this.resolvePath(path, null, iomanager);
+        if (iomanager.getZipFileEntry() == null) {
+            return this.resolvePath(path, "main", iomanager);
+        } else {
+            return this.resolvePath(path, "main-" + iomanager.getZipFileEntry(), iomanager);
+        }
     }
     
+    /*
+     * subtag is one of:
+     *    "main"   or "main-..."
+     *    "schema" or "schema-..."
+     *    
+     */
     public String resolvePath(String path, String subtag, FileLoader iomanager) {
+        if (iomanager.getZipFileEntry() != null && subtag.equals("schema")) {
+            subtag = subtag + "-" + iomanager.getZipFileEntry();
+        }
+        
         if (!CachingEnabled || !isCacheable(path, subtag)) {
             return path;
         } else  {
@@ -243,9 +257,11 @@ public class DataCacher {
             
             String cachepath = (entry == null ? null : entry.getCacheData());
             
-            if (subtag != null && entry != null && entry.isExpired(this.cacheExpiration)) {
+            if (subtag.startsWith("schema")
+                    && entry != null 
+                    && entry.isExpired(this.cacheExpiration)) {
                 return null;
-            } else if (subtag == null &&
+            } else if (subtag.startsWith("main") &&  
                         (cachepath == null 
                             || (entry != null && entry.isExpired(this.cacheExpiration)))) {
                 try {
@@ -254,7 +270,7 @@ public class DataCacher {
                         File olddata = new File(cachepath);
                         olddata.delete();
                     }
-                    entry = new CacheEntry(path, null, System.currentTimeMillis(), cachedFilePath);
+                    entry = new CacheEntry(path, subtag, System.currentTimeMillis(), cachedFilePath);
                     updateEntry(entry);
                     return cachedFilePath;
                 } catch (IOException e) {

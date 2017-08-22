@@ -125,6 +125,10 @@ public class FileLoader {
         //System.err.println("IOUtil::createInput(" + path + ")");
 
         InputInfo inputInfo = createInputRaw(path);
+        if (inputInfo == null) {
+            return null;
+        }
+            
         InputStream input = inputInfo.input;
         String newpath = inputInfo.path;
 
@@ -350,7 +354,7 @@ public class FileLoader {
         return null;
     }
 
-    public Object getZipFileEntry() {
+    public String getZipFileEntry() {
         return this.zipFileEntry;
     }
 

@@ -290,7 +290,17 @@ public class TestBackCompatible {
         ds.setOption("fileentry", "FACTDATA_MAR2017.TXT");
         ds.load();
         ds.printUsageString();
+        System.out.println(ds.getCacheDirectory());
 
+        DataSource ds3 = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/494/1dda0280-390b-4c86-9484-14278783ffdc.zip");
+        ds3.setOption("fileentry", "DTpatco.txt");
+        ds3.load();
+        ds3.printUsageString();
+        
+        assertTrue(ds3.hasFields("PATCOT"));  // this catches a bug in the caching where different fileentry's were 
+                                              // are identified because the .zip URL is the same though the extracted
+                                              // file for data is not; also had a problem distinguishing
+                                              // the cached schemas
     }
 
     

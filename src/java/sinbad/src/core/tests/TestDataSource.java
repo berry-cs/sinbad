@@ -81,14 +81,14 @@ public class TestDataSource {
     
     @Test
     public void testOnlineCSV() {
-        DataSource ds = DataSource.connect("https://www.data.gov/app/uploads/2014/11/opendatasites1.csv");
+        DataSource ds = DataSource.connect("https://s3.amazonaws.com/bsp-ocsit-prod-east-appdata/datagov/wordpress/2016/10/opendatasites.csv");
         ds.load();
         ds.printUsageString();
         String[] names = ds.fetchStringArray("Item");
         System.out.println(names.length);
         
         assertEquals("Aarhus", names[0]);
-        assertEquals("Zurich", names[names.length-1]);
+        assertEquals("Indianapolis/Marion County", names[names.length-1]);
         
         ds = DataSource.connect("https://raw.githubusercontent.com/luispedro/BuildingMachineLearningSystemsWithPython/master/ch01/data/web_traffic.tsv");
         ds.setOption("header", "time,hits-per-hour");

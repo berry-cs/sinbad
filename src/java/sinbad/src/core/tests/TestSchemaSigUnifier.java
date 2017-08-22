@@ -145,7 +145,7 @@ public class TestSchemaSigUnifier {
 	@Test
 	public void testCompList_Comp(){
 		/*======= Test case : Comp || List => (List WRAP Comp)*/
-		CompSchema wrapField = new CompSchema("foo","Dec",new CompField("n",new PrimSchema("n")));
+		CompSchema wrapField = new CompSchema("foo","Dec",new CompField("n",new PrimSchema()));
 		ListSig listWrapComp = new ListSig(FOO_SIG);
 		IDataOp<Stream<Foo>> dop = unifier.unifyWith(wrapField, listWrapComp);
 		List<Foo> l = new ArrayList<Foo>();

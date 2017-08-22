@@ -482,10 +482,15 @@ public class DataSource implements IDataSource {
         
         // cache the schema for later if it wasn't already
         if (!cachedSchemaLoaded) {
+            final String schemaSubtag 
+                = (iomanager.getZipFileEntry() == null) 
+                      ? "schema" : "schema-" + iomanager.getZipFileEntry();
+        
             try {
                 PipedInputStream pipis = new PipedInputStream();
                 PipedOutputStream pipos = new PipedOutputStream(pipis);
                 
+
                 Thread thr =
                         new Thread() {
                             public void run() {
@@ -494,14 +499,15 @@ public class DataSource implements IDataSource {
                                     schos.writeObject(schema);
                                     schos.close();
                                 } catch (IOException e) {
+
                                     DataSource.this.cacher.clearCacheData(DataSource.this.getFullPathURL(), 
-                                                                          "schema");
+                                            schemaSubtag);
                                 }
                             }
                         };
                 thr.start();
                 
-                this.cacher.addToCache(this.getFullPathURL(), "schema", pipis);
+                this.cacher.addToCache(this.getFullPathURL(), schemaSubtag, pipis);
                 pipis.close();
                 
                 thr.join();
@@ -509,7 +515,7 @@ public class DataSource implements IDataSource {
             } catch (IOException | InterruptedException e) {
                 // oh well, didn't work, so just clear it out of the cache completely
                 // in case it was partially stored or something
-                this.cacher.clearCacheData(this.getFullPathURL(), "schema");
+                this.cacher.clearCacheData(this.getFullPathURL(), schemaSubtag);
             }
         } 
 
