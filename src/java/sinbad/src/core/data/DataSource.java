@@ -438,6 +438,11 @@ public class DataSource implements IDataSource {
                     StringUtils.join(missingParams().toArray(new String[]{}), ','));
         }
         
+        String subtag = this.iomanager.getZipFileEntry() == null 
+                            ? "main" : "main-" + this.iomanager.getZipFileEntry();
+        String schemaSubtag = this.iomanager.getZipFileEntry() == null 
+                            ? "schema" : "schema-" + this.iomanager.getZipFileEntry();
+        
         if (this.loaded 
                 && !this.cacher.cacheStale(this.getFullPathURL(), subtag)
                 && !forceReload) {
