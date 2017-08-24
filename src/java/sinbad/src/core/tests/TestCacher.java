@@ -25,7 +25,7 @@ public class TestCacher {
         dc = dc.updateTimeout(120000);
         
         System.out.println(dc.getCacheIndexFile("http://cs.berry.edu/null"));
-        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", new FileLoader()));
+        System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "main", new FileLoader()));
         System.out.println(dc.resolvePath("http://cs.berry.edu/big-data", "schema", new FileLoader()));
         
         OutputStream os = dc.resolveOutputStreamFor("http://cs.berry.edu/big-data", "schema");

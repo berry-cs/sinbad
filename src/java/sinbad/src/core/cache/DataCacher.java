@@ -115,7 +115,8 @@ public class DataCacher {
 
     private boolean isCacheable(String path, String subtag) {
         // for now, only things that look like URLs are cacheable
-        return (path.contains("://") && cacheExpiration != CacheConstants.NEVER_CACHE) || (subtag != null); 
+        return ! subtag.startsWith("main") ||
+               (path.contains("://") && cacheExpiration != CacheConstants.NEVER_CACHE);
     }
     
     private CacheEntry entryFor(String tag, String subtag) {
@@ -198,9 +199,6 @@ public class DataCacher {
         return tempFile.getCanonicalPath();
     }
     
-    public boolean cacheStale(String path) {
-        return this.cacheStale(path, null);
-    }
     
     public boolean cacheStale(String path, String subtag) {
         if (!CachingEnabled || !isCacheable(path, subtag)) {
@@ -224,25 +222,13 @@ public class DataCacher {
         }        
     }
     
-    public String resolvePath(String path, FileLoader iomanager) {
-        if (iomanager.getZipFileEntry() == null) {
-            return this.resolvePath(path, "main", iomanager);
-        } else {
-            return this.resolvePath(path, "main-" + iomanager.getZipFileEntry(), iomanager);
-        }
-    }
-    
     /*
      * subtag is one of:
      *    "main"   or "main-..."
      *    "schema" or "schema-..."
      *    
      */
-    public String resolvePath(String path, String subtag, FileLoader iomanager) {
-        if (iomanager.getZipFileEntry() != null && subtag.equals("schema")) {
-            subtag = subtag + "-" + iomanager.getZipFileEntry();
-        }
-        
+    public String resolvePath(String path, String subtag, FileLoader iomanager) {        
         if (!CachingEnabled || !isCacheable(path, subtag)) {
             return path;
         } else  {

@@ -439,13 +439,13 @@ public class DataSource implements IDataSource {
         }
         
         if (this.loaded 
-                && !this.cacher.cacheStale(this.getFullPathURL())
+                && !this.cacher.cacheStale(this.getFullPathURL(), subtag)
                 && !forceReload) {
             return this;
         }
     
         // get the raw data into/from the cache
-        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL(), iomanager);
+        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL(), subtag, iomanager);
         if (resolvedPath == null) 
             throw Errors.exception(DataSourceException.class, "ds:no-input", path);
         
@@ -458,7 +458,7 @@ public class DataSource implements IDataSource {
         
         // load schema from cached if appropriate and add it to the factory...
         boolean cachedSchemaLoaded = false;
-        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), "schema", iomanager);
+        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), schemaSubtag, iomanager);
         if (!this.dataFactory.hasSchema() && cachedSchemaPath != null && !forceReload) {
             try {
                 InputStream cis = iomanager.createInput(cachedSchemaPath);
@@ -481,11 +481,7 @@ public class DataSource implements IDataSource {
         ISchema schema = this.dataAccess.getSchema();  // forces it to be built
         
         // cache the schema for later if it wasn't already
-        if (!cachedSchemaLoaded) {
-            final String schemaSubtag 
-                = (iomanager.getZipFileEntry() == null) 
-                      ? "schema" : "schema-" + iomanager.getZipFileEntry();
-        
+        if (!cachedSchemaLoaded) {        
             try {
                 PipedInputStream pipis = new PipedInputStream();
                 PipedOutputStream pipos = new PipedOutputStream(pipis);

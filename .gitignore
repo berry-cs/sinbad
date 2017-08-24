@@ -1,4 +1,3 @@
-
 src/java/sinbad/.classpath
-
 *.class
+.DS_Store

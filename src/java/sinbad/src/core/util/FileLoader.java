@@ -167,7 +167,7 @@ public class FileLoader {
                             }
                             
                             throw Errors.exception(DataIOException.class, "io:zipentry", newpath, dirlist);
-                        } if (this.zipFileEntry != null) {
+                        } else {
                             while ( (ze = zin.getNextEntry()) != null ) {
                                 if (ze.getName().equals(this.zipFileEntry)) {
                                     return zin;

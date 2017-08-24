@@ -27,7 +27,7 @@ public class XmlDataTest {
         System.out.println(dc.getDirectory());
         FileLoader fl = new FileLoader();
         
-        InputStream is = fl.createInput(dc.resolvePath("http://xisbn.worldcat.org/webservices/xid/isbn/9780201038019?method=getMetadata&fl=*&format=xml", fl));
+        InputStream is = fl.createInput(dc.resolvePath("http://xisbn.worldcat.org/webservices/xid/isbn/9780201038019?method=getMetadata&fl=*&format=xml", "main", fl));
         XmlDataAccess xda = new XmlDataAccess(is);
         System.out.println(xda.get("isbn/author").getContents());
         System.out.println(xda.getSchema().toString(true));

@@ -8,7 +8,7 @@ import core.util.FileLoader;
 
 public class CacheEntry {
     private String tag;
-    private String subtag; // can be null
+    private String subtag; // shouldn't be null, either "main", "main-...", "schema", "schema-..."
     private long timestamp;
     private String cachedata;  // local file path
     
