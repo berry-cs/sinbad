@@ -10,8 +10,7 @@ import os.path
 import tempfile
 import shutil
 
-import sinbad.ioutil as U
-
+import util as U
 
 
 __sinbadCacheEnabled = True
@@ -38,6 +37,20 @@ def isCaching():
 
 
 class Cacher:
+
+    def is_stale(self, path, subtag):
+        if not (isCaching() and self.__isCacheable(path, subtag)): 
+            return True
+        
+        cache_index_name = self.__getCacheIndexFile(path)
+        if not cache_index_name: 
+            return True
+        
+        entry = self.cache_entry_for(path, subtag)
+        if not entry or is_expired(entry): 
+            return True
+        
+        return False
 
     
     def clear_cache_data(self, tag, subtag):
@@ -120,7 +133,7 @@ class Cacher:
             self.update_entry(entry)
             return cached_file_path
         
-        print("Using previously cached for " + path + " (" + subtag + ")")
+        print("Using previously data cached for " + path + " (" + subtag + ")")
         return cache_path
     
     
@@ -228,9 +241,8 @@ class Cacher:
     def __init__(self):
         ''' This constructor is 'private' '''
         global __DEFAULT_CACHE_DIR__
-        global __MINIMUM_TIMEOUT_VALUE__
         self.cacheDirectory = __DEFAULT_CACHE_DIR__
-        self.cacheExpiration = __MINIMUM_TIMEOUT_VALUE__
+        self.cacheExpiration = NEVER_RELOAD 
         
         
         
@@ -270,7 +282,7 @@ def defaultCacher():
     
 
 if __name__ == '__main__':
-    c = defaultCacher().updateTimeout(100000)
+    c = defaultCacher()   #.updateTimeout(1000000)
     pth = c.resolvePath("http://bigscreen.com/xml/nowshowing_new.xml", "main")
     print("Resolved to: " + pth)
     #c.clear_cache_data("http://bigscreen.com/xml/nowshowing_new.xml", "main")

@@ -4,8 +4,9 @@ Created on Aug 22, 2017
 @author: nhamid
 '''
 import unittest
-import sinbad.cacher as C
 import os.path
+
+import cacher as C
 
 class Test(unittest.TestCase):
 
