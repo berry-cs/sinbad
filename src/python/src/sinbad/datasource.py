@@ -5,6 +5,7 @@ Created on Aug 24, 2017
 '''
 
 from jsonpath_rw import parse
+import urllib.parse
 
 import cacher as C
 import util as U
@@ -67,8 +68,15 @@ class DataSource:
         self.data_factory = plugin["data-factory"]
         self.data_obj = None
         self.cacher = C.defaultCacher()
+        
+        self.param_values = {}
 
-    
+
+
+    def set_param(self, name, value):
+        self.param_values[name] = value
+        return self
+        
 
     def load(self, force_reload = False):
         if not self.__connected: raise ValueError("not __connected {}".format(self.path))
@@ -100,27 +108,63 @@ class DataSource:
         return self.data_obj
 
     
-    def fetch_extract(self, base_path, *field_paths):
+    def fetch_extract(self, *field_paths, base_path = None):
         data = self.fetch()
         
         collected = []
-        for match in parse(base_path + "[*]").find(data):
+
+        if base_path:      
+            base_path = base_path.replace("/", ".")
+            base_match = parse(base_path + "[*]").find(data)
+            if not base_match:
+                base_match = parse(base_path).find(data)
+            data = base_match
+        else:
+            data = [data]
+        
+        for match in data:
             d = {}
             for field_path in field_paths:
-                field_name = field_path.split("/")[-1]
-                fv = parse(field_path.replace("/", ".")).find(match)
+                field_path = field_path.replace("/", ".")
+                field_name = field_path.split(".")[-1]
+                fv = parse(field_path).find(match)
                 if len(fv) == 1:
                     d[field_name] = fv[0].value
                 else:
                     d[field_name] = [v.value for v in fv]
             collected.append(d)
-            
-        return collected
+        
+        if len(collected) == 1:
+            return collected[0]
+        else:
+            return collected
+        
+        #=======================================================================
+        # if len(base_match) == 1:
+        #     if not field_paths:
+        #         return base_match[0].value
+        #     else:
+        #         d = {}
+        #         base_path = base_path.replace("/", ".")
+        #         base_name = base_path.split(".")[-1]
+        #         d[base_name] = base_match[0].value
+        #         for field_path in field_paths:
+        #             field_path = field_path.replace("/", ".")
+        #             field_name = field_path.split(".")[-1]
+        #             fv = parse(field_path).find(base_match[0])
+        #             if len(fv) == 1:
+        #                 d[field_name] = fv[0].value
+        #             else:
+        #                 d[field_name] = [v.value for v in fv]
+        #         return d
+        # else:
+        #=======================================================================
     
 
     def set_cache_timeout(self, value):
         ''' set the cache delay to the given value in seconds '''
         self.cacher = self.cacher.updateTimeout(value * 1000)
+        return self
 
 
     def get_full_path_url(self):
@@ -130,6 +174,9 @@ class DataSource:
         full_path = self.path
         
         # TODO ...
+        params = urllib.parse.urlencode(self.param_values)
+        if params:
+            full_path = full_path + "?" + params
         
         return full_path
 

@@ -30,7 +30,7 @@ class XML_Data_Factory:
     
     def load_data(self, fp):
         #data = etree_to_dict(objectify.parse(fp).getroot())
-        data = json.dumps(xd.parse(fp.read()))
+        data = json.loads(json.dumps(xd.parse(fp.read())))
         return data
     
    

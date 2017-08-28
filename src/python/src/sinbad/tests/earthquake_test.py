@@ -9,7 +9,7 @@ from datetime import datetime
 
 def main(): 
     ds = DataSource.connect_as("json", "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson")
-    ds.set_cache_timeout(60)
+    ds.set_cache_timeout(180)
 
     ds.load()
     
@@ -18,7 +18,7 @@ def main():
     while True:
         ds.load()
         
-        data = ds.fetch_extract("features", "properties/title", "properties/time", "properties/mag")
+        data = ds.fetch_extract("properties.title", "properties.time", "properties.mag", base_path = "features")
         
         for d in data:
             if d["title"] not in collected:
