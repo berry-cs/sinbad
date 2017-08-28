@@ -114,7 +114,7 @@ class Cacher:
         cacheIndexName = self.__getCacheIndexFile(path)
         if cacheIndexName is None: return path
         
-        print(cacheIndexName)
+        #print(cacheIndexName)
         entry = self.cache_entry_for(path, subtag)
         if entry and not data_valid(entry):
             self.clear_cache_data(path, subtag)
@@ -124,6 +124,7 @@ class Cacher:
         
         if (not cache_path) or \
                 (entry and is_expired(entry, self.cacheExpiration)):
+            print("Refreshing cache for: " + path + " (" + subtag + ")")
             cached_file_path = self.read_and_cache(path, options)
             if cache_path:   # need to remove the old cached file
                 os.remove(cache_path)
@@ -133,7 +134,7 @@ class Cacher:
             self.update_entry(entry)
             return cached_file_path
         
-        print("Using previously data cached for " + path + " (" + subtag + ")")
+        #print("Using previously data cached for " + path + " (" + subtag + ")")
         return cache_path
     
     

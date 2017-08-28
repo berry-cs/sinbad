@@ -4,11 +4,14 @@ Created on Aug 24, 2017
 @author: nhamid
 '''
 
+from jsonpath_rw import parse
+
 import cacher as C
 import util as U
 
 import plugin_json
 import plugin_xml
+
 
 
 class DataSource:
@@ -35,8 +38,16 @@ class DataSource:
                 return DataSource(path, path, p["type-ext"], p)
         
         raise ValueError('could not infer data format for {}'.format(path))
-        
+    
+    @staticmethod
+    def connect_as(type_ext, path):
+        type_ext = type_ext.lower()
+        for p in DataSource.plugins:
+            if p["type-ext"] == type_ext:
+                return DataSource(path, path, type_ext, p)
 
+        raise ValueError("no data source plugin for type {}".format(type_ext))
+        
 
     def __init__(self, name, path, typeExt, plugin):
         '''
@@ -87,6 +98,29 @@ class DataSource:
 
     def fetch(self):
         return self.data_obj
+
+    
+    def fetch_extract(self, base_path, *field_paths):
+        data = self.fetch()
+        
+        collected = []
+        for match in parse(base_path + "[*]").find(data):
+            d = {}
+            for field_path in field_paths:
+                field_name = field_path.split("/")[-1]
+                fv = parse(field_path.replace("/", ".")).find(match)
+                if len(fv) == 1:
+                    d[field_name] = fv[0].value
+                else:
+                    d[field_name] = [v.value for v in fv]
+            collected.append(d)
+            
+        return collected
+    
+
+    def set_cache_timeout(self, value):
+        ''' set the cache delay to the given value in seconds '''
+        self.cacher = self.cacher.updateTimeout(value * 1000)
 
 
     def get_full_path_url(self):
