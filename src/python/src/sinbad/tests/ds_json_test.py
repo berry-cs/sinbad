@@ -5,7 +5,9 @@ Created on Aug 24, 2017
 '''
 import unittest
 from datasource import DataSource
- 
+import pprint
+
+pprint = pprint.PrettyPrinter().pprint
 
 
 class Test(unittest.TestCase):
@@ -49,10 +51,19 @@ class Test(unittest.TestCase):
         x = ds.fetch_extract("Name", "State", "Delay", "Weather/Weather", base_path = "AirportStatus")
         y = ds.fetch_extract("AirportStatus/Name", "AirportStatus/State", "AirportStatus/Delay", "AirportStatus/Weather/Weather")
         #x = ds.fetch()
+        pprint(x)
         assert x == y
-        print(x)
-     
         
+        
+    def testEarthQuake(self):
+        ds = DataSource.connect("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson")
+        ds.set_cache_timeout(180).load()
+        x = ds.fetch_extract("title", "time", "mag", base_path = "features/properties")
+        y = ds.fetch_extract("features/properties/title", "features/properties/time", "features/properties/mag")
+        # note: one produces an array of objects, the second parallel arrays of simple data 
+        print(x)
+        print(y)
+        assert len(x) == len(y['title'])
 
 
 if __name__ == "__main__":

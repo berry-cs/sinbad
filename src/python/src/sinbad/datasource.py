@@ -107,6 +107,25 @@ class DataSource:
     def fetch(self):
         return self.data_obj
 
+
+    def patch_jsonpath_path(self, pth, data):
+        pth = pth.replace("/", ".")
+        splits = pth.split(".")
+        if not splits:
+            return pth
+        
+        fixed_path = ""
+        for piece in splits:
+            if fixed_path: fixed_path = fixed_path + "."
+            fixed_path = fixed_path + piece
+            selected = parse(fixed_path).find(data)
+            if len(selected) == 1 and type(selected[0].value) == list and \
+                    len(selected[0].value) > 1 and not fixed_path.endswith("]"):
+                #print("adding *: {} b/c {}".format(fixed_path, str(selected[0].value)))
+                fixed_path = fixed_path + "[*]"
+                
+        return fixed_path         
+
     
     def fetch_extract(self, *field_paths, base_path = None):
         data = self.fetch()
@@ -114,19 +133,16 @@ class DataSource:
         collected = []
 
         if base_path:      
-            base_path = base_path.replace("/", ".")
-            base_match = parse(base_path + "[*]").find(data)
-            if not base_match:
-                base_match = parse(base_path).find(data)
-            data = base_match
+            base_path = self.patch_jsonpath_path(base_path, data)
+            data = parse(base_path).find(data)
         else:
             data = [data]
         
         for match in data:
             d = {}
             for field_path in field_paths:
-                field_path = field_path.replace("/", ".")
-                field_name = field_path.split(".")[-1]
+                field_path = self.patch_jsonpath_path(field_path, match)
+                field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
                 fv = parse(field_path).find(match)
                 if len(fv) == 1:
                     d[field_name] = fv[0].value
