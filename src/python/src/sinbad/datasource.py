@@ -10,6 +10,7 @@ import urllib.parse
 import cacher as C
 import util as U
 
+import plugin_csv
 import plugin_json
 import plugin_xml
 
@@ -27,7 +28,11 @@ class DataSource:
                             { "name" : "XML (lxml)", 
                                "type-ext" : "xml",
                                "data-infer" : plugin_xml.XML_Infer(),
-                               "data-factory" : plugin_xml.XML_Data_Factory() }  
+                               "data-factory" : plugin_xml.XML_Data_Factory() },
+                            { "name" : "CSV (built-in)",
+                               "type-ext" : "csv",
+                               "data-infer" : plugin_csv.CSV_Infer(),
+                               "data-factory" : plugin_csv.CSV_Data_Factory() }
                         ]
     
     plugins = __predefined_plugins
@@ -183,6 +188,11 @@ class DataSource:
         return self
 
 
+    def set_option(self, name, value):
+        # TODO: zip file entry
+        self.data_factory.set_option(name, value)
+
+
     def get_full_path_url(self):
         if not self.__ready_to_load():
             raise ValueError("Cannot finalize path: not ready to load")
@@ -222,7 +232,9 @@ class DataSource:
         options: dict  { String : String, ... }
         
         
-    A <data access factory object> has method:
+    A <data access factory object> has methods:
+        set_option(name, value)
+    
         <data object>  load_data(fp)
             fp : a file object
             returns a dict-like thing with a 

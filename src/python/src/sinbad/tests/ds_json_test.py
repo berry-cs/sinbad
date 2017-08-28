@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
         
     def testAirport(self):
         ds = DataSource.connect_as("XmL", "http://services.faa.gov/airport/status/ATL")
-        ds.set_param("format", "application/xml").set_cache_timeout(30).load()
+        ds.set_param("format", "application/xml").set_cache_timeout(300).load()
         x = ds.fetch_extract("Name", "State", "Delay", "Weather/Weather", base_path = "AirportStatus")
         y = ds.fetch_extract("AirportStatus/Name", "AirportStatus/State", "AirportStatus/Delay", "AirportStatus/Weather/Weather")
         #x = ds.fetch()
@@ -64,6 +64,26 @@ class Test(unittest.TestCase):
         print(x)
         print(y)
         assert len(x) == len(y['title'])
+
+
+    def testCSV(self):
+        ds = DataSource.connect_as("csv", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat")
+        ds.set_option("header", "ID,Name,Alias,IATA,ICAO,Call sign,Country,Active")
+        ds.load()
+        data = ds.fetch()
+        for r in data:
+            if r['ID'] == '3871':
+                print("PIA: " + str(r))
+                assert r['ICAO'] == 'PIA'
+                break
+
+        ds2 = DataSource.connect_as("csv", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat")
+        ds2.set_option("header", ["ID","Name","Alias","IATA","ICAO","Call sign","Country","Active"])
+        ds2.load()
+        data2 = ds2.fetch()
+        assert data[100] == data2[100]
+
+
 
 
 if __name__ == "__main__":

@@ -30,6 +30,9 @@ class XML_Data_Factory:
     
     def load_data(self, fp):
         #data = etree_to_dict(objectify.parse(fp).getroot())
+
+        # TODO: fix this... the xmltodict library returns (nested) OrderedDict objects instead of plain old Python dicts
+        #   the only reason it's an issue is when necessary to view, the OrderedDict is not as simple when printed out
         data = json.loads(json.dumps(xd.parse(fp.read())))
         return data
     

@@ -36,15 +36,19 @@ def create_input_raw(path):
        
        the filename could be different from path if a redirect from url happened,
        or if the file came in as an attachment in the http response 
-       or if the path was just adjusted in some way '''
+       or if the path was just adjusted in some way 
+       
+       returns a binary input stream
+       '''
     if not path:
         return None
     
-    # 
+    
     if smellsLikeURL(path):
         file = urllib.request.urlopen(path)
         return (file, path)
+    # TODO: this should return the encoding as well.... or None if unknown/unspecified (assume utf-8) 
     else:
-        file = open(path, 'r')
+        file = open(path, 'rb')  # binary to be consistent with urlopen 
         return (file, path)
     

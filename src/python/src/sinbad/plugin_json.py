@@ -26,7 +26,7 @@ class JSON_Data_Factory:
     
     def load_data(self, fp):
         # TODO ...
-        data = json.load(fp)
+        data = json.loads(fp.read().decode())
         return data
     
     
