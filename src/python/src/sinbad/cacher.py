@@ -97,12 +97,12 @@ class Cacher:
     def read_and_cache(self, path, options):
         try:
             fp = U.create_input(path, options)
-            charset = 'utf-8' if not hasattr(fp, 'headers') else fp.headers.get_content_charset('utf-8')
-            data = fp.read().decode(charset)
+                               #charset = 'utf-8' if not hasattr(fp, 'headers') else fp.headers.get_content_charset('utf-8')
+            data = fp.read()   #.decode(charset)
         except OSError:  ### ????
             raise FileNotFoundError("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable") 
         
-        cached_file = self.cacheStringData(path, data)
+        cached_file = self.cacheByteData(path, data)
         return cached_file
     
 
@@ -174,8 +174,23 @@ class Cacher:
            the function returns the path to the newly-created file 
         '''
         
-        stuff = data.encode('utf-8')
+        return self.cacheByteData(tag, data, 'utf-8')
         
+
+
+    def cacheByteData(self, tag, data, encoding=None):
+        ''' tag is used to determine the subdirectory in which a temp
+            file is created, into which the data (bytes) is stored
+           
+           a new temporary file is created each time this function is called
+           the function returns the path to the newly-created file 
+        '''
+                
+        if encoding:
+            stuff = data.encode(encoding)
+        else:
+            stuff = data
+                
         cacheDir = os.path.join(self.cacheDirectory, self.__cacheSubdirName(tag))
         os.makedirs(cacheDir, 0o777, True)
         
@@ -184,6 +199,7 @@ class Cacher:
         os.close(fd)
         
         return temp_path
+
 
     
     def __isCacheable(self, path, subtag):

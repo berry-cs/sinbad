@@ -6,6 +6,8 @@ Created on Aug 24, 2017
 
 from jsonpath_rw import parse
 import urllib.parse
+from zipfile import ZipFile, BadZipfile
+import random
 
 import cacher as C
 import util as U
@@ -24,15 +26,15 @@ class DataSource:
     __predefined_plugins = [ { "name" : "JSON (built-in)", 
                                "type-ext" : "json",
                                "data-infer" : plugin_json.JSON_Infer(),
-                               "data-factory" : plugin_json.JSON_Data_Factory() },
+                               "data-factory" : plugin_json.JSON_Data_Factory },
                             { "name" : "XML (lxml)", 
                                "type-ext" : "xml",
                                "data-infer" : plugin_xml.XML_Infer(),
-                               "data-factory" : plugin_xml.XML_Data_Factory() },
+                               "data-factory" : plugin_xml.XML_Data_Factory },
                             { "name" : "CSV (built-in)",
                                "type-ext" : "csv",
                                "data-infer" : plugin_csv.CSV_Infer(),
-                               "data-factory" : plugin_csv.CSV_Data_Factory() }
+                               "data-factory" : plugin_csv.CSV_Data_Factory }
                         ]
     
     plugins = __predefined_plugins
@@ -70,7 +72,7 @@ class DataSource:
         self.__loaded = False
         
         self.data_infer = plugin["data-infer"]
-        self.data_factory = plugin["data-factory"]
+        self.data_factory = plugin["data-factory"]()
         self.data_obj = None
         self.cacher = C.defaultCacher()
         
@@ -101,8 +103,22 @@ class DataSource:
         
         # TODO
         options = {}
-        
         fp = U.create_input(resolved_path, options)
+        
+        print("Full path: {} {}".format(full_path, U.smellsLikeZip(full_path)))
+        if U.smellsLikeZip(full_path) and not U.smellsLikeURL(resolved_path):
+            try:
+                zf = ZipFile(resolved_path)
+                print("***** ZIP *****")
+                members = zf.namelist()
+                print(members)
+                
+                if len(members) == 1:
+                    fp = zf.open(members[0])
+            except BadZipfile:
+                print("ZIP Failed: " + full_path)
+        
+        
         self.data_obj = self.data_factory.load_data(fp)
         
         self.loaded = True
@@ -123,6 +139,7 @@ class DataSource:
         for piece in splits:
             if fixed_path: fixed_path = fixed_path + "."
             fixed_path = fixed_path + piece
+            #print("checking " + fixed_path)
             selected = parse(fixed_path).find(data)
             if len(selected) == 1 and type(selected[0].value) == list and \
                     len(selected[0].value) > 1 and not fixed_path.endswith("]"):
@@ -131,8 +148,10 @@ class DataSource:
                 
         return fixed_path         
 
+    def fetch_random(self, *field_paths, base_path = None):
+        return self.fetch_extract(*field_paths, base_path = base_path, select = "random")
     
-    def fetch_extract(self, *field_paths, base_path = None):
+    def fetch_extract(self, *field_paths, base_path = None, select = None):
         data = self.fetch()
         
         collected = []
@@ -140,25 +159,38 @@ class DataSource:
         if base_path:      
             base_path = self.patch_jsonpath_path(base_path, data)
             data = parse(base_path).find(data)
-        else:
-            data = [data]
+        elif not isinstance(data, list):
+                data = [data]
         
+        parsed_paths = None
+        field_names = None
+
         for match in data:
+            if parsed_paths is None:
+                parsed_paths = []
+                field_names = []
+                for field_path in field_paths:
+                    field_path = self.patch_jsonpath_path(field_path, match)
+                    field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
+                    parsed_paths.append(parse(field_path))
+                    field_names.append(field_name)
+            
             d = {}
-            for field_path in field_paths:
-                field_path = self.patch_jsonpath_path(field_path, match)
-                field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
-                fv = parse(field_path).find(match)
+            for fp, fn in zip(parsed_paths, field_names):
+                fv = fp.find(match)
                 if len(fv) == 1:
-                    d[field_name] = fv[0].value
+                    d[fn] = fv[0].value
                 else:
-                    d[field_name] = [v.value for v in fv]
+                    d[fn] = [v.value for v in fv]
             collected.append(d)
         
         if len(collected) == 1:
             return collected[0]
         else:
-            return collected
+            if select and select.lower() == 'random' and isinstance(collected, list):
+                return random.choice(collected)
+            else:
+                return collected
         
         #=======================================================================
         # if len(base_match) == 1:
@@ -233,16 +265,17 @@ class DataSource:
         
         
     A <data access factory object> has methods:
+        
+    
         set_option(name, value)
     
         <data object>  load_data(fp)
-            fp : a file object
+            fp : a file object (binary mode)
             returns a dict-like thing with a 
             
     <data object> = a dict-like thing with 
         get schema
         ability to produce an actual dict (possibly pruned from the entire available data)
         
-    
 
 '''

@@ -5,6 +5,8 @@ Created on Aug 24, 2017
 '''
 import unittest
 from datasource import DataSource
+import cacher as C
+
 import pprint
 
 pprint = pprint.PrettyPrinter().pprint
@@ -14,6 +16,7 @@ class Test(unittest.TestCase):
 
 
     def setUp(self):
+        #C.defaultCacher().clearCache()
         pass
 
 
@@ -43,6 +46,13 @@ class Test(unittest.TestCase):
         ds.load()
         obj = ds.fetch()
         print(obj)
+        
+        print("Before")
+        col = ds.fetch_extract("title", "description", "link", base_path = "rss/channel/item")
+        print("After")
+        assert len(obj["rss"]["channel"]["item"]) == len(col)
+        print(col[0])
+        print(len(col))
         
         
     def testAirport(self):
@@ -84,6 +94,20 @@ class Test(unittest.TestCase):
         assert data[100] == data2[100]
 
 
+    def testZip(self):
+        ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip")
+        ds.load()
+        data = ds.fetch()
+        print(data[1])
+
+        cdata = ds.fetch_extract("make", "model", "city08")
+        print("Cars length: {}".format(len(cdata)))
+        pprint(cdata[0:5])
+
+        assert len(data) == len(cdata)
+        
+        rdata = ds.fetch_random("make", "model", "city08")
+        print(rdata)
 
 
 if __name__ == "__main__":

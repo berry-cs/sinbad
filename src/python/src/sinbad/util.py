@@ -22,6 +22,9 @@ def current_time_millis():
 
 def smellsLikeURL(path):
     return path.find("://") >= 0
+
+def smellsLikeZip(path):
+    return path.find(".zip") >= 0
     
     
 def create_input(path, options = {}):
@@ -46,9 +49,9 @@ def create_input_raw(path):
     
     if smellsLikeURL(path):
         file = urllib.request.urlopen(path)
-        return (file, path)
     # TODO: this should return the encoding as well.... or None if unknown/unspecified (assume utf-8) 
     else:
         file = open(path, 'rb')  # binary to be consistent with urlopen 
-        return (file, path)
+
+    return (file, path)
     
