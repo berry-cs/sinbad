@@ -9,7 +9,7 @@ import json
 class JSON_Infer:
     
     def __init__(self):
-        pass
+        self.options = {}
     
     def matched_by(self, path):
         path = path.lower()
@@ -29,5 +29,7 @@ class JSON_Data_Factory:
         data = json.loads(fp.read().decode())
         return data
     
-    
+    def set_option(self, name, value):
+        pass
+
         

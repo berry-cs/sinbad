@@ -27,7 +27,7 @@ def smellsLikeZip(path):
     return path.find(".zip") >= 0
     
     
-def create_input(path, options = {}):
+def create_input(path):
     # for now, but eventually options may including extract a file from a zip archive, etc.
     fp, newpath = create_input_raw(path)
     return fp

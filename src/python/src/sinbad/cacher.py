@@ -94,9 +94,9 @@ class Cacher:
         self.__write_cache_entry_list(cache_index_name, leftover_cel)
         return True
     
-    def read_and_cache(self, path, options):
+    def read_and_cache(self, path):
         try:
-            fp = U.create_input(path, options)
+            fp = U.create_input(path)
                                #charset = 'utf-8' if not hasattr(fp, 'headers') else fp.headers.get_content_charset('utf-8')
             data = fp.read()   #.decode(charset)
         except OSError:  ### ????
@@ -106,7 +106,7 @@ class Cacher:
         return cached_file
     
 
-    def resolvePath(self, path, subtag, options = {}):
+    def resolvePath(self, path, subtag):
         # first make sure caching is enabled and that the path is not a local file
         if not (isCaching() and self.__isCacheable(path, subtag)):
             return path
@@ -125,7 +125,7 @@ class Cacher:
         if (not cache_path) or \
                 (entry and is_expired(entry, self.cacheExpiration)):
             print("Refreshing cache for: " + path + " (" + subtag + ")")
-            cached_file_path = self.read_and_cache(path, options)
+            cached_file_path = self.read_and_cache(path)
             if cache_path:   # need to remove the old cached file
                 os.remove(cache_path)
             

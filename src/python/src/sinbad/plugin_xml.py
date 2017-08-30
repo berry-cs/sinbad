@@ -13,7 +13,7 @@ import json
 class XML_Infer:
     
     def __init__(self):
-        pass
+        self.options = {}
     
     def matched_by(self, path):
         path = path.lower()
@@ -36,4 +36,7 @@ class XML_Data_Factory:
         data = json.loads(json.dumps(xd.parse(fp.read())))
         return data
     
+    def set_option(self, name, value):
+        pass
+
    

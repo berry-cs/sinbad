@@ -34,10 +34,15 @@ class DataSource:
                             { "name" : "CSV (built-in)",
                                "type-ext" : "csv",
                                "data-infer" : plugin_csv.CSV_Infer(),
+                               "data-factory" : plugin_csv.CSV_Data_Factory },
+                            { "name" : "TSV (built-in)",
+                               "type-ext" : "tsv",
+                               "data-infer" : plugin_csv.CSV_Infer(delim = '\t'),
                                "data-factory" : plugin_csv.CSV_Data_Factory }
                         ]
     
     plugins = __predefined_plugins
+    
     
     @staticmethod
     def connect(path):
@@ -77,6 +82,7 @@ class DataSource:
         self.cacher = C.defaultCacher()
         
         self.param_values = {}
+        self.option_settings = {}
 
 
 
@@ -90,7 +96,6 @@ class DataSource:
         if not self.__ready_to_load(): raise ValueError("not ready to load; missing params...")
         
         subtag = "main"
-        schemaSubtag = "schema"
     
         full_path = self.get_full_path_url()
     
@@ -99,33 +104,42 @@ class DataSource:
                 not force_reload:
             return self
         
-        resolved_path = self.cacher.resolvePath(full_path, subtag, {})
+        resolved_path = self.cacher.resolvePath(full_path, subtag)
+        fp = U.create_input(resolved_path)
         
-        # TODO
-        options = {}
-        fp = U.create_input(resolved_path, options)
-        
-        print("Full path: {} {}".format(full_path, U.smellsLikeZip(full_path)))
+        #print("Full path: {} {}".format(full_path, U.smellsLikeZip(full_path)))
         if U.smellsLikeZip(full_path) and not U.smellsLikeURL(resolved_path):
             try:
                 zf = ZipFile(resolved_path)
-                print("***** ZIP *****")
                 members = zf.namelist()
-                print(members)
                 
-                if len(members) == 1:
-                    fp = zf.open(members[0])
+                if 'file-entry' in self.option_settings and \
+                    self.option_settings['file-entry'] in members:                    
+                    fp = zf.open(self.option_settings['file-entry'])
+                else:
+                    print("***** ZIP - specify a file-entry: *****\n {}".format(members))
+                    return self
             except BadZipfile:
                 print("ZIP Failed: " + full_path)
         
-        
+        if not self.data_infer.matched_by(self.path):  # because options is only valid after matchedBy has been invoked
+            self.data_infer.matched_by(full_path) 
+        for k, v in self.data_infer.options.items():
+            self.data_factory.set_option(k, v)
         self.data_obj = self.data_factory.load_data(fp)
         
-        self.loaded = True
+        self.__loaded = True
         return self
+    
+
+    def has_data(self):
+        return self.__connected and self.__loaded
 
 
     def fetch(self):
+        if not self.has_data():
+            raise ValueError("no data available - make sure you called load()")
+            
         return self.data_obj
 
 
@@ -221,8 +235,10 @@ class DataSource:
 
 
     def set_option(self, name, value):
-        # TODO: zip file entry
-        self.data_factory.set_option(name, value)
+        if name.lower() == "file-entry":
+            self.option_settings['file-entry'] = value
+        else:
+            self.data_factory.set_option(name, value)
 
 
     def get_full_path_url(self):

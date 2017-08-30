@@ -96,6 +96,7 @@ class Test(unittest.TestCase):
 
     def testZip(self):
         ds = DataSource.connect("http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip")
+        ds.set_option('file-entry', "vehicles.csv")
         ds.load()
         data = ds.fetch()
         print(data[1])
@@ -108,6 +109,17 @@ class Test(unittest.TestCase):
         
         rdata = ds.fetch_random("make", "model", "city08")
         print(rdata)
+
+
+    def testTSV(self):
+        ds = DataSource.connect_as("TSV", "tls-data.tsv");
+        ds.load();
+        #ds.printUsageString();
+        data = ds.fetch()
+        print(len(data))
+        agencies = ds.fetch_extract("ParticipatingAgency")
+        print( agencies[0:10] )
+
 
 
 if __name__ == "__main__":
