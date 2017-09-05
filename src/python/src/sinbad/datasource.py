@@ -15,6 +15,7 @@ import describe as D
 
 import plugin_csv
 import plugin_json
+import plugin_satori
 import plugin_xml
 
 
@@ -39,7 +40,11 @@ class DataSource:
                             { "name" : "TSV (built-in)",
                                "type-ext" : "tsv",
                                "data-infer" : plugin_csv.CSV_Infer(delim = '\t'),
-                               "data-factory" : plugin_csv.CSV_Data_Factory }
+                               "data-factory" : plugin_csv.CSV_Data_Factory },
+                            { "name" : "Satori",
+                               "type-ext" : "satori",
+                               "data-infer" : plugin_satori.Satori_Infer(),
+                               "data-factory" : plugin_satori.Satori_Data_Factory}
                         ]
     
     plugins = __predefined_plugins

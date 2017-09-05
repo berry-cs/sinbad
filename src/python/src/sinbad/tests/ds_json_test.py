@@ -147,6 +147,21 @@ class Test(unittest.TestCase):
         print( agencies[0:10] )
 
 
+    def testSatori(self):
+        endpoint = 'wss://open-data.api.satori.com'
+        appkey = 'b7d4a0CBbaCD5BA87dCCb3a61571C1b8'
+        channel = 'webtraffic'
+        
+        ds = DataSource.connect(endpoint)
+        ds.set_option("appkey", appkey)
+        ds.set_option("channel", channel)
+        ds.load()
+        assert ds.description().find("domainName") >= 0
+        
+        ds.print_description()
+        data = ds.fetch()
+        pprint(data)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
