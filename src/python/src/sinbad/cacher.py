@@ -47,7 +47,7 @@ class Cacher:
             return True
         
         entry = self.cache_entry_for(path, subtag)
-        if not entry or is_expired(entry): 
+        if not entry or is_expired(entry, self.cache_expiration): 
             return True
         
         return False
@@ -123,7 +123,7 @@ class Cacher:
         cache_path = entry["cachedata"] if entry else None
         
         if (not cache_path) or \
-                (entry and is_expired(entry, self.cacheExpiration)):
+                (entry and is_expired(entry, self.cache_expiration)):
             print("Refreshing cache for: " + path + " (" + subtag + ")")
             cached_file_path = self.read_and_cache(path)
             if cache_path:   # need to remove the old cached file
@@ -141,8 +141,8 @@ class Cacher:
 
     def updateDirectory(self, newdir):
         new_cacher = Cacher()
-        new_cacher.cacheDirectory = newdir
-        new_cacher.cacheExpiration = self.cacheExpiration
+        new_cacher.cache_directory = newdir
+        new_cacher.cache_expiration = self.cache_expiration
         return new_cacher
     
     
@@ -153,13 +153,13 @@ class Cacher:
             value = __MINIMUM_TIMEOUT_VALUE__
             
         new_cacher = Cacher()
-        new_cacher.cacheDirectory = self.cacheDirectory
-        new_cacher.cacheExpiration = value
+        new_cacher.cache_directory = self.cache_directory
+        new_cacher.cache_expiration = value
         return new_cacher
     
     
     def clearCache(self):
-        shutil.rmtree(self.cacheDirectory)
+        shutil.rmtree(self.cache_directory)
     
     
     
@@ -191,7 +191,7 @@ class Cacher:
         else:
             stuff = data
                 
-        cacheDir = os.path.join(self.cacheDirectory, self.__cacheSubdirName(tag))
+        cacheDir = os.path.join(self.cache_directory, self.__cacheSubdirName(tag))
         os.makedirs(cacheDir, 0o777, True)
         
         fd, temp_path = tempfile.mkstemp(".dat", "cache", cacheDir)
@@ -210,16 +210,16 @@ class Cacher:
         #  if it smells like a URL and the cacher specific setting is not set 
         #  to never cache
         return (not subtag.startswith("main")) or \
-                U.smellsLikeURL(path) and self.cacheExpiration != NEVER_CACHE
+                U.smellsLikeURL(path) and self.cache_expiration != NEVER_CACHE
     
     
     def __getCacheIndexFile(self, tag):
-        if not os.path.exists(self.cacheDirectory):
-            os.makedirs(self.cacheDirectory, 0o777, True)
-        if not os.path.isdir(self.cacheDirectory):
+        if not os.path.exists(self.cache_directory):
+            os.makedirs(self.cache_directory, 0o777, True)
+        if not os.path.isdir(self.cache_directory):
             return None
 
-        cacheIndexFile = os.path.join(self.cacheDirectory, self.__cacheIndexName(tag) )
+        cacheIndexFile = os.path.join(self.cache_directory, self.__cacheIndexName(tag) )
         
         if not os.path.exists(cacheIndexFile):
             self.__write_cache_entry_list(cacheIndexFile, [])
@@ -258,8 +258,8 @@ class Cacher:
     def __init__(self):
         ''' This constructor is 'private' '''
         global __DEFAULT_CACHE_DIR__
-        self.cacheDirectory = __DEFAULT_CACHE_DIR__
-        self.cacheExpiration = NEVER_RELOAD 
+        self.cache_directory = __DEFAULT_CACHE_DIR__
+        self.cache_expiration = NEVER_RELOAD 
         
         
         
