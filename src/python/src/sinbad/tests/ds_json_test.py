@@ -29,6 +29,7 @@ class Test(unittest.TestCase):
         assert ds.set_cache_timeout(60 * 60) is ds
         assert ds.set_param("foo", "bar") is ds
         assert ds.load() is ds
+        assert ds.load() is ds   # multiple loads should work
 
 
     def testConnect(self):
@@ -48,7 +49,7 @@ class Test(unittest.TestCase):
         print(obj)
         
         print("Before")
-        col = ds.fetch_extract("title", "description", "link", base_path = "rss/channel/item")
+        col = ds.fetch("title", "description", "link", base_path = "rss/channel/item")
         print("After")
         assert len(obj["rss"]["channel"]["item"]) == len(col)
         print(col[0])
@@ -58,8 +59,8 @@ class Test(unittest.TestCase):
     def testAirport(self):
         ds = DataSource.connect_as("XmL", "http://services.faa.gov/airport/status/ATL")
         ds.set_param("format", "application/xml").set_cache_timeout(300).load()
-        x = ds.fetch_extract("Name", "State", "Delay", "Weather/Weather", base_path = "AirportStatus")
-        y = ds.fetch_extract("AirportStatus/Name", "AirportStatus/State", "AirportStatus/Delay", "AirportStatus/Weather/Weather")
+        x = ds.fetch("Name", "State", "Delay", "Weather/Weather", base_path = "AirportStatus")
+        y = ds.fetch("AirportStatus/Name", "AirportStatus/State", "AirportStatus/Delay", "AirportStatus/Weather/Weather")
         #x = ds.fetch()
         pprint(x)
         assert x == y
@@ -68,8 +69,8 @@ class Test(unittest.TestCase):
     def testEarthQuake(self):
         ds = DataSource.connect("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson")
         ds.set_cache_timeout(180).load()
-        x = ds.fetch_extract("title", "time", "mag", base_path = "features/properties")
-        y = ds.fetch_extract("features/properties/title", "features/properties/time", "features/properties/mag")
+        x = ds.fetch("title", "time", "mag", base_path = "features/properties")
+        y = ds.fetch("features/properties/title", "features/properties/time", "features/properties/mag")
         # note: one produces an array of objects, the second parallel arrays of simple data 
         print(x)
         print(y)
@@ -101,7 +102,7 @@ class Test(unittest.TestCase):
         data = ds.fetch()
         print(data[1])
 
-        cdata = ds.fetch_extract("make", "model", "city08")
+        cdata = ds.fetch("make", "model", "city08")
         print("Cars length: {}".format(len(cdata)))
         pprint(cdata[0:5])
 
@@ -117,7 +118,7 @@ class Test(unittest.TestCase):
         #ds.printUsageString();
         data = ds.fetch()
         print(len(data))
-        agencies = ds.fetch_extract("ParticipatingAgency")
+        agencies = ds.fetch("ParticipatingAgency")
         print( agencies[0:10] )
 
 

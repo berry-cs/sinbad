@@ -18,7 +18,7 @@ def main():
     while True:
         ds.load()
         
-        data = ds.fetch_extract("title", "time", "mag", base_path = "features/properties")
+        data = ds.fetch("title", "time", "mag", base_path = "features/properties")
         
         for d in data:
             if d["title"] not in collected:

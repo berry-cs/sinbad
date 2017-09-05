@@ -11,6 +11,7 @@ import random
 
 import cacher as C
 import util as U
+import describe as D
 
 import plugin_csv
 import plugin_json
@@ -45,21 +46,31 @@ class DataSource:
     
     
     @staticmethod
-    def connect(path):
-        for p in DataSource.plugins:
-            if p["data-infer"].matched_by(path):
-                return DataSource(path, path, p["type-ext"], p)
+    def connect(path, format = None):
+        if format is None:  # infer it...
+            for p in DataSource.plugins:
+                if p["data-infer"].matched_by(path):
+                    return DataSource(path, path, p["type-ext"], p)
+            raise ValueError('could not infer data format for {}'.format(path))
+        else:
+            type_ext = format.lower()
+            for p in DataSource.plugins:
+                if p["type-ext"] == type_ext:
+                    return DataSource(path, path, type_ext, p)
+    
+            raise ValueError("no data source plugin for type {}".format(type_ext))
+            
         
-        raise ValueError('could not infer data format for {}'.format(path))
     
     @staticmethod
     def connect_as(type_ext, path):
-        type_ext = type_ext.lower()
-        for p in DataSource.plugins:
-            if p["type-ext"] == type_ext:
-                return DataSource(path, path, type_ext, p)
-
-        raise ValueError("no data source plugin for type {}".format(type_ext))
+        return DataSource.connect(path, format = type_ext)
+        
+    
+    @staticmethod
+    def connect_load(path, format = None):
+        ds = DataSource.connect(path, format = format)
+        return ds.load()
         
 
     def __init__(self, name, path, typeExt, plugin):
@@ -136,7 +147,7 @@ class DataSource:
         return self.__connected and self.__loaded
 
 
-    def fetch(self):
+    def fetch_all(self):
         if not self.has_data():
             raise ValueError("no data available - make sure you called load()")
             
@@ -163,10 +174,30 @@ class DataSource:
         return fixed_path         
 
     def fetch_random(self, *field_paths, base_path = None):
-        return self.fetch_extract(*field_paths, base_path = base_path, select = "random")
+        return self.__post_process(self.fetch(*field_paths, base_path = base_path, select = "random"), *field_paths)
     
-    def fetch_extract(self, *field_paths, base_path = None, select = None):
-        data = self.fetch()
+    def fetch_first(self, *field_paths, base_path = None):
+        return self.fetch_ith(0, *field_paths, base_path = base_path)
+
+    def fetch_second(self, *field_paths, base_path = None):
+        return self.fetch_ith(1, *field_paths, base_path = base_path)
+
+    def fetch_third(self, *field_paths, base_path = None):
+        return self.fetch_ith(2, *field_paths, base_path = base_path)
+
+    def fetch_ith(self, i, *field_paths, base_path = None):
+        return self.__post_process(self.fetch(*field_paths, base_path = base_path, select = i), *field_paths)
+    
+    def fetch_float(self, field_path, select = "random"):
+        return float(self.fetch(field_path, select = select))
+    
+    def fetch_int(self, field_path, select = "random"):
+        return int(self.fetch(field_path, select = select))
+    
+    def fetch(self, *field_paths, base_path = None, select = None):
+        data = self.fetch_all()
+        if len(field_paths) is 0:
+            return data
         
         collected = []
 
@@ -199,34 +230,36 @@ class DataSource:
             collected.append(d)
         
         if len(collected) == 1:
-            return collected[0]
-        else:
-            if select and select.lower() == 'random' and isinstance(collected, list):
-                return random.choice(collected)
+            only_one = collected[0]
+            if len(field_paths) == 1 and field_names[0] in only_one:
+                collected = only_one[field_names[0]]
             else:
-                return collected
+                collected = only_one
+            
+        if select and select.lower() == 'random' and isinstance(collected, list):
+            return random.choice(collected)
+        elif type(select) is int and isinstance(collected, list):
+            return collected[select]
+        else:
+            return collected
         
-        #=======================================================================
-        # if len(base_match) == 1:
-        #     if not field_paths:
-        #         return base_match[0].value
-        #     else:
-        #         d = {}
-        #         base_path = base_path.replace("/", ".")
-        #         base_name = base_path.split(".")[-1]
-        #         d[base_name] = base_match[0].value
-        #         for field_path in field_paths:
-        #             field_path = field_path.replace("/", ".")
-        #             field_name = field_path.split(".")[-1]
-        #             fv = parse(field_path).find(base_match[0])
-        #             if len(fv) == 1:
-        #                 d[field_name] = fv[0].value
-        #             else:
-        #                 d[field_name] = [v.value for v in fv]
-        #         return d
-        # else:
-        #=======================================================================
+        
+    def __post_process(self, result, *field_paths):
+        if isinstance(result, dict) and len(result.keys()) == 1:  # unwrap singleton dictionary fields
+            for first_key in result: break
+            return result[first_key]           
+        else:
+            return result
+
+
+    def description(self):
+        if not self.has_data():
+            raise ValueError("no data available - make sure you called load()")
+        
+        return D.describe(self.data_obj)
     
+    def print_description(self):
+        print(self.description())    
 
     def set_cache_timeout(self, value):
         ''' set the cache delay to the given value in seconds '''
@@ -261,6 +294,7 @@ class DataSource:
         
         self.__load_ready = True
         return self.__load_ready;
+
 
 
 
