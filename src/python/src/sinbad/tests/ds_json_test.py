@@ -46,12 +46,13 @@ class Test(unittest.TestCase):
         ds.set_cache_timeout(60 * 60)
         ds.load()
         obj = ds.fetch()
-        print(obj)
+        ds.print_description()
+        #print(obj)
         
         print("Before")
-        col = ds.fetch("title", "description", "link", base_path = "rss/channel/item")
+        col = ds.fetch("title", "description", "link", base_path = "channel/item")
         print("After")
-        assert len(obj["rss"]["channel"]["item"]) == len(col)
+        assert len(obj["channel"]["item"]) == len(col)
         print(col[0])
         print(len(col))
         
@@ -59,11 +60,10 @@ class Test(unittest.TestCase):
     def testAirport(self):
         ds = DataSource.connect_as("XmL", "http://services.faa.gov/airport/status/ATL")
         ds.set_param("format", "application/xml").set_cache_timeout(300).load()
-        x = ds.fetch("Name", "State", "Delay", "Weather/Weather", base_path = "AirportStatus")
-        y = ds.fetch("AirportStatus/Name", "AirportStatus/State", "AirportStatus/Delay", "AirportStatus/Weather/Weather")
+        x = ds.fetch("Name", "State", "Delay", "Weather/Weather")
         #x = ds.fetch()
         pprint(x)
-        assert x == y
+        ds.print_description()
         
         
     def testEarthQuake(self):
@@ -75,6 +75,7 @@ class Test(unittest.TestCase):
         print(x)
         print(y)
         assert len(x) == len(y['title'])
+        
 
 
     def testCSV(self):
@@ -93,6 +94,22 @@ class Test(unittest.TestCase):
         ds2.load()
         data2 = ds2.fetch()
         assert data[100] == data2[100]
+        
+    def testRandom(self):
+        ds = DataSource.connect_as("csv", "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat")
+        ds.set_option("header", "ID,Name,Alias,IATA,ICAO,Call sign,Country,Active")
+        ds.load()
+        
+        data = ds.fetch_random()   
+        assert isinstance(data, dict)
+        
+        name = ds.fetch_random("Name")
+        country = ds.fetch_random("Country")
+        print(data)
+        assert data["Name"] == name  and data["Country"] == country
+        
+        
+        
 
 
     def testZip(self):
@@ -110,6 +127,14 @@ class Test(unittest.TestCase):
         
         rdata = ds.fetch_random("make", "model", "city08")
         print(rdata)
+        rdata2 = ds.fetch_random("make", "model", "city08")
+        assert rdata == rdata2
+        ds.load()
+        rdata3 = ds.fetch_random("make", "model", "city08")
+        pprint(rdata)
+        pprint(rdata3)
+        assert not (rdata == rdata3)
+
 
 
     def testTSV(self):

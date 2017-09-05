@@ -87,6 +87,8 @@ class DataSource:
         self.__load_ready = False
         self.__loaded = False
         
+        self.__random_index = None   # this is so that .fetch_random() actually returns the same position, until .load() is called again
+        
         self.data_infer = plugin["data-infer"]
         self.data_factory = plugin["data-factory"]()
         self.data_obj = None
@@ -113,6 +115,7 @@ class DataSource:
         if self.__loaded and \
                 not self.cacher.is_stale(full_path, subtag) and \
                 not force_reload:
+            self.__random_index = None   # this is so that .fetch_random() actually returns the same position, until .load() is called again
             return self
         
         resolved_path = self.cacher.resolvePath(full_path, subtag)
@@ -140,6 +143,7 @@ class DataSource:
         self.data_obj = self.data_factory.load_data(fp)
         
         self.__loaded = True
+        self.__random_index = None   # this is so that .fetch_random() actually returns the same position, until .load() is called again
         return self
     
 
@@ -197,48 +201,51 @@ class DataSource:
     def fetch(self, *field_paths, base_path = None, select = None):
         data = self.fetch_all()
         if len(field_paths) is 0:
-            return data
-        
-        collected = []
-
-        if base_path:      
-            base_path = self.patch_jsonpath_path(base_path, data)
-            data = parse(base_path).find(data)
-        elif not isinstance(data, list):
-                data = [data]
-        
-        parsed_paths = None
-        field_names = None
-
-        for match in data:
-            if parsed_paths is None:
-                parsed_paths = []
-                field_names = []
-                for field_path in field_paths:
-                    field_path = self.patch_jsonpath_path(field_path, match)
-                    field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
-                    parsed_paths.append(parse(field_path))
-                    field_names.append(field_name)
+            collected = data
+        else:
+            collected = []
+    
+            if base_path:      
+                base_path = self.patch_jsonpath_path(base_path, data)
+                data = parse(base_path).find(data)
+            elif not isinstance(data, list):
+                    data = [data]
             
-            d = {}
-            for fp, fn in zip(parsed_paths, field_names):
-                fv = fp.find(match)
-                if len(fv) == 1:
-                    d[fn] = fv[0].value
+            parsed_paths = None
+            field_names = None
+    
+            for match in data:
+                if parsed_paths is None:
+                    parsed_paths = []
+                    field_names = []
+                    for field_path in field_paths:
+                        field_path = self.patch_jsonpath_path(field_path, match)
+                        field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
+                        parsed_paths.append(parse(field_path))
+                        field_names.append(field_name)
+                
+                d = {}
+                for fp, fn in zip(parsed_paths, field_names):
+                    fv = fp.find(match)
+                    if len(fv) == 1:
+                        d[fn] = fv[0].value
+                    else:
+                        d[fn] = [v.value for v in fv]
+                collected.append(d)
+            
+            if len(collected) == 1:
+                only_one = collected[0]
+                if len(field_paths) == 1 and field_names[0] in only_one:
+                    collected = only_one[field_names[0]]
                 else:
-                    d[fn] = [v.value for v in fv]
-            collected.append(d)
-        
-        if len(collected) == 1:
-            only_one = collected[0]
-            if len(field_paths) == 1 and field_names[0] in only_one:
-                collected = only_one[field_names[0]]
-            else:
-                collected = only_one
+                    collected = only_one
             
         if select and select.lower() == 'random' and isinstance(collected, list):
-            return random.choice(collected)
-        elif type(select) is int and isinstance(collected, list):
+            if not self.__random_index:
+                self.__random_index = random.randrange(len(collected))
+            select = self.__random_index
+        
+        if select and isinstance(select, int) and isinstance(collected, list):
             return collected[select]
         else:
             return collected
