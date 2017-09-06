@@ -75,5 +75,9 @@ list of:
 
 ### Aside: Financial Data, Numbers, and Programming 
 
+Be aware that while we are using `float` values to represent financial data (exchange rates) for the purpose of these exercises, in general, floating point numbers **do not** maintain enough precision to prevent accumulation of rounding errors. For instance, `round(2.675, 2)` in Python produces `2.67` while `round(2.875, 2)` produces `2.88`. The Python tutorial discusses [this more here](https://docs.python.org/3.6/tutorial/floatingpoint.html).
+
+
+
 
 
