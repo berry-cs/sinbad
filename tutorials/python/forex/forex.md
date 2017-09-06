@@ -17,9 +17,9 @@ Welcome! This multi-stage tutorial provides an introduction to *Sinbad* - a Pyth
 
 To access any data source using *Sinbad*, there are three basic steps you carry out:
 
-1. _Connect_ to the data source by URL or filename
-2. _Load_ all the data
-3. _Fetch_ elements of interest from the data
+  1. _Connect_ to the data source by URL or filename
+  2. _Load_ all the data
+  3. _Fetch_ elements of interest from the data
 
 There are several steps that may be required for step 1, and there are a variety of ways that you can fetch elements from the data in step 3 - we'll cover these eventually.
 
@@ -31,7 +31,7 @@ Scroll about two-thirds of the way down the page and you should see a section of
 
 ### Start a Python Script
 
-- Open up a new file in your Python source code editor or IDE. Import the *Sinbad* library by typing:
+* Open up a new file in your Python source code editor or IDE. Import the *Sinbad* library by typing:
 
       from datasource import DataSource
     
@@ -39,7 +39,7 @@ Scroll about two-thirds of the way down the page and you should see a section of
   
   It's a good idea at this point to trying running your program at this point, just to make sure that the library is imported with no problems. Of course, your program won't do anything at all yet.
 
-- Alright! So, let's now go through the three basic steps above to get data from the data source mentioned above. 
+* Alright! So, let's now go through the three basic steps above to get data from the data source mentioned above. 
 
   1. First, we use the `connect` function to create a DataSource object and assign it to a variable. The `connect` function requires one argument (or, parameter): the URL of the data service. Additionally, if the format of the data is not completely obvious from the URL (like in this case, where the link is actually for a 'zip' archive file), we can provide the `connect` function an additional `format` parameter to help clarify that. 
 
@@ -57,6 +57,13 @@ Scroll about two-thirds of the way down the page and you should see a section of
   
           euro_usd = ds.fetch_float("USD")
           
+* At this point, we've connected, loaded, and fetched some data. It might now by handy to have our program display the data value, so let's add a `print` statement:
+
+          print(euro_usd)
+
+* Now run your program. You should see a currency exchange rate printed out that matches what you get if you search Google for the [EUR-to-USD exchange rate](https://www.google.com/search?q=euro+to+usd).
+
+### Data Elements and Labels
 
 
 
