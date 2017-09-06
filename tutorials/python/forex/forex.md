@@ -11,7 +11,6 @@ Welcome! This multi-stage tutorial provides an introduction to *Sinbad* - a Pyth
 * Using (i.e. calling) functions/methods
 * `import`ing a library
 * Using `print` to display text in the console
-* String concatenation
 
 ### Downloading and Installing *Sinbad*
 
