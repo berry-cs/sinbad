@@ -110,6 +110,27 @@ While the strength or weakness of one currency against another depends on severa
 
        target = "JPY"
 
-  and the rest of the program should still work correctly.
+  and the rest of the program should produce the appropriate output.
   
   
+## Part 4 - Functions
+
+### Required Python Concepts
+
+* Defining functions
+* using `round`
+
+### Task
+
+* Based on insight from how you computed the dollars to pounds exchange rate in Part 2 above, write a function,
+
+      def currency_rate(source, target):
+
+  that produces (`return`s) the conversion rate from one currency to another. For example, if the EUR-to-FOO rate is 2.0 and the EUR-to-BAR rate is .4, then `currency_rate("FOO", "BAR")` should produce `0.2`. You will need to look up the Euro-based conversion rates for `FOO` and `BAR` in the data source.
+  
+   Make sure that your function works correctly if either `source` or `target` is `"EUR"`, and also if `source` and `target` are the same. In the latter case, it should always produce `1.0` as the rate.
+   
+   
+
+
+
