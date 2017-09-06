@@ -6,8 +6,12 @@ Welcome! This multi-stage tutorial provides an introduction to *Sinbad* - a Pyth
 
 ### Required Python Concepts
 
-- blah
-- blah
+* Basic data types - String, int, float
+* Variables
+* Using (i.e. calling) functions/methods
+* `import`ing a library
+* Using `print` to display text in the console
+* String concatenation
 
 ### Downloading and Installing *Sinbad*
 
@@ -65,5 +69,55 @@ Scroll about two-thirds of the way down the page and you should see a section of
 
 ### Data Elements and Labels
 
+In the program you just wrote, we told you that the label for the piece of data representing the euro-to-dollar exchange rate was `USD`. How might you figure out what other pieces of data are available? There are at least two ways to do so. 
+
+1. The first is to look for documentation on the web site that provides the data. In our case, if you go to the "Downloads" section of the web site above, you'll see a link to a PDF document. If you view that document, you get a list of the different currencies that are provided. (In this case, you could also open the CSV file in Excel, as mentioned earlier.)
+
+   This approach is ad hoc and different web sites will provide better or worse documentation of the available pieces of data they supply. If you are working on an assignment for class, the instructor or teaching assistant can help you find and figure out the documentation for a given data source.
+
+2. The second way to figure out what data labels are available is actually by using a method of the `DataSource` object in our program. Once the data has been loaded, the library analyzes it and can provide you a summary of the labels it has found. Do this by adding the following statement _after_ the `ds.load()` statement in your program:
+
+        ds.print_description()
+       
+   When you run your program, you should get a listing that looks something like this: 
+
+````
+-----
+Data Source: http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?...
+
+The following data is available:
+list of:
+  dictionary with {
+     : *
+    AUD : *
+    BGN : *
+    BRL : *
+    ...
+    Date : *
+    DKK : *
+    JPY : *
+    USD : *
+    ...
+   }
+-----
+````
+
+   This listing displays the available fields of data you can extract using the `fetch` method. For many data sources, the names of the labels themselves provide sufficient hints to what information is being represented. The `*`s indicate that each of these labels refer to a simple, atomic piece of data represented as a string (or number - *Sinbad* is not smart enough, yet, to automatically infer what type of data each label corresponds to).
+
+
+### Types of Data Elements
+
+In the program we've written, we used the `fetch_float` method to extract the `USD` element of data as a `float`, and assigned it to a variable of the corresponding type. In general, the *Sinbad* library does not do very much for you to determine what _type_ of data is available, only the available labels of data. You have to request a particular type of data using an appropriate `fetch...` method. You can _always_ however, fetch any data element as a `string`, using the simplest form of the `fetch` method.
+
+Let's try using `fetch` to extract the date associated with these exchange rates. Add the following statement to your program after the `fetch_float` statement and update the print statement:
+
+    date = ds.fetch("Date")
+    print("As of", date, ", 1 Euro =", euro_usd, "Dollars")
+
+Run your program. (You might want to comment out or delete the `print_description` statement.) You should get a message printed out that looks something like:
+
+````
+As of 06 September 2017 , 1 Euro = 1.1931 Dollars
+````
 
 
