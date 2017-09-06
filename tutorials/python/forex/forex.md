@@ -4,7 +4,7 @@ Welcome! This set of exercises uses *Sinbad* to explore current and historical c
 
 * We assume you have already gone through the [Welcome Tutorial](../welcome/welcome01.md) first before working through this activity.
 
-### Review
+### Sinbad
 
 Recall that to access any data source using *Sinbad*, there are three basic steps you carry out:
 
@@ -12,22 +12,22 @@ Recall that to access any data source using *Sinbad*, there are three basic step
   2. _Load_ all the data
   3. _Fetch_ elements of interest from the data
 
-
-## Part 1 - Euro-to-Dollar Exchange Rate
-
-### Required Python Concepts
-
-* Basic data types - String, int, float
-* Variables
-* Using (i.e. calling) functions/methods
-* `import`ing a library
-* Using `print` to display text in the console
-
 ### Data Source
 
 Use the data provided by the European Central Bank at this URL: http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html. This provides conversion rates from Euros to various other currencies. Again, remember that the base, or reference, currency is the Euro.
 
 Scroll about two-thirds of the way down the page and you should see a section of "Downloads" with a link for a CSV file of "Current reference rates". Right-click on that link and copy the link address. (If you want, you can also (left) click on it to download the file to your computer and open it in Excel.) The link should be something like: `http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?...`
+
+
+## Part 1 - Euro-to-Dollar Exchange Rate
+
+### Required Python Concepts
+
+* Basic data types - string, float
+* Variables
+* Using (i.e. calling) functions/methods
+* `import`ing a library
+* Using `print` to display text in the console
 
 ### Task
 
@@ -77,7 +77,39 @@ list of:
 
 Be aware that while we are using `float` values to represent financial data (exchange rates) for the purpose of these exercises, in general, floating point numbers **do not** maintain enough precision to prevent accumulation of rounding errors. For instance, `round(2.675, 2)` in Python produces `2.67` while `round(2.875, 2)` produces `2.88`. The Python tutorial discusses [this more here](https://docs.python.org/3.6/tutorial/floatingpoint.html).
 
+## Part 2 - Conversion Rates
 
+### Required Python Concepts
 
+* Arithmetic operations
 
+### Task
 
+Write a Python script that displays the following conversion rates:
+
+* Euros to dollars (fetch the `USD` data)
+* Euros to British pounds (`GBP`)
+* Dollars to euros 
+* Dollars to pounds
+
+## Part 3 - Currencies: Stronger and weaker
+
+While the strength or weakness of one currency against another depends on several factors, a simple metric that can be used is the exchange rate. For example, if 1 EUR can be exchanged for less than 1 unit of another currency, we'll say that it is weaker; on the other hand, if 1 EUR is exchanged for more than one unit of another currency, we'll say that it is stronger. 
+
+### Required Python Concepts
+
+* Conditional statements (`if`)
+
+### TASK
+
+* Define a variable storing a target currency:
+
+       target = "USD"
+       
+* Write a Python script that fetches the exchange rate for the target currency and prints out whether the Euro is stronger than it or not. You should be able to change the value of the `target` variable to something else, e.g. 
+
+       target = "JPY"
+
+  and the rest of the program should still work correctly.
+  
+  
