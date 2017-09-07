@@ -227,7 +227,7 @@ With the historical exchange data, `ds.fetch()` would provide a *list* of such d
 ### Ideas
 
 
-* Write a function `is_currency_code(s)` that determines if the given string looks like a currency code. For example, `USD` is a currency code; `Date` or `_col_42` are not.
+* Write a function `is_currency_code(s)` that determines if the given string looks like a currency code. For example, `"USD"` is a currency code; `"Date"` or `"_col_42"` are not.
   
   Use `ds.field_list()` to obtain a list of the labeled elements in the data, i.e. `['AUD', 'BGN', 'BRL', 'CAD', 'Date', ..., 'USD', ...]`. For each element of the list that is a currency code, write a program that displays the percent change (+/-) of the Euro exchange rate against that currency. You need to access the current exchange rate and the immediately previous one (e.g. `ds.fetch_ith_float(0, "USD")` and `ds.fetch_ith_float(1, "USD")`).
 
