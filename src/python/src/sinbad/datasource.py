@@ -139,19 +139,20 @@ class DataSource:
                 if 'file-entry' in self.option_settings and \
                         self.option_settings['file-entry'] in members:
                     
-                    entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
-                    if not entry_cached_path: # not in the cache
-                        fp = zf.open(self.option_settings['file-entry'])
-                        if not self.cacher.add_to_cache(full_path, "file-entry", fp):
+                    fe_value = self.option_settings['file-entry']
+                    fe_subtag = "file-entry:{}".format(fe_value)
+                    
+                    entry_cached_path = self.cacher.resolvePath(full_path, fe_subtag)
+                    if entry_cached_path:
+                        fp = U.create_input(entry_cached_path)                        
+                    else: # not in the cache
+                        fp = zf.open(fe_value)
+                        if not self.cacher.add_to_cache(full_path, fe_subtag, fp):
                             print("something went wrong caching zip file-entry")
-                            fp = zf.open(self.option_settings['file-entry'])
+                            fp = zf.open(fe_value)
                         else:
-                            entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
+                            entry_cached_path = self.cacher.resolvePath(full_path, fe_subtag)
                             fp = U.create_input(entry_cached_path)
-                    else:
-                        entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
-                        fp = U.create_input(entry_cached_path)
-
 
                 else:
                     print("***** ZIP - specify a file-entry: *****\n {}".format(members))
