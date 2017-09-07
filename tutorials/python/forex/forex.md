@@ -188,6 +188,8 @@ list of:
   
 * Use your function to determine how much money in USD you would have today if 200 time periods ago you started with $5000, converted it to Yen (JPY) at that point, and then converted the Yen back into dollars today. (Passing `0` for `periods_ago` should produce the current exchange rate.)
 
+* Write a script that displays the percent change (+/-) of the exchange rate against the various currencies in the data. You need to access the current exchange rate and the immediately previous one (e.g. `ds.fetch_ith_float(0, "USD")` and `ds.fetch_ith_float(1, "USD")`).
+
 
 ### Required Python Concepts
 
@@ -226,7 +228,7 @@ With the historical exchange data, `ds.fetch()` would provide a *list* of such d
 
 ### Ideas
 
-* Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` and produces a new dictionary that contains currency exchange rates relative to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
+* Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` (such as produced for the Euro by `ds.fetch()`) and produces a new dictionary that contains currency exchange rates relative to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
 
   For example, `change_reference( { 'USD' : 1.2, 'JPY' : 150, 'Date' : 'today' }, 'EUR', 'USD')` should produce `{'EUR': 0.8333, 'JPY': 125.0, 'Date' : 'today' }`.
 
@@ -234,4 +236,4 @@ With the historical exchange data, `ds.fetch()` would provide a *list* of such d
 
 * Incorporate another data set like [this one](https://raw.githubusercontent.com/datasets/currency-codes/master/data/codes-all.csv) to look up and display currency names instead of just their alphabetic codes.
 
-
+* For a given currency, determine the high and low exchange rate against the Euro in the period covered by the historical data. How does the current exchange rate compare against the high and low?
