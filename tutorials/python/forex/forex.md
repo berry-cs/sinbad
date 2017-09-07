@@ -184,5 +184,16 @@ list of:
 
 * Write a program that determines the date at which the dollar was trading strongest against another currency of your choice (EUR, JPY, etc.) You can get the total number of time periods using `total_values = len(ds.fetch())`. 
 
+  _Hint:_ Once you have determined the position in the list of the strongest value of the dollar, you can use that position value to look up the corresponding date in the data.
+  
+## Part 6 - Lists and Structured Data
+
+### Required Python Concepts
+
+* Dictionaries
+* Lists
+
+
+
 
 
