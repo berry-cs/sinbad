@@ -100,7 +100,7 @@ While the strength or weakness of one currency against another depends on severa
 
 * Conditional statements (`if`)
 
-### TASK
+### Task
 
 * Define a variable storing a target currency:
 
@@ -134,5 +134,38 @@ While the strength or weakness of one currency against another depends on severa
 ## Part 5 - Historical Data
 
 The [site above](http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html) also provides "Time series" historical exchange rates based on the Euro. Scroll all the way to the bottom of the page and copy the CSV (.zip) link for the time series data. It should be something like `http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip?...`.
+
+If you download and look at this data in Excel, you'll see that it is a series of rows with currency rates for almost every day of the last 15+ years. 
+
+### Tasks
+
+* Connect to and load the historical exchange rate data. Print a description of the available data. You should see something like:
+
+````
+The following data is available:
+list of:
+  dictionary with {
+    AUD : *
+    ...
+````
+
+  Notice that this is providing you a **list** of data records. In a later task, you will access the data as a list in Python. For now, we'll use a version of the `fetch` methods that allow you to select items at a particular position in the list. If you use `ds.fetch_first_float("USD")` on the list of historical data, it will give you the first USD value in the list. There is another method, `fetch_ith_float` which lets you specific any particular offset in the list for which you want to select a value. So the following two statements are equivalent:
+  
+      euro_usd_now = ds.fetch_first_float("USD")
+      euro_usd_now = ds.fetch_ith_float(0, "USD")
+
+  Try printing out the value returned each time and make sure they are the same.
+  
+* Now try accessing the 100th USD entry in the list of data:
+
+      euro_usd_100 = ds.fetch_ith_float(100, "USD")
+      
+  This entry will be the exchange rate for approximately 100 days ago (it will probably be for a bit farther back, because the data skips some days). You can look up the corresponding dates for the entries using:
+  
+      ds.fetch_first("Date")
+      ds.fetch_ith(100, "Date")
+
+* Write a program that computes how much money in USD you would have today if 100 time periods ago you started with $2000, converted it into Euros at that point, and then today converted the Euros back into dollars. Did the dollar become stronger or weaker since then?
+
 
 
