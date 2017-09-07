@@ -167,5 +167,14 @@ list of:
 
 * Write a program that computes how much money in USD you would have today if 100 time periods ago you started with $2000, converted it into Euros at that point, and then today converted the Euros back into dollars. Did the dollar become stronger or weaker since then?
 
+* Develop a function:
+
+      def hist_currency_rate(source, target, periods_ago):
+      
+  that produces the exchange rate from `source` to `target` the given number of `periods_ago` in the historical data.
+  
+* Use your function to determine how much money in USD you would have today if 200 time periods ago you started with $5000, converted it to Yen (JPY) at that point, and then converted the Yen back into dollars today. (Passing `0` for `periods_ago` should produce the current exchange rate.)
+
+
 
 
