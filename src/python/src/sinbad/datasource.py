@@ -132,12 +132,31 @@ class DataSource:
                 zf = ZipFile(resolved_path)
                 members = zf.namelist()
                 
+                if 'file-entry' not in self.option_settings and len(members) is 1:
+                    #print("Selecting file-entry from zip: {}".format(members[0]))
+                    self.option_settings['file-entry'] = members[0]
+                
                 if 'file-entry' in self.option_settings and \
-                    self.option_settings['file-entry'] in members:                    
-                    fp = zf.open(self.option_settings['file-entry'])
+                        self.option_settings['file-entry'] in members:
+                    
+                    entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
+                    if not entry_cached_path: # not in the cache
+                        fp = zf.open(self.option_settings['file-entry'])
+                        if not self.cacher.add_to_cache(full_path, "file-entry", fp):
+                            print("something went wrong caching zip file-entry")
+                            fp = zf.open(self.option_settings['file-entry'])
+                        else:
+                            entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
+                            fp = U.create_input(entry_cached_path)
+                    else:
+                        entry_cached_path = self.cacher.resolvePath(full_path, "file-entry")
+                        fp = U.create_input(entry_cached_path)
+
+
                 else:
                     print("***** ZIP - specify a file-entry: *****\n {}".format(members))
                     return self
+            
             except BadZipfile:
                 print("ZIP Failed: " + full_path)
         
@@ -169,11 +188,14 @@ class DataSource:
         if not splits:
             return pth
         
-        fixed_path = ""
+        if isinstance(data, list):
+            fixed_path = "$[*]"
+        else:
+            fixed_path = ""
         for piece in splits:
             if fixed_path: fixed_path = fixed_path + "."
             fixed_path = fixed_path + piece
-            #print("checking " + fixed_path)
+            #print("checking " + fixed_path + " " + str(data))
             selected = parse(fixed_path).find(data)
             if len(selected) == 1 and type(selected[0].value) == list and \
                     len(selected[0].value) > 1 and not fixed_path.endswith("]"):
@@ -197,11 +219,42 @@ class DataSource:
     def fetch_ith(self, i, *field_paths, base_path = None):
         return self.__post_process(self.fetch(*field_paths, base_path = base_path, select = i), *field_paths)
     
-    def fetch_float(self, field_path, select = "random"):
-        return float(self.fetch(field_path, select = select))
     
-    def fetch_int(self, field_path, select = "random"):
-        return int(self.fetch(field_path, select = select))
+    
+    def fetch_float(self, field_path, select = None):
+        stuff = self.fetch(field_path, select = select)
+        if isinstance(stuff, list):
+            return [float(v) for v in stuff]
+        else:
+            return float(stuff)
+
+    def fetch_first_float(self, field_path):
+        return self.fetch_float(field_path, select=0)
+    
+    def fetch_ith_float(self, i, field_path):
+        return self.fetch_float(field_path, select=i)
+
+    def fetch_random_float(self, field_path):
+        return self.fetch_float(field_path, select="random")
+
+    
+    def fetch_int(self, field_path, select = None):
+        stuff = self.fetch(field_path, select = select)
+        if isinstance(stuff, list):
+            return [int(v) for v in stuff]
+        else:
+            return int(stuff)
+
+    def fetch_first_int(self, field_path):
+        return self.fetch_int(field_path, select=0)
+    
+    def fetch_ith_int(self, i, field_path):
+        return self.fetch_int(field_path, select=i)
+
+    def fetch_random_int(self, field_path):
+        return self.fetch_int(field_path, select="random")
+    
+    
     
     def fetch(self, *field_paths, base_path = None, select = None):
         data = self.fetch_all()
@@ -212,7 +265,7 @@ class DataSource:
     
             if base_path:      
                 base_path = self.patch_jsonpath_path(base_path, data)
-                data = parse(base_path).find(data)
+                data = parse("$[*]." + base_path).find(data)
             elif not isinstance(data, list):
                     data = [data]
             
@@ -232,10 +285,16 @@ class DataSource:
                 d = {}
                 for fp, fn in zip(parsed_paths, field_names):
                     fv = fp.find(match)
-                    if len(fv) == 1:
-                        d[fn] = fv[0].value
+                    if not fv or fv == []:
+                        raise ValueError("No data found for field: {}".format(fn))
+                    elif len(fv) == 1:
+                        fv_result = fv[0].value
                     else:
-                        d[fn] = [v.value for v in fv]
+                        fv_result = [v.value for v in fv]
+                        
+                    if len(parsed_paths) == 1: d = fv_result
+                    else: d[fn] = fv_result
+                        
                 collected.append(d)
             
             if len(collected) == 1:
@@ -245,12 +304,12 @@ class DataSource:
                 else:
                     collected = only_one
             
-        if select and select.lower() == 'random' and isinstance(collected, list):
+        if select and isinstance(select, str) and select.lower() == 'random' and isinstance(collected, list):
             if not self.__random_index:
                 self.__random_index = random.randrange(len(collected))
             select = self.__random_index
         
-        if select and isinstance(select, int) and isinstance(collected, list):
+        if type(select) == int and isinstance(collected, list):
             return collected[select]
         else:
             return collected
@@ -264,6 +323,39 @@ class DataSource:
             return result
 
 
+    def field_list(self, base_path = None):
+        if not self.has_data():
+            raise ValueError("no data available - make sure you called load()")
+
+        if not base_path:
+            data = self.fetch()
+        else:
+            data = self.fetch(base_path)
+            
+        while isinstance(data, list) and len(data) > 0:
+            data = data[0]
+            
+        if isinstance(data, dict):
+            return [k for k in data]
+        else:
+            return []
+        
+    def data_length(self, base_path = None):
+        if not self.has_data():
+            raise ValueError("no data available - make sure you called load()")
+
+        if not base_path:
+            data = self.fetch()
+        else:
+            data = self.fetch(base_path)
+
+        if isinstance(data, list):
+            return len(data)
+        else:
+            return 0
+
+
+
     def description(self):
         if not self.has_data():
             raise ValueError("no data available - make sure you called load()")
@@ -271,6 +363,9 @@ class DataSource:
         return D.describe(self.data_obj)
     
     def print_description(self):
+        print("-----")
+        print("Data Source: {}\n".format(self.get_full_path_url()))
+        print("The following data is available:")        
         print(self.description())    
 
     def set_cache_timeout(self, value):

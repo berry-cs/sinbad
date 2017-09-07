@@ -5,6 +5,7 @@ Created on Aug 24, 2017
 '''
 
 import json
+import util as U
 
 class JSON_Infer:
     
@@ -26,10 +27,11 @@ class JSON_Data_Factory:
     
     def load_data(self, fp):
         # TODO ...
-        data = json.loads(fp.read().decode())
+        data = U.cleanup(json.loads(fp.read().decode()))
         return data
     
     def set_option(self, name, value):
         pass
 
+        
         

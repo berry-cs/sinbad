@@ -39,20 +39,32 @@ class CSV_Data_Factory:
     def load_data(self, fp):
         # TODO ...
         str_data = fp.read().decode()
-        sfp = io.StringIO(str_data)
+        sfp = io.StringIO(str_data)        
         if self.delimiter:
             data = csv.DictReader(sfp, fieldnames = self.field_names, delimiter = self.delimiter)
         else:
             data = csv.DictReader(sfp, fieldnames = self.field_names)
-        return [x for x in data]
+            
+        if data.fieldnames:   # strip whitespace
+            data.fieldnames = [ self.__fix_heading(i, n) for i, n in enumerate(data.fieldnames)]
+            
+        stuff = [x for x in data]
+        if isinstance(stuff, list) and len(stuff) == 1:
+            return stuff[0]
+        else:
+            return stuff
     
     def set_option(self, name, value):
         if name == "header":
             if isinstance(value, str):
-                value = value.split(",")
-            self.field_names = value
+                values = value.split(",")
+            self.field_names = [v.strip() for v in values]
         elif name == "delimiter":
             self.delimiter = value
     
-    
+    def __fix_heading(self, i, s):
+        s = s.strip()
+        if s == '':
+            s = '_col_{}'.format(i)
+        return s
         

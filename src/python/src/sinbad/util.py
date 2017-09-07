@@ -58,3 +58,24 @@ def create_input_raw(path):
 
     return (file, path)
     
+
+
+# replaces any "-" in dict keys with "_"    
+def cleanup(data):
+    if isinstance(data, dict):
+        for k, v in data.items():
+            #if k.find("-") >= 0:
+            #    del data[k]
+            #    k = k.replace("-", "_")
+            #    data[k] = v
+            
+            if k[0].isdigit():
+                del data[k]
+                k = "_" + k
+                data[k] = v
+                
+            cleanup(v)
+    
+    return data
+
+

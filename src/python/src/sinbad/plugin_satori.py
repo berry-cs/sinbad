@@ -6,7 +6,7 @@ Created on Aug 24, 2017
 
 import json
 from satori.rtm.connection import Connection
-
+import util as U
 
 class Satori_Infer:
     
@@ -35,7 +35,7 @@ class Satori_Data_Factory:
         
         c = Connection(fp, self.appkey)
         c.start()
-        data = json.loads(c.read_sync(self.channel))
+        data = U.cleanup(json.loads(c.read_sync(self.channel)))
         c.stop()
         return data
     
@@ -46,4 +46,4 @@ class Satori_Data_Factory:
             self.appkey = value
         pass
 
-        
+    

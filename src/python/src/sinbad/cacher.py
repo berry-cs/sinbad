@@ -94,9 +94,12 @@ class Cacher:
         self.__write_cache_entry_list(cache_index_name, leftover_cel)
         return True
     
-    def read_and_cache(self, path):
+    def read_and_cache(self, path, fp=None):
         try:
-            fp = U.create_input(path)
+            if not fp:
+                if U.smellsLikeURL(path):
+                    print("Downloading {}...".format(path))
+                fp = U.create_input(path)
                                #charset = 'utf-8' if not hasattr(fp, 'headers') else fp.headers.get_content_charset('utf-8')
             data = fp.read()   #.decode(charset)
         except OSError:  ### ????
@@ -122,21 +125,39 @@ class Cacher:
             
         cache_path = entry["cachedata"] if entry else None
         
-        if (not cache_path) or \
-                (entry and is_expired(entry, self.cache_expiration)):
-            print("Refreshing cache for: " + path + " (" + subtag + ")")
-            cached_file_path = self.read_and_cache(path)
-            if cache_path:   # need to remove the old cached file
-                os.remove(cache_path)
-            
-            entry = make_entry(path, subtag, cached_file_path, U.current_time_millis())
-            
-            self.update_entry(entry)
-            return cached_file_path
+        if subtag.startswith("main"):
+            if (not cache_path) or \
+                    (entry and is_expired(entry, self.cache_expiration)):
+                print("Refreshing cache for: " + path + " (" + subtag + ")")
+                cached_file_path = self.read_and_cache(path)
+                if cache_path:   # need to remove the old cached file
+                    os.remove(cache_path)
+                
+                entry = make_entry(path, subtag, cached_file_path, U.current_time_millis())
+                
+                self.update_entry(entry)
+                return cached_file_path
+        else:
+            if entry and is_expired(entry, self.cache_expiration):
+                return None
         
         #print("Using previously data cached for " + path + " (" + subtag + ")")
         return cache_path
     
+    
+    def add_to_cache(self, path, subtag, fp):
+        if not isCaching(): return False
+        cacheIndexName = self.__getCacheIndexFile(path)
+        if cacheIndexName is None: return False
+        entry = self.cache_entry_for(path, subtag)
+        cache_path = entry["cachedata"] if entry else None
+        print("Refreshing cache for: " + path + " (" + subtag + ")")
+        cached_file_path = self.read_and_cache(path + " (" + subtag + ")", fp=fp)
+        if cache_path:   # need to remove the old cached file
+            os.remove(cache_path)
+        entry = make_entry(path, subtag, cached_file_path, U.current_time_millis())
+        self.update_entry(entry)
+        return True
     
 
     def updateDirectory(self, newdir):
