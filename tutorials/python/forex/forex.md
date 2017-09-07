@@ -150,10 +150,6 @@ The [site above](http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_r
 
 If you download and look at this data in Excel, you'll see that it is a series of rows with currency rates for almost every day of the last 15+ years. 
 
-### Required Python Concepts
-
-* Loops (indexed, iterative)
-
 ### Tasks (A)
 
 * Connect to and load the historical exchange rate data. Print a description of the available data. You should see something like:
@@ -192,13 +188,10 @@ list of:
   
 * Use your function to determine how much money in USD you would have today if 200 time periods ago you started with $5000, converted it to Yen (JPY) at that point, and then converted the Yen back into dollars today. (Passing `0` for `periods_ago` should produce the current exchange rate.)
 
-* (Looping over a list)
 
-  Write a function `is_currency_code(s)` that determines if the given string looks like a currency code. For example, `USD` is a currency code; `Date` or `_col_42` are not.
-  
-  Use `ds.field_list()` to obtain a list of the labeled elements in the data, i.e. `['AUD', 'BGN', 'BRL', 'CAD', 'Date', ..., 'USD', ...]`. For each element of the list that is a currency code, write a program that displays the percent change (+/-) of the Euro exchange rate against that currency. You need to access the current exchange rate and the immediately previous one (e.g. `ds.fetch_ith_float(0, "USD")` and `ds.fetch_ith_float(1, "USD")`).
+### Required Python Concepts
 
-
+* Indexed loop
 
 ### Task (B)
 
@@ -232,6 +225,12 @@ Using `ds.fetch()` will produce all the available data in the structure that is 
 With the historical exchange data, `ds.fetch()` would provide a *list* of such dictionary values.
 
 ### Ideas
+
+
+* Write a function `is_currency_code(s)` that determines if the given string looks like a currency code. For example, `USD` is a currency code; `Date` or `_col_42` are not.
+  
+  Use `ds.field_list()` to obtain a list of the labeled elements in the data, i.e. `['AUD', 'BGN', 'BRL', 'CAD', 'Date', ..., 'USD', ...]`. For each element of the list that is a currency code, write a program that displays the percent change (+/-) of the Euro exchange rate against that currency. You need to access the current exchange rate and the immediately previous one (e.g. `ds.fetch_ith_float(0, "USD")` and `ds.fetch_ith_float(1, "USD")`).
+
 
 * Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` (such as produced for the Euro by `ds.fetch()`) and produces a new dictionary that contains currency exchange rates relative to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
 
