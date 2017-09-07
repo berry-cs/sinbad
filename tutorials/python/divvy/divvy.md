@@ -1,7 +1,8 @@
 # Chicago Bike-Share Data
 
-Welcome! This set of exercises uses Sinbad to explore bike share data for the city of Chicago provided by https://www.divvybikes.com/. 
-The exercises are grouped according to the programming concepts that are required to complete each one. With each part, we'll make a note of the Python concepts that you need to have covered to be able to follow along.
+You have been hired by the City of Chicago to develop some programs for there bike share website (https://www.divvybikes.com/). To do so, you will be using the *Sinbad* library to access the large amount of data that they have collected and perform computations upon it.
+
+The exercises below are grouped according to the programming concepts that are required to complete each one. With each part, we'll make a note of the Python concepts that you need to have covered to be able to follow along.
 
 * We assume you have already gone through the [Welcome Tutorial](../welcome/welcome01.md) first before working through this activity.
 
@@ -47,6 +48,21 @@ ds.load_sample(100)
 ````
 
 This will load a maximum of 100 random data records from the file that you can then `fetch` from. It will also cache these for you, so that you get the same set of data after the first time it samples them. If you want to pick a different sample, then run your program once using `ds.load_fresh_sample(...)` instead of `ds.load_sample(...)`. Note that this will take the full time to reload the entire data set (from cache) and resample it. After running your program once with this, you can restore the `ds.load_sample(...)` statement to continue using the newly cached sample.
+
+
+## Tasks
+
+* Use `ds.print_description()` to see what data fields are available in the quarterly trip CSV files. You should see labels like `bikeid`, `trip_id`, `usertype`, `tripduration`, etc.
+
+* Write a program that fetchs a random trip id, user type, start time, and duration from the data and prints out the information, with the duration (provided in seconds) displayed in hours, minutes, and seconds. Use `fetch_random` or `fetch_random_int` to extract the pieces of information. (The `fetch_random...` methods will select data from the same randomly-chosen record when called in sequence, as long as the data is not re`load`ed in between.)
+
+  Here's some samples of how your output should look:
+````
+Trip 13059731 was made by a Subscriber at 1/20/2017 17:05:50 and lasted for a duration of 12 minutes 16 seconds (that is 736 seconds)
+Trip 13485891 was made by a Customer at 3/26/2017 22:28:53 and lasted for a duration of 12 hours 12 minutes (that is 43920 seconds)
+Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a duration of 26 minutes 13 seconds (that is 1573 seconds)
+````
+
 
 
 
