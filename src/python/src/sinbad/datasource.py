@@ -8,6 +8,8 @@ from jsonpath_rw import parse
 import urllib.parse
 from zipfile import ZipFile, BadZipfile
 import random
+import json
+import io
 
 import cacher as C
 import util as U
@@ -108,6 +110,41 @@ class DataSource:
         self.param_values[name] = value
         return self
         
+    
+    def load_sample(self, max_elts = 25, force_reload = False):
+        #
+        # look for cache subtag:   "sample:<max-elts>" in the cache
+        # if  not there, or if stale, or if force_reload is True:
+        #     load()
+        #     sample the loaded data
+        #     cache the sample (serialized as json)
+        #     return the sample
+        # otherwise
+        #     load the cached sample (unserialize as json)
+        #     return it
+        #
+
+        if not self.__connected: raise ValueError("not __connected {}".format(self.path))
+        if not self.__ready_to_load(): raise ValueError("not ready to load; missing params...")
+        
+        full_path = self.get_full_path_url()
+        subtag = "sample:{}".format(max_elts)
+        sample_path = self.cacher.resolvePath(full_path, subtag)
+        if not sample_path or force_reload:
+            self.load(force_reload = force_reload)
+            if self.__loaded:
+                sampled = self.sample_data(self.data_obj, max_elts)
+                fp = io.BytesIO(json.dumps(sampled).encode()) 
+                self.cacher.add_to_cache(full_path, subtag, fp)
+                self.data_obj = sampled
+        else: # sample seems to be cached
+            fp = U.create_input(sample_path) 
+            self.data_obj = json.loads(fp.read().decode())
+            self.__loaded = True    # copy these two lines because .load() didn't get called on this path of execution
+            self.__random_index = None   # this is so that .fetch_random() actually returns the same position, until .load() is called again
+        
+        return self
+    
 
     def load(self, force_reload = False):
         if not self.__connected: raise ValueError("not __connected {}".format(self.path))
@@ -356,6 +393,17 @@ class DataSource:
             return 0
 
 
+    def sample_data(self, obj, max_elts):
+        if isinstance(obj, list):
+            if len(obj) > max_elts:  # need to sample down
+                obj = [ obj[i] for i in sorted(random.sample(range(len(obj)), max_elts)) ]
+            
+            obj = [self.sample_data(v, max_elts) for v in obj]  # sample inner data
+        elif isinstance(obj, dict):
+            obj = { k : self.sample_data(v, max_elts) for k, v in obj.items() }
+                
+        return obj
+
 
     def description(self):
         if not self.has_data():
@@ -374,6 +422,8 @@ class DataSource:
         self.cacher = self.cacher.updateTimeout(value * 1000)
         return self
 
+    def cache_directory(self):
+        return self.cacher.cache_directory
 
     def set_option(self, name, value):
         if name.lower() == "file-entry":

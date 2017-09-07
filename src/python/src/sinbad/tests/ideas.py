@@ -93,9 +93,33 @@ class Test(unittest.TestCase):
         
         
 
+    def testSample(self):
+        ds = DataSource.connect_load("http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?3916cc3b0235ad119216f2cbd083f50f",
+                                     format = "csv")
+        
+        original = [ { 'a' : [1, 2, 3, 4, 5, 6, 7], 'i' : [1, 5, 9]},
+                         { 'b' : [1, 2, 3, 4, 5, 6, 7], 'j' : [1, 5, 9]},
+                         { 'c' : [1, 2, 3, 4, 5, 6, 7], 'k' : [1, 5, 9]},
+                         { 'd' : [1, 2, 3, 4, 5, 6, 7], 'l' : [1, 5, 9]},
+                         { 'e' : [1, 2, 3, 4, 5, 6, 7], 'm' : [1, 5, 9]},
+                         { 'f' : [1, 2, 3, 4, 5, 6, 7], 'n' : [1, 5, 9]},
+                         { 'g' : [1, 2, 3, 4, 5, 6, 7], 'o' : [1, 5, 9]},
+                         { 'h' : [1, 2, 3, 4, 5, 6, 7], 'p' : [1, 5, 9]}, ]
+        obj = ds.sample_data(original, 3)
+        
+        assert len(original) == 8
+        for e in original:
+            for k in e:
+                assert len(e[k]) >= 3
+        
+        assert len(obj) == 3
+        for e in obj:
+            for k in e:
+                assert len(e[k]) <= 3
+
         
         
-    def AtestDivvy(self):
+    def testDivvy(self):
         #C.defaultCacher().clearCache()
         
         ds = DataSource.connect_load("https://feeds.divvybikes.com/stations/stations.json")
@@ -106,12 +130,14 @@ class Test(unittest.TestCase):
 
         ds = DataSource.connect_as("csv", "https://s3.amazonaws.com/divvy-data/tripdata/Divvy_Trips_2017_Q1Q2.zip")
         ds.set_option("file-entry", "Divvy_Trips_2017_Q2.csv")
-        ds.load()
+        ds.load_sample(100)
         ds.print_description()
-        print( len(ds.fetch()) )
+        print( ds.data_length() )
+        print( ds.cache_directory() )
+        pprint(ds.fetch())
 
         
-    def testExchangeRates(self):
+    def AtestExchangeRates(self):
         #http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html
         ds = DataSource.connect_load("http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?3916cc3b0235ad119216f2cbd083f50f",
                                      format = "csv")
