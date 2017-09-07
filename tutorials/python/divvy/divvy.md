@@ -57,7 +57,7 @@ This will load a maximum of 100 random data records from the file that you can t
 
 1. Write a program that fetchs a random trip id, user type, start time, and duration from the data and prints out the information, with the duration (provided in seconds) displayed in hours, minutes, and seconds. Use `fetch_random` (or `fetch_random_int`) to extract the pieces of information. The `fetch_random...` methods will select data from the same randomly-chosen record when called in sequence, as long as the data is not re`load`ed in between.
 
-  Here's some samples of how your output should look:
+   Here are some samples of how your output should look:
 ````
 Trip 13059731 was made by a Subscriber at 1/20/2017 17:05:50 and lasted for a duration of 12 minutes 16 seconds (that is 736 seconds)
 Trip 13485891 was made by a Customer at 3/26/2017 22:28:53 and lasted for a duration of 12 hours 12 minutes (that is 43920 seconds)
@@ -67,7 +67,7 @@ Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a dur
 
 1. In order to encourage short trips and increase the amount of bike *sharing*, Divvy charges usage fees for trips that are more than 30 minutes long. There are two tiers of fees based on whether one is an annual member (`Subscriber`) or a 24-hour pass holder (`Customer`). 
 
-  For 24-hour pass holders:
+   For 24-hour pass holders:
   
 | Trip length    | Usage fee |
 |----------------|:---------:|
@@ -75,7 +75,7 @@ Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a dur
 | 31-60 minutes  |   $3      | 
 | 61+ minutes    | $8 per additional 30 minutes |
 
-  For annual subscribers:
+   For annual subscribers:
   
 | Trip length    | Usage fee |
 |----------------|:---------:|
@@ -83,9 +83,9 @@ Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a dur
 | 31-60 minutes  |   $2      | 
 | 61+ minutes    | $6 per additional 30 minutes |
 
-  Develop a function that computes the usage fee given a user type and trip duration. Enhance your program in the preceding exercise to print out the usage fee along with the trip duration.
+   Develop a function that computes the usage fee given a user type and trip duration. Enhance your program in the preceding exercise to print out the usage fee along with the trip duration.
   
-  Example output:
+   Example output:
 ````
 Trip 13517909 was made by a Subscriber at 3/31/2017 18:33:58 and lasted for a duration of 10 minutes 18 seconds (that is 618 seconds) Usage fee: $ 0
 Trip 13239155 was made by a Customer at 2/18/2017 14:35:02 and lasted for a duration of 1 hours 33 minutes 21 seconds (that is 5601 seconds) Usage fee: $ 19
