@@ -57,8 +57,7 @@ Write a Python script that prints out the current EUR-USD (Euro to US Dollar) co
 Data Source: http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?...
 
 The following data is available:
-list of:
-  dictionary with {
+dictionary with {
      : *
     AUD : *
     BGN : *
@@ -193,7 +192,29 @@ list of:
 * Dictionaries
 * Lists
 
+### Fetching Data
 
+Using `ds.fetch()` will produce all the available data in the structure that is described by `ds.print_description()`. For example, with the first currency exchange data source that we used, `ds.fetch()` will return a dictionary value:
+
+````
+{'AUD': ' 1.4961',
+ 'BGN': ' 1.9558',
+ 'BRL': ' 3.7145',
+ 'CAD': ' 1.4787',
+ ...
+ 'Date': '06 September 2017',
+ ...
+ 'USD': ' 1.1931',
+ 'ZAR': ' 15.3965'}
+````
+
+With the historical exchange data, `ds.fetch()` would provide a *list* of such dictionary values.
+
+### Ideas
+
+* Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` and produces a new dictionary that contains currency exchange rates related to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
+
+  For example, `change_reference( { 'USD' : 1.2, 'JPY' : 150, 'Date' : 'today' }, 'EUR', 'USD')` should produce `{'EUR': 0.8333, 'JPY': 125.0, 'Date' : 'today' }`.
 
 
 
