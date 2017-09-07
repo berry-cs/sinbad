@@ -81,6 +81,7 @@ Be aware that while we are using `float` values to represent financial data (exc
 ### Required Python Concepts
 
 * Arithmetic operations
+* Console input
 
 ### Task
 
@@ -90,6 +91,19 @@ Write a Python script that displays the following conversion rates:
 * Euros to British pounds (`GBP`)
 * Dollars to euros 
 * Dollars to pounds
+
+### Task
+
+Extend your program to enable the user to enter a numeric amount and source and target currency codes. The program should perform and display the result of the conversion of the given amount in the source currency to the target currency. For example:
+
+````
+Enter amount: 4000
+Enter source currency code: USD
+Enter target currency code: EUR
+
+4000 USD equals 3500 EUR as of 06 September 2017
+````
+
 
 ## Part 3 - Currencies: Stronger and weaker
 
