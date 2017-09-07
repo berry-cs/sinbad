@@ -137,7 +137,7 @@ The [site above](http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_r
 
 If you download and look at this data in Excel, you'll see that it is a series of rows with currency rates for almost every day of the last 15+ years. 
 
-### Tasks
+### Tasks (A)
 
 * Connect to and load the historical exchange rate data. Print a description of the available data. You should see something like:
 
@@ -175,6 +175,14 @@ list of:
   
 * Use your function to determine how much money in USD you would have today if 200 time periods ago you started with $5000, converted it to Yen (JPY) at that point, and then converted the Yen back into dollars today. (Passing `0` for `periods_ago` should produce the current exchange rate.)
 
+
+### Required Python Concepts
+
+* Indexed loop
+
+### Task (B)
+
+* Write a program that determines the date at which the dollar was trading strongest against another currency of your choice (EUR, JPY, etc.) You can get the total number of time periods using `total_values = len(ds.fetch())`. 
 
 
 
