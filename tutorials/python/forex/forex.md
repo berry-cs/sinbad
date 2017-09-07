@@ -212,7 +212,7 @@ With the historical exchange data, `ds.fetch()` would provide a *list* of such d
 
 ### Ideas
 
-* Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` and produces a new dictionary that contains currency exchange rates related to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
+* Develop a function `change_reference(data, old_base, new_base)` that takes a dictionary value containing currency exchange rates relative to `old_base` and produces a new dictionary that contains currency exchange rates relative to `new_base` instead. Note that the `'Date'` value should be retained, and the entry for `new_base` in the given `data` will be replaced with a key/value pair for `old_base` instead. 
 
   For example, `change_reference( { 'USD' : 1.2, 'JPY' : 150, 'Date' : 'today' }, 'EUR', 'USD')` should produce `{'EUR': 0.8333, 'JPY': 125.0, 'Date' : 'today' }`.
 
