@@ -216,5 +216,8 @@ With the historical exchange data, `ds.fetch()` would provide a *list* of such d
 
   For example, `change_reference( { 'USD' : 1.2, 'JPY' : 150, 'Date' : 'today' }, 'EUR', 'USD')` should produce `{'EUR': 0.8333, 'JPY': 125.0, 'Date' : 'today' }`.
 
+* Determine the strongest and weakest currencies against the Euro. You can use `ds.field_list()` to obtain a list of the labeled elements in the data, i.e. `['AUD', 'BGN', 'BRL', 'CAD', 'Date', ..., 'USD', ...]`. Remove any strings from the list that are not 3 uppercase letters long. Then you have a list of the currencies for which values are available and you can use `fetch_float` accordingly.
+
+* Incorporate another data set like [this one](https://raw.githubusercontent.com/datasets/currency-codes/master/data/codes-all.csv) to look up and display currency names instead of just their alphabetic codes.
 
 
