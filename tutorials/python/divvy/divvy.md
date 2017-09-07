@@ -72,7 +72,7 @@ Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a dur
 | Trip length    | Usage fee |
 |----------------|:---------:|
 | 0-30 minutes   |   $0      |
-| 31-60 minutes  |   $2      | 
+| 31-60 minutes  |   $3      | 
 | 61+ minutes    | $8 per additional 30 minutes |
 
   For annual subscribers:
@@ -80,12 +80,18 @@ Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a dur
 | Trip length    | Usage fee |
 |----------------|:---------:|
 | 0-30 minutes   |   $0      |
-| 31-60 minutes  |   $1.50      | 
+| 31-60 minutes  |   $2      | 
 | 61+ minutes    | $6 per additional 30 minutes |
 
   Develop a function that computes the usage fee given a user type and trip duration. Enhance your program in the preceding exercise to print out the usage fee along with the trip duration.
   
-  
+  Example output:
+````
+Trip 13517909 was made by a Subscriber at 3/31/2017 18:33:58 and lasted for a duration of 10 minutes 18 seconds (that is 618 seconds) Usage fee: $ 0
+Trip 13239155 was made by a Customer at 2/18/2017 14:35:02 and lasted for a duration of 1 hours 33 minutes 21 seconds (that is 5601 seconds) Usage fee: $ 19
+Trip 13325665 was made by a Subscriber at 2/28/2017 12:53:46 and lasted for a duration of 34 minutes 28 seconds (that is 2068 seconds) Usage fee: $ 2
+Trip 13038171 was made by a Subscriber at 1/17/2017 09:08:32 and lasted for a duration of 5 hours 44 minutes 57 seconds (that is 20697 seconds) Usage fee: $ 62
+````
 
 
 
