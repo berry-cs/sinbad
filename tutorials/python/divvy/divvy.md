@@ -58,12 +58,10 @@ This will load a maximum of 100 random data records from the file that you can t
 1. Write a program that fetchs a random trip id, user type, start time, and duration from the data and prints out the information, with the duration (provided in seconds) displayed in hours, minutes, and seconds. Use `fetch_random` (or `fetch_random_int`) to extract the pieces of information. The `fetch_random...` methods will select data from the same randomly-chosen record when called in sequence, as long as the data is not re`load`ed in between.
 
    Here are some samples of how your output should look:
-````
-Trip 13059731 was made by a Subscriber at 1/20/2017 17:05:50 and lasted for a duration of 12 minutes 16 seconds (that is 736 seconds)
-Trip 13485891 was made by a Customer at 3/26/2017 22:28:53 and lasted for a duration of 12 hours 12 minutes (that is 43920 seconds)
-Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a duration of 26 minutes 13 seconds (that is 1573 seconds)
-````
-
+   
+        Trip 13059731 was made by a Subscriber at 1/20/2017 17:05:50 and lasted for a duration of 12 minutes 16 seconds (that is 736 seconds)
+        Trip 13485891 was made by a Customer at 3/26/2017 22:28:53 and lasted for a duration of 12 hours 12 minutes (that is 43920 seconds)
+        Trip 13330080 was made by a Subscriber at 3/1/2017 08:17:02 and lasted for a duration of 26 minutes 13 seconds (that is 1573 seconds)
 
 1. In order to encourage short trips and increase the amount of bike *sharing*, Divvy charges usage fees for trips that are more than 30 minutes long. There are two tiers of fees based on whether one is an annual member (`Subscriber`) or a 24-hour pass holder (`Customer`). 
 
