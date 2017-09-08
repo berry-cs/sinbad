@@ -13,7 +13,7 @@ https://earthquake.usgs.gov/earthquakes/feed/
 
 See in particular feeds listed on the right side of the [GeoJSON summary](https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php) page: includes hourly, daily, and monthly data.
 
-## All Earthquakes - Past Hour
+## All Earthquakes (Past Hour)
 
 ### Code
 
