@@ -1,14 +1,19 @@
 # Euro Foreign Exchange Rates
 
-Provided by the European Central Bank. 
+**Contents**
+- [Source](#source)
+- [Current Exchange Rates](#current-exchange-rates)
+- [Historical Exchange Rates](#historical-exchange-rates)
+
+
+## Source
+
+European Central Bank
 
 http://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html
 
 Scroll to the "Downloads" section near the bottom to copy the links for CSV files for current and historical exchange rates.
 
-**Contents**
-- [Current Exchange Rates](#current-exchange-rates)
-- [Historical Exchange Rates](#historical-exchange-rates)
 
 
 ## Current Exchange Rates
