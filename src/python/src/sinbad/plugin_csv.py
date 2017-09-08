@@ -17,7 +17,7 @@ class CSV_Infer:
     def matched_by(self, path):
         path = path.lower()
         if path.endswith("csv"): return True
-        for ptrn in [".csv", "=csv"]:   # , ".json.gz", ".json.zip"]:
+        for ptrn in [".csv", "=csv", "/csv"]:   # , ".json.gz", ".json.zip"]:
             if ptrn in path: return True
         
         is_tsv = False

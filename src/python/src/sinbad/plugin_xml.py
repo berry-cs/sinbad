@@ -15,7 +15,7 @@ class XML_Infer:
     def matched_by(self, path):
         path = path.lower()
         if path.endswith("xml"): return True
-        for ptrn in [".xml", "=xml"]:   # , ".json.gz", ".json.zip"]:
+        for ptrn in [".xml", "=xml", "/xml", ".rss", "/rss"]:   # , ".json.gz", ".json.zip"]:
             if ptrn in path: return True
         return False
     

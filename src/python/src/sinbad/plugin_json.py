@@ -15,7 +15,7 @@ class JSON_Infer:
     def matched_by(self, path):
         path = path.lower()
         if path.endswith("json"): return True
-        for ptrn in [".json", "=json"]:   # , ".json.gz", ".json.zip"]:
+        for ptrn in [".json", "=json", ".geojson", "=geojson", "/json", "/geojson"]:   # , ".json.gz", ".json.zip"]:
             if ptrn in path: return True
         return False
     

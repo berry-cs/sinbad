@@ -79,6 +79,10 @@ class DataSource:
         ds = DataSource.connect(path, format = format)
         return ds.load()
         
+        
+    def clear_cache(self):
+        return self.cacher.clearCache()
+
 
     def __init__(self, name, path, typeExt, plugin):
         '''
@@ -110,6 +114,8 @@ class DataSource:
         self.param_values[name] = value
         return self
         
+    def load_fresh_sample(self, max_elts = 25):
+        return self.load_sample(max_elts = max_elts, force_reload = True)
     
     def load_sample(self, max_elts = 25, force_reload = False):
         #
@@ -128,7 +134,13 @@ class DataSource:
         if not self.__ready_to_load(): raise ValueError("not ready to load; missing params...")
         
         full_path = self.get_full_path_url()
-        subtag = "sample:{}".format(max_elts)
+        
+        if 'file-entry' in self.option_settings:
+            fe_value = self.option_settings['file-entry']
+            subtag = "sample:{}-{}".format(fe_value, max_elts)
+        else:
+            subtag = "sample:{}".format(max_elts)
+            
         sample_path = self.cacher.resolvePath(full_path, subtag)
         if not sample_path or force_reload:
             self.load(force_reload = force_reload)
@@ -192,8 +204,7 @@ class DataSource:
                             fp = U.create_input(entry_cached_path)
 
                 else:
-                    print("***** ZIP - specify a file-entry: *****\n {}".format(members))
-                    return self
+                    raise ValueError("Specify a file-entry from the ZIP file: {}".format(members))
             
             except BadZipfile:
                 print("ZIP Failed: " + full_path)
@@ -424,12 +435,16 @@ class DataSource:
 
     def cache_directory(self):
         return self.cacher.cache_directory
-
+    
     def set_option(self, name, value):
         if name.lower() == "file-entry":
             self.option_settings['file-entry'] = value
         else:
             self.data_factory.set_option(name, value)
+    
+    def set_options(self, opts):
+        for k in opts:
+            self.set_option(k, opts[k])
 
 
     def get_full_path_url(self):
@@ -438,7 +453,8 @@ class DataSource:
         
         full_path = self.path
         
-        # TODO ...
+        # TODO:  sort params so the URLs are not different all the time (causing cache reloads) 
+        
         params = urllib.parse.urlencode(self.param_values)
         if params:
             full_path = full_path + "?" + params
