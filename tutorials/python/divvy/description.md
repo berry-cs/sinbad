@@ -18,43 +18,12 @@ Output
 
     {'availableBikes': 3, 'availableDocks': 11, 'status': 'IN_SERVICE', 'stationName': 'Canal St & Harrison St'}
 
-Structure
-
-````
-dictionary with {
-  executionTime : *
-  stationBeanList : list of:
-                        dictionary with {
-                          altitude : *
-                          availableBikes : *
-                          availableDocks : *
-                          city : *
-                          id : *
-                          is_renting : *
-                          landMark : *
-                          lastCommunicationTime : *
-                          latitude : *
-                          location : *
-                          longitude : *
-                          postalCode : *
-                          stAddress1 : *
-                          stAddress2 : *
-                          stationName : *
-                          status : *
-                          statusKey : *
-                          statusValue : *
-                          testStation : *
-                          totalDocks : *
-                        }
-}
-````
-
 
 ## Historical Data
 
 Available quarterly for the past few years.
 
-Code
+Code - Trip data
 
 ````
 from datasource import DataSource
@@ -78,28 +47,31 @@ Output
 
     Trip 13112014 was made by a Subscriber at 1/29/2017 10:07:35 and lasted for a duration of 6 minutes
 
-Structure
+
+Code - Station data
 
 ````
-list of:
-  dictionary with {
-    bikeid : *
-    birthyear : *
-    end_time : *
-    from_station_id : *
-    from_station_name : *
-    gender : *
-    start_time : *
-    to_station_id : *
-    to_station_name : *
-    trip_id : *
-    tripduration : *
-    usertype : *
-  }
+from datasource import DataSource
+
+ds = DataSource.connect("https://s3.amazonaws.com/divvy-data/tripdata/Divvy_Trips_2017_Q1Q2.zip",
+                        format = "csv")
+ds.set_option('file-entry', 'Divvy_Stations_2017_Q1Q2.csv')
+ds.load()
+ds.print_description()
+print( ds.fetch('name', 'dpcapacity', 'city') )
 ````
 
+Output
 
-## Additional Metadata (site-provided)
+    [{'dpcapacity': '15', 'city': 'Chicago', 'name': '2112 W Peterson Ave'}, 
+     {'dpcapacity': '23', 'city': 'Chicago', 'name': '63rd St Beach'},
+     ...
+    ]
+
+
+## Site-provided metadata
+
+(See the README file in each quarterly .zip)
 
 ````
 Metadata for Trips:
