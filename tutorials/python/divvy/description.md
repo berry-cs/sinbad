@@ -1,6 +1,6 @@
 # Chicago Bike Share Data
 
-** Contents **
+**Contents**
 - [Source](#source)
 - [Live station info:](#live-station-info)
 - [Historical Data](#historical-data)
