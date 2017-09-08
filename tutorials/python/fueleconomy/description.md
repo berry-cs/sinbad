@@ -7,6 +7,7 @@
 - [Makes (year-specific)](#makes-year-specific)
 - [Model options](#model-options)
 - [Metadata (site-provided)](#metadata-site-provided)
+- [Specific Vehicle Data](#specific-vehicle-data)
 
 
 ## Source
@@ -106,6 +107,26 @@ Auto (S5), 4 cyl, 1.5 L  ID: 31819
 Auto 5-spd, 4 cyl, 1.5 L  ID: 31818
 Man 5-spd, 4 cyl, 1.5 L  ID: 31817
 ````
+
+## Specific Vehicle Data
+
+See previous one for searching for vehicle IDs, or use https://www.fueleconomy.gov/feg/findacar.shtml to interactively search for a particular vehicle; then note the "id" query parameter in the URL that you are directed to.
+
+### Code
+
+````
+from datasource import DataSource
+
+ds = DataSource.connect_load("http://www.fueleconomy.gov/ws/rest/vehicle/31819", format="xml")
+print( ds.fetch("make", "model", "trany", "year", "city08", "highway08") )
+````
+
+### Output
+
+````
+{'city08': '27', 'model': 'Fit', 'make': 'Honda', 'year': '2012', 'trany': 'Automatic (S5)', 'highway08': '33'}
+````
+
 
 
 ## Metadata (site-provided)
