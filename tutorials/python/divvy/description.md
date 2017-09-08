@@ -2,7 +2,7 @@
 
 **Contents**
 - [Source](#source)
-- [Live station info:](#live-station-info)
+- [Live station info](#live-station-info)
 - [Historical Data](#historical-data)
 - [Site-provided metadata](#site-provided-metadata)
 
@@ -11,7 +11,7 @@
 
 https://www.divvybikes.com/system-data
 
-## Live station info: 
+## Live station info
 
 Code
 
