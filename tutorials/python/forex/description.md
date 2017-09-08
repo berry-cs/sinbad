@@ -18,7 +18,7 @@ Scroll to the "Downloads" section near the bottom to copy the links for CSV file
 
 ## Current Exchange Rates
 
-Code
+### Code
 
 ````
 from datasource import DataSource
@@ -34,20 +34,20 @@ currencies = [k for k in ds.field_list() if len(k)==3]
 print(currencies)
 ````
 
-Output
+### Output
 
 ````
 Euro-to-Dollar rate: 1.206
 [... 'BRL', 'USD', 'AUD', 'HKD', 'JPY', ..., 'GBP', 'CAD', 'SGD', 'DKK', ...]
 ````
 
-Metadata
+### Metadata
 
 Contains a dictionary mapping currency symbols to the current Euro-based exchange rate.
 
 ## Historical Exchange Rates
 
-Code
+### Code
 
 ````
 from datasource import DataSource
@@ -66,7 +66,7 @@ data_all = ds.fetch()           # fetch all currencies, all dates
 ````
 
 
-Metadata
+### Metadata
 
 Contains a *list* of dictionaries mapping currency symbols to exchange rates. Each record also contains a `Date`. The records do not include every date (maybe holidays/weekends are not included?).
 
