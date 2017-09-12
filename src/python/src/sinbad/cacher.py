@@ -102,7 +102,8 @@ class Cacher:
                 fp = U.create_input(path)
                                #charset = 'utf-8' if not hasattr(fp, 'headers') else fp.headers.get_content_charset('utf-8')
             data = fp.read()   #.decode(charset)
-        except OSError:  ### ????
+        except OSError as err:  ### ????
+            print("OSError: {}".format(err.reason))
             raise FileNotFoundError("Failed to load: " + path + "\nCHECK NETWORK CONNECTION, if applicable") 
         
         cached_file = self.cacheByteData(path, data)

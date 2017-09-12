@@ -18,7 +18,7 @@ def describe(thing, indent = 0):
         return 'number'
     elif type(thing) is str:
         return 'string'
-    elif type(thing) is list:
+    elif isinstance(thing, list):
         if len(thing) is 0:
             return 'empty list'
         else:
@@ -27,7 +27,7 @@ def describe(thing, indent = 0):
                 return 'list of ' + elts.strip()
             else:
                 return 'list of:\n' + elts
-    elif type(thing) is dict:
+    elif isinstance(thing, dict):
         elts = { k : describe(v, incrInd(indent)) for k, v in thing.items() }
         keys = [ k for k in thing.keys() ]
         keys.sort(key=lambda x: x.lower())

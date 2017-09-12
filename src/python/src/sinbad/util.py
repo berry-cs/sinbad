@@ -49,7 +49,10 @@ def create_input_raw(path):
     
     
     if smellsLikeURL(path):
-        file = urllib.request.urlopen(path)
+        req = urllib.request.Request(path, 
+                                     data=None,
+                                     headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'})
+        file = urllib.request.urlopen(req)
     # TODO: this should return the encoding as well.... or None if unknown/unspecified (assume utf-8) 
     elif path.startswith("wss:"):
         return (path, path)

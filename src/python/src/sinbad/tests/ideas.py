@@ -7,6 +7,7 @@ import unittest
 from datasource import DataSource
 import cacher as C
 
+import math
 import pprint
 
 pprint = pprint.PrettyPrinter().pprint
@@ -119,22 +120,6 @@ class Test(unittest.TestCase):
 
         
         
-    def testDivvy(self):
-        #C.defaultCacher().clearCache()
-        
-        ds = DataSource.connect_load("https://feeds.divvybikes.com/stations/stations.json")
-        ds.print_description()
-        station = ds.fetch_random("stationName", "availableBikes", "availableDocks", "status", base_path = "stationBeanList")
-        print(station)
-
-
-        ds = DataSource.connect_as("csv", "https://s3.amazonaws.com/divvy-data/tripdata/Divvy_Trips_2017_Q1Q2.zip")
-        ds.set_option("file-entry", "Divvy_Trips_2017_Q2.csv")
-        ds.load_sample(100)
-        ds.print_description()
-        print( ds.data_length() )
-        print( ds.cache_directory() )
-        pprint(ds.fetch())
 
         
     def AtestExchangeRates(self):
@@ -241,6 +226,119 @@ class Test(unittest.TestCase):
         print(flds)
 
 
+
+    def testDivvy(self):
+        #C.defaultCacher().clearCache()
+        
+        ds = DataSource.connect_load("https://feeds.divvybikes.com/stations/stations.json")
+        ds.print_description()
+        station = ds.fetch_random("stationName", "availableBikes", "availableDocks", "status", base_path = "stationBeanList")
+        print(station)
+
+        ds = DataSource.connect_as("csv", "https://s3.amazonaws.com/divvy-data/tripdata/Divvy_Trips_2017_Q1Q2.zip")
+        ds.set_option("file-entry", "Divvy_Trips_2017_Q1.csv")
+        #ds.load()
+        ds.load_sample(10000)
+        ds.print_description()
+        print( ds.data_length() )
+        print( ds.cache_directory() )
+        #pprint(ds.fetch())
+        
+        id = ds.fetch_random("trip_id")
+        time = ds.fetch_random("start_time")
+        user = ds.fetch_random("usertype")
+        dur = ds.fetch_random_int("tripduration")
+        print("Trip", id, "was made by a", user, "at", time, "and lasted for a duration of", format_time(dur), "(that is", dur, "seconds)",
+              "Usage fee: $", usage_fee(user, dur))
+    
+    
+        for d in ds.fetch():
+            break
+            if usage_fee(d["usertype"], int(d["tripduration"])) > 0:
+                id = d["trip_id"]
+                time = d["start_time"]
+                user = d["usertype"]
+                dur = int(d["tripduration"])
+                print("Trip", id, "was made by a", user, "at", time, "and lasted for a duration of", format_time(dur), "(that is", dur, "seconds)",
+                      "Usage fee: $", usage_fee(user, dur))
+    
+    
+        print(hour_of("1/17/2017 21:54:01"))
+
+        data = ds.fetch("start_time", "usertype", "tripduration")
+        agg = {}
+        for h in range(24):
+            agg[h] = { 'total' : 0, 'count' : 0 }
+        
+        max = int(data[0]["tripduration"])
+        min = max
+        
+        for d in data:
+            h = hour_of(d["start_time"])
+            dur = int(d["tripduration"])
+            agg[h]['total'] = agg[h]['total'] + dur
+            agg[h]['count'] = agg[h]['count'] + 1
+        
+        for a in agg:
+            agg[a]['avg'] = round(agg[a]['total'] / agg[a]['count'])
+            
+        print("Hour\tAverage Duration (minutes)")
+        for h in range(24):
+            print("{}\t{}".format(h, round(agg[h]['avg'] / 60)))
+            
+    
+    
+def hour_of(dstr):
+    start = dstr.find(" ") + 1
+    end = dstr.find(":")
+    return int(dstr[start:end])
+
+def usage_fee(utype, dur):    
+    mins = round(dur / 60)
+    if mins <= 30:
+        return 0
+    elif mins <= 60:
+        if utype == 'Subscriber':
+            return 2
+        elif utype == 'Customer':
+            return 3
+    else:
+        chunks = math.ceil((mins - 60) / 30)
+        if utype == 'Subscriber':
+            return 2 + 6 * chunks
+        elif utype == 'Customer':
+            return 3 + 8 * chunks
+        
+
+        
+def format_time(secs):
+    msg = ""
+    if secs > 60 * 60:
+        hours = secs // (60 * 60)
+        msg = msg + str(hours) + " hours "
+        secs = secs % (60 * 60)
+    if secs > 60:
+        mins = secs // 60
+        msg = msg + str(mins) + " minutes "
+        secs = secs % 60
+    if secs > 0:
+        msg = msg + str(secs) + " seconds "
+    return msg.strip()
+
+
+
+#### these are for divvy exercises...
+
+
+
+
+
+
+
+
+
+
+### these are for EURO conversion ....
 def change_reference(data, old_base, new_base):
     date_str = data.pop('Date')
     multiplier = 1.0 / data[new_base]
@@ -285,8 +383,6 @@ def histCurrencyRate(source, target, periods_ago):
         source_euro = 1 / euro_source
         source_target = source_euro * euro_target
     return round(source_target, 2)
-
-
 
 
 def strongerThanEuro(source):

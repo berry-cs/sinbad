@@ -2,6 +2,14 @@
 Created on Aug 24, 2017
 
 @author: nhamid
+
+
+Dependencies:
+   jsonpath_rw
+   satori-rtm-sdk
+   xmltodict
+   
+
 '''
 
 from jsonpath_rw import parse
