@@ -46,4 +46,14 @@ class Satori_Data_Factory:
             self.appkey = value
         pass
 
+    def get_options(self):
+        return ["channel", "appkey"]
     
+    def get_option(self, name):
+        if name == "channel":
+            return self.channel
+        elif name == "appkey":
+            return self.appkey
+        else:
+            return None
+        

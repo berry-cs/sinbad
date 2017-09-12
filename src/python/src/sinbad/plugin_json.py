@@ -29,6 +29,9 @@ class JSON_Data_Factory:
         # TODO ...
         data = U.cleanup(json.loads(fp.read().decode()))
         return data
+
+    def get_options(self):
+        return []
     
     def set_option(self, name, value):
         pass

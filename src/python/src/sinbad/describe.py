@@ -29,7 +29,7 @@ def describe(thing, indent = 0):
                 return 'list of:\n' + elts
     elif isinstance(thing, dict):
         elts = { k : describe(v, incrInd(indent)) for k, v in thing.items() }
-        keys = [ k for k in thing.keys() ]
+        keys = [ k for k in thing.keys() if k ]
         keys.sort(key=lambda x: x.lower())
         desc = spaces + 'dictionary with {\n'
         key_spaces = ' ' * incrInd(indent)

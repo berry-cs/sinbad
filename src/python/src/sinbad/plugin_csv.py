@@ -40,25 +40,40 @@ class CSV_Data_Factory:
         # TODO ...
         str_data = fp.read().decode()
         sfp = io.StringIO(str_data)        
+        
         if self.delimiter:
             data = csv.DictReader(sfp, fieldnames = self.field_names, delimiter = self.delimiter)
         else:
             data = csv.DictReader(sfp, fieldnames = self.field_names)
+            self.delimiter = data.reader.dialect.delimiter
             
         if data.fieldnames:   # strip whitespace
             data.fieldnames = [ self.__fix_heading(i, n) for i, n in enumerate(data.fieldnames)]
+            self.field_names = data.fieldnames
             
         stuff = [x for x in data]
         if isinstance(stuff, list) and len(stuff) == 1:
             return stuff[0]
         else:
             return stuff
+        
+    def get_options(self):
+        return [ "header", "delimiter" ]
+    # TODO: skiprows, quote options
     
+    def get_option(self, name):
+        if name == "header" and self.field_names:
+            return ",".join(self.field_names)
+        elif name == "delimiter" and self.delimiter:
+            return self.delimiter
+        else:
+            return None
+
     def set_option(self, name, value):
         if name == "header":
             if isinstance(value, str):
                 values = value.split(",")
-            self.field_names = [v.strip() for v in values]
+            self.field_names = [v.strip().strip("\"'").strip() for v in values]
         elif name == "delimiter":
             self.delimiter = value
     

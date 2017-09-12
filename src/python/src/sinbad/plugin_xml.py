@@ -33,6 +33,12 @@ class XML_Data_Factory:
     
     def set_option(self, name, value):
         pass
+
+    def get_options(self):
+        return []
+    
+    def get_option(self, name):
+        return None
     
     def __post_process(self, data):
         data = collapse_dicts(data)

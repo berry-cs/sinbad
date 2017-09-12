@@ -22,12 +22,14 @@ import io
 import cacher as C
 import util as U
 import describe as D
+import param as P
 
 import plugin_csv
 import plugin_json
 import plugin_satori
 import plugin_xml
 
+from collections import OrderedDict
 
 
 class DataSource:
@@ -76,17 +78,26 @@ class DataSource:
             raise ValueError("no data source plugin for type {}".format(type_ext))
             
         
-    
-    @staticmethod
-    def connect_as(type_ext, path):
-        return DataSource.connect(path, format = type_ext)
-        
-    
     @staticmethod
     def connect_load(path, format = None):
         ds = DataSource.connect(path, format = format)
         return ds.load()
+
+    
+    @staticmethod
+    def connect_as(type_ext, path):
+        return DataSource.connect(path, format = type_ext)    
+    
+    @staticmethod
+    def connect_load_as(type_ext, path):
+        return DataSource.connect_load(path, format = type_ext) 
+    
         
+    @staticmethod
+    def connect_using(spec_path):
+        return load_spec(U.create_input(spec_path))   
+    
+
         
     def clear_cache(self):
         return self.cacher.clearCache()
@@ -101,6 +112,8 @@ class DataSource:
         self.name = name
         self.path = path
         self.format_type = typeExt
+        self.info_url = None
+        self.info_text = None
         
         self.__connected = path and True
         self.__load_ready = False
@@ -113,13 +126,22 @@ class DataSource:
         self.data_obj = None
         self.cacher = C.defaultCacher()
         
-        self.param_values = {}
         self.option_settings = {}
+        
+        # params are connection-related parameters, either in a query string or filling in part of the path 
+        self.params = {} # keeps track of *all* parameters information available for this data source
+        self.param_values = {} # keeps track of the values of the supplied parameters
+        
 
+    def add_param(self, param):
+        if param:
+            self.params[param.key] = param
+        return self
 
 
     def set_param(self, name, value):
-        self.param_values[name] = value
+        if name and value:
+            self.param_values[name] = value
         return self
         
     def load_fresh_sample(self, max_elts = 25):
@@ -168,7 +190,7 @@ class DataSource:
 
     def load(self, force_reload = False):
         if not self.__connected: raise ValueError("not __connected {}".format(self.path))
-        if not self.__ready_to_load(): raise ValueError("not ready to load; missing params...")
+        if not self.__ready_to_load(): raise ValueError("not ready to load; missing params: {}".format(self.__missing_params()))
         
         subtag = "main"
     
@@ -324,7 +346,7 @@ class DataSource:
                 base_path = self.patch_jsonpath_path(base_path, data)
                 data = parse("$[*]." + base_path).find(data)
             elif not isinstance(data, list):
-                    data = [data]
+                data = [data]
             
             parsed_paths = None
             field_names = None
@@ -335,8 +357,12 @@ class DataSource:
                     field_names = []
                     for field_path in field_paths:
                         field_path = self.patch_jsonpath_path(field_path, match)
-                        field_name = field_path.split(".")[-1]    # TODO: could end up with [...] at end of field names
                         parsed_paths.append(parse(field_path))
+
+                        pieces = field_path.split(".")
+                        field_name = pieces.pop()    # TODO: could end up with [...] at end of field names
+                        while field_name in field_names and len(pieces) > 0:
+                            field_name = pieces.pop() + "-" + field_name
                         field_names.append(field_name)
                 
                 d = {}
@@ -440,6 +466,10 @@ class DataSource:
         ''' set the cache delay to the given value in seconds '''
         self.cacher = self.cacher.updateTimeout(value * 1000)
         return self
+    
+    def set_cache_directory(self, path):
+        self.cacher = self.cacher.updateDirectory(path)
+        return self
 
     def cache_directory(self):
         return self.cacher.cache_directory
@@ -461,22 +491,112 @@ class DataSource:
         
         full_path = self.path
         
-        # TODO:  sort params so the URLs are not different all the time (causing cache reloads) 
+
+        # add query parameters to the URL
+        param_keys = [k for k in self.param_values]  
+        param_keys.sort()  # so that the URL doesn't differ, forcing a cache refresh unnecessarily because of reordering of dictionary keys
+        query_params = OrderedDict()
+        for k in param_keys:
+            v = self.param_values.get(k)
+            p = self.params.get(k)
+            if not p or p.type == P.Param.QUERY_PARAM:
+                query_params[k] = v
+        query_param_str = urllib.parse.urlencode(query_params)
+        if query_param_str:
+            full_path = full_path + "?" + query_param_str
         
-        params = urllib.parse.urlencode(self.param_values)
-        if params:
-            full_path = full_path + "?" + params
+        # fill in substitutions of path params
+        for k, v in self.param_values.items():
+            p = self.params.get(k)
+            if p and p.type == P.Param.PATH_PARAM:
+                full_path = full_path.replace("@{" + k + "}", v)
         
         return full_path
 
 
-    def __ready_to_load(self):
-        # TODO...
-        self.__load_ready = self.__load_ready # or  missingParams().size()==0;
+    def export(self):
+        spec = OrderedDict()
+        if self.path: spec["path"] = self.path
+        if self.name: spec["name"] = self.name
+        if self.format_type: spec["format"] = self.format_type
+        if self.info_url: spec["infourl"] = self.info_url
+        if self.info_text: spec["description"] = self.info_text
         
-        self.__load_ready = True
-        return self.__load_ready;
+        cache_spec = OrderedDict()
+        cache_spec["timeout"] = self.cacher.cache_expiration
+        if self.cacher.cache_directory is not C.__DEFAULT_CACHE_DIR__:
+            cache_spec["directory"] = self.cacher.cache_directory
+        spec["cache"] = cache_spec
+        
+        opt_list = []
+        if self.option_settings:
+            for k, v in self.option_settings.items():
+                opt_list.append({ "name" : k, "value" : v})
+        if self.data_factory:
+            for opt in self.data_factory.get_options():
+                v = self.data_factory.get_option(opt)
+                if v:
+                    opt_list.append({ "name" : opt, "value" : v})
+        spec["options"] = opt_list
+        
+        param_list = []
+        for k, p in self.params.items():
+            param_list.append( p.export(self.param_values.get(k, None)) )
+        spec["params"] = param_list
+        
+        return spec
 
+
+    def __missing_params(self):
+        missing = []
+        for k, p in self.params.items():
+            if p.required and not self.param_values.get(k):
+                missing.append(k)
+        return missing
+
+
+    def __ready_to_load(self):
+        self.__load_ready = self.__load_ready or len(self.__missing_params()) == 0        
+        return self.__load_ready
+
+
+
+def load_spec(fp):
+    spec = json.load(fp)
+    if not spec.get("path"):
+        raise RuntimeError("Invalid specification file")
+    
+    path = spec["path"]
+    if spec["format"]:
+        ds = DataSource.connect(path, format = spec["format"])
+    else:
+        ds = DataSource.connect(path)
+        
+    ds.name = spec.get("name")
+    ds.info_text = spec.get("description")
+    ds.info_url = spec.get("infourl")
+    
+    if "cache" in spec:
+        c = spec["cache"]
+        if "timeout" in c:
+            ds.set_cache_timeout(c["timeout"])
+        if "directory" in c:
+            ds.set_cache_directory(c["directory"])
+
+    if "params" in spec:
+        param_list = spec["params"]
+        for d in param_list:
+            p = P.Param(d["key"], d["type"], d.get("description"), d.get("required", False))
+            ds.add_param(p)
+            if d.get("value"):
+                ds.set_param(d["key"], d["value"])
+    
+    if "options" in spec:
+        for opt in spec["options"]:
+            ds.set_option(opt["name"], opt["value"])
+    
+    return ds
+    
 
 
 
