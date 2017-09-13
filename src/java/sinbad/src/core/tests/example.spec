@@ -6,7 +6,7 @@
 
 	"options": [{
 		"name": "header",
-		"value": "\"ID\",\"Name\",\"Alias\",\"IATA\",\"ICAO\",\"Callsign\",\"Country\",Active"
+		"value": "\"ID\",\"Name\",City,Country,\"IATA\",\"ICAO\",Latitude,Longitude,Altitude,Timezone, DST, Tz, Type, Source"
 	}],
 
 	"params": [{

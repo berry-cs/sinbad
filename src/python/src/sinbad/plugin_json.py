@@ -5,7 +5,7 @@ Created on Aug 24, 2017
 '''
 
 import json
-import util as U
+import sinbad.util as U
 
 class JSON_Infer:
     

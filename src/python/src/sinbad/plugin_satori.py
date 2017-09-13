@@ -6,7 +6,7 @@ Created on Aug 24, 2017
 
 import json
 from satori.rtm.connection import Connection
-import util as U
+import sinbad.util as U
 
 class Satori_Infer:
     

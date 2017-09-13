@@ -8,6 +8,7 @@ Dependencies:
    jsonpath_rw
    satori-rtm-sdk
    xmltodict
+   appdirs
    
 
 '''
@@ -19,15 +20,16 @@ import random
 import json
 import io
 
-import cacher as C
-import util as U
-import describe as D
-import param as P
+import sinbad.cacher as C
+import sinbad.util as U
+import sinbad.describe as D
+import sinbad.param as P
+import sinbad.prefs
 
-import plugin_csv
-import plugin_json
-import plugin_satori
-import plugin_xml
+from sinbad import plugin_csv
+from sinbad import plugin_json
+from sinbad import plugin_satori
+from sinbad import plugin_xml
 
 from collections import OrderedDict
 
@@ -60,6 +62,10 @@ class DataSource:
                         ]
     
     plugins = __predefined_plugins
+    
+    @staticmethod
+    def preferences(**kw_args):
+        sinbad.prefs.preferences(**kw_args)
     
     
     @staticmethod

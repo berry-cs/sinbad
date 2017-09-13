@@ -10,7 +10,7 @@ import os.path
 import tempfile
 import shutil
 
-import util as U
+import sinbad.util as U
 
 
 __sinbadCacheEnabled = True
