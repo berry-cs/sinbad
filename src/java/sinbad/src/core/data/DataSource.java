@@ -393,7 +393,7 @@ public class DataSource implements IDataSource {
      */
     
     public DataSource setOption(String op, String value) {
-        if ("fileentry".equals(op.toLowerCase())) {
+        if ("file-entry".equals(op.toLowerCase())) {
             System.out.println("zip entry: " + value);
             iomanager.setZipFileEntry(value);
         } else {
