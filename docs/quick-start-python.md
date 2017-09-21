@@ -2,6 +2,18 @@
 
 This guide is intended for programmers with previous experience in Python who are interested in learning quickly how to use the Sinbad library. We will use data provided by a couple of crowdfunding websites to explore features of Sinbad.
 
+**Contents**
+
+* [Basics](#basics)
+* [Accessing Data](#accessing-data)
+* [Fetch Variants](#fetch-variants)
+* [Exploring Data Structure](#exploring-data-structure)
+* [Cache Functionality](#cache-functionality)
+* [Query Parameters](#query-parameters)
+* [Inferring Data Format](#inferring-data-format)
+
+
+
 ## Basics
 
 To access any data source using Sinbad, there are three basic steps you carry out:
@@ -202,10 +214,39 @@ If for some reason Sinbad cannot infer the type of data being accessed, use the 
 ds = Data_Source.connect_as("xml", "http://api.kivaws.org/v1/loans/newest.xml")
 ````
 
+## ZIP and Gzip Compressed Files
+
+Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [https://webrobots.io/kickstarter-datasets/] lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
+
+Let's try:
+
+````
+from sinbad import Data_Source
+from pprint import pprint
+
+ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.json.gz")
+ds.load()
+ds.print_description()
+ds.data_length("data/projects")
+````
+
+This may take a while to download - there is *a lot* of data. (In fact, you probably need to have at least 1GB of RAM in your machine to ensure that Python can load the entire data set into memory. This is a limitation of Sinbad - it requires you to have enough main memory to load in the entire data set and work with it.)
+
+In any event, hopefully, you'll eventually get a structure definition of the data printed out along with the information that there are ... records or so of data.
 
 
 
 
+
+
+
+
+## Sampling Data
+
+
+
+
+## Data Source Option Settings
 
 
 
