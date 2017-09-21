@@ -15,7 +15,7 @@ Sometimes you may need to invoke several methods to acheive step 1, and there ar
 
 ## Accessing Data
 
-[Kiva.org](https://www.kiva.org/) provides a nice developers API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/] where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json]. With that URL, let's look at a complete Python script to access the data using Sinbad:
+[Kiva.org](https://www.kiva.org/) provides a nice developers' API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/] where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json]. With that URL, let's look at a complete Python script to access the data using Sinbad:
 
 ````
 from sinbad import Data_Source
@@ -180,7 +180,27 @@ print(ds.fetch('paging/page'))
 The `set_param` calls can be composed, as in `ds.set_param('page', 5).set_param('per_page', 7)`, or even more concisely provided in a single call to `set_params` (notice the `s`): `ds.set_params({'page' : 5, 'per_page' : 7})`.
 
 
+## Inferring Data Format
 
+The Sinbad library tries as much as possible to guess (from the URL or file path you provide) what format the data is going to be in when loaded. Since Kiva provides data in XML as well as JSON format, we can try:
+
+````
+from sinbad import Data_Source
+from pprint import pprint
+
+ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.xml")
+ds.load()
+ds.print_description()
+pprint(ds.fetch_first("name", "use", "location/country", "loan_amount", base_path="loans/loan"))
+````
+
+The two changes from the version presented in the [Accessing Data](#accessing-data) section above are the `xml` in the URL and the different `base_path="loans/loan"`. (XML tends to be more verbose than other formats and sometimes introduces many more layers of structure into the data.) 
+
+If for some reason Sinbad cannot infer the type of data being accessed, use the `connect_as` method to provide it a hint:
+
+````
+ds = Data_Source.connect_as("xml", "http://api.kivaws.org/v1/loans/newest.xml")
+````
 
 
 
