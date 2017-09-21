@@ -13,7 +13,7 @@ To access any data source using Sinbad, there are three basic steps you carry ou
 Sometimes you may need to invoke several methods to acheive step 1, and there are a variety of ways that you can fetch elements from the data in step 3, which we'll see in the following examples.
 
 
-## Accessing Kiva Data
+## Accessing Data
 
 [Kiva.org](https://www.kiva.org/) provides a nice developers API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/] where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json]. With that URL, let's look at a complete Python script to access the data using Sinbad:
 
@@ -133,7 +133,7 @@ In addition to using `print_description()` after `load`ing a data source, you ca
 The `data_length()` method produces the length of the list of available items at a given field path in the data:
 
 ````
->>> ds.data_length()
+>>> ds.data_length()     # not a list at the top-level
 0
 >>> ds.data_length('loans')
 20
@@ -162,6 +162,22 @@ This will force Sinbad to download the latest data every 5 minutes (5 minutes x 
 
 If you want to know where Sinbad is storing temporary cache files, use this: `print(ds.cache_directory())`. The files are managed in a very particular way, so it's not intended that you mess around with the structure of the files in that directory. To clear the entire cache, use `ds.clear_cache()`. This completely deletes the entire directory and *all* cached data from any sources you may have accessed.
 
+
+## Query Parameters
+
+Many APIs allow (or require) you to provide *query parameters* in the URL that you use to access the data. These need to be formatted using particular URL syntax involving `?`, `&`, and `...=...`. You can always construct a URL manually, but Sinbad allows you to supply parameters more conveniently. In the case of Kiva, studying the [API documentation for the loans/newest](http://build.kiva.org/api#GET*|loans|newest) URL point, several optional parameters are listed. The results Kiva provides are grouped into pages of 20 results at a time. If you want less results, or a different page, use the `set_param()` method to specify values for the appropriate parameters before `load()`:
+
+````
+ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.json")
+ds.set_cache_timeout(300)
+ds.set_param('page', 5)
+ds.set_param('per_page', 7)
+ds.load()
+print(ds.data_length('loans'))
+print(ds.fetch('paging/page'))
+````
+
+The `set_param` calls can be composed, as in `ds.set_param('page', 5).set_param('per_page', 7)`, or even more concisely provided in a single call to `set_params` (notice the `s`): `ds.set_params({'page' : 5, 'per_page' : 7})`.
 
 
 
