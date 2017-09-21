@@ -71,11 +71,11 @@ pprint(ds.fetch_first("loans/name", "loans/use",
 Here, the `fetch_first` method selects the first element of the list of loans and extracts four specified fields (name, us, country, loan_amount). Notice how the nested structure of the fields is captured in the paths separated by forward slashes. This should produce output that looks something like:
 
 ````
-{'country': 'Kenya',
- 'loan_amount': '300',
- 'name': 'Penina Njabani',
- 'use': 'to add stock of maize flour, rice, sugar, and soft drinks to grow her '
-        'business.'}
+ {'country': 'Kenya',
+  'loan_amount': '300',
+  'name': 'Penina Njabani',
+  'use': 'to add stock of maize flour, rice, sugar, and soft drinks to grow her '
+         'business.'}
 ````
 
 An alternate way to express the same fetch behavior is to explicitly provide the `base_path`, which can be a little more concise: 
@@ -83,6 +83,8 @@ An alternate way to express the same fetch behavior is to explicitly provide the
 ````
 ds.fetch_first("name", "use", "location/country", "loan_amount", base_path="loans")
 ````
+
+## Fetch Variants
 
 Now, what if you want all the data available, rather than just the first record? Try using the **`fetch`** method instead of `fetch_first`. The result should be intuitive. 
 
@@ -108,6 +110,27 @@ pprint(ds.fetch_random("name", "use", "location/country", "loan_amount", base_pa
 ````
 
 Here you should notice that only the last two results are from the same, randomly chosen, row. Note also that the `load` method produces back the data source object, so method calls can be composed `ds.load().fetch(...)`.
+
+If you want to just access all available data, you can do so using:
+
+````
+all = ds.fetch()
+````
+
+It's often not a good idea to print all of the data because it can cause your console/terminal to hang if there is a lot of it. In the Kiva case, you should only have 20 rows of data, so you could `pprint(all)` to look at it. You can also call any of the other `fetch` variants without any field paths to retrieve all the fields in the particular row. However, you need to make sure that either the top-level structure of the data is a list for that to make sense, or else provide a path to a list in the data, e.g. `ds.fetch_random('loans')` or `ds.fetch_ith(5, "loans")`.
+
+## Exploring Data Structure
+
+In addition to using `print_description()` after `load`ing a data source, you can get a list of available field names at the top-level using the `field_list()` method. If you provide a path to `field_list()`, you'll get all the field names accessible at that level of the structure hierarchy:
+
+````
+>>> ds.field_list()
+['paging', 'loans']
+>>> ds.field_list('loans')
+['id', 'name', 'description', 'status', 'funded_amount', ..., 'loan_amount', 'borrower_count', 'tags']
+````
+
+
 
 ## Cache Functionality
 
