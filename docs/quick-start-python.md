@@ -218,7 +218,9 @@ ds = Data_Source.connect_as("xml", "http://api.kivaws.org/v1/loans/newest.xml")
 
 Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [https://webrobots.io/kickstarter-datasets/] lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
 
-Let's try:
+### Gzip files
+
+Sinbad automatically decompresses Gzip files upon load. Let's try:
 
 ````
 from sinbad import Data_Source
@@ -227,17 +229,43 @@ from pprint import pprint
 ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.json.gz")
 ds.load()
 ds.print_description()
-ds.data_length("data/projects")
+print(ds.data_length("data/projects"))
 ````
 
 This may take a while to download - there is *a lot* of data. (In fact, you probably need to have at least 1GB of RAM in your machine to ensure that Python can load the entire data set into memory. This is a limitation of Sinbad - it requires you to have enough main memory to load in the entire data set and work with it.)
 
-In any event, hopefully, you'll eventually get a structure definition of the data printed out along with the information that there are ... records or so of data.
+In any event, hopefully, you'll eventually get a structure definition of the data printed out along with the information that there are almost `58,000` records of data!
 
+### ZIP archives
 
+ZIP archives are a little more complicated, because they can contain several compressed files within the archive and Sinbad doesn't know which one you are interested in (unless there is only one - in which case it automatically uses that one). Thus, trying one of the CSV links from the site above:
 
+````
+ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.zip")
+````
 
+is going to give you two errors.
 
+1. First, it can't infer the data type (`SinbadError: could not infer data format for https://s3...'). Fix this by using `.connect_as("csv", ...)` instead of just `.connect(...)`.
+
+2. Then, it will complain: 
+
+````
+SinbadError: Specify a file-entry from the ZIP file: ['Kickstarter010.csv', 'Kickstarter012.csv', 'Kickstarter002.csv', ...]
+````
+
+   because the ZIP file actually contains a number of CSV data file. To let Sinbad know which one to use, you'll need to specify an [option setting](#data-source-option-settings) for the `"file-entry"` option with a value of one of the names of the files in the list:
+   
+````
+ds = Data_Source.connect_as("csv", "https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.zip")
+ds.set_option("file-entry", "Kickstarter003.csv")
+ds.load()
+ds.print_description()
+````
+   
+The CSV files provided in this case are a little silly, because apparently the data is encoded in *JSON* format in the 'projects' column of a number of rows of the CSV file. This is a weird scenario with mixed data formats that can't be entirely handled in Sinbad, so you're better off going with the JSON-format files to begin with.
+   
+In any case, the point here was to demonstrate the use of the **"file-entry"** data source option to specify the file to extract and use from a ZIP archive.
 
 
 
@@ -247,6 +275,9 @@ In any event, hopefully, you'll eventually get a structure definition of the dat
 
 
 ## Data Source Option Settings
+
+params -- affect URL
+options -- background effect on behavior
 
 
 
