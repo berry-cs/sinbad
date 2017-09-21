@@ -130,6 +130,14 @@ In addition to using `print_description()` after `load`ing a data source, you ca
 ['id', 'name', 'description', 'status', 'funded_amount', ..., 'loan_amount', 'borrower_count', 'tags']
 ````
 
+The `data_length()` method produces the length of the list of available items at a given field path in the data:
+
+````
+>>> ds.data_length()
+0
+>>> ds.data_length('loans')
+20
+````
 
 
 ## Cache Functionality
