@@ -2,7 +2,7 @@
 
 ![Sinbad logo](http://cs.berry.edu/sinbad/sinbad-logo-thumbnail.png)
 
-**Sinbad** is a library for Java and Python that makes it very easy to access online data sources provided in standard formats (CSV, JSON, XML).
+**Sinbad** is a software library for Java and Python that makes it very easy to uniformly access online data sources provided in standard formats (CSV, JSON, XML).
 
 If you are a novice programmer, you probably should go through the [tutorials](#tutorials) below after installing Sinbad. Experienced programmers may benefit more from the [quick start guides](#quick-start). You will also find links to a [quick reference](#quick-reference) and detailed [API documentation](#api-reference) below.
 
