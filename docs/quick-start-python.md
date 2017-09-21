@@ -279,12 +279,12 @@ To do so, use `load_sample` instead of `load`:
 ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.json.gz")
 ds.load_sample(1000)
 ds.print_description()
-print(ds.data_length("data/projects"))
+print(ds.fetch_first("data/projects/name"))
 ````
 
-The first time you run this program, it will take time to load all of the data, but will then sample and cache a list of only 1000 randomly chosen elements. (The sampling process is recursive, so if you have data that is lists of dictionaries with lists in them, *every* list at every level of the data structure will be sampled to ensure that it has no more than 1000 elements.)
+The first time you run this program, it will take time to load all of the data, but will then sample and cache a list of only 1000 randomly chosen elements. (The sampling process is recursive, so if you have data that is lists of dictionaries with lists in them, *every* list at every level of the data structure will be sampled to ensure that it has no more than 1000 elements. Actually, this data source is a little weird in terms of how they structured their JSON data, so the sampling currently doesn't quite work as you might expect, but nonetheless it is still pretty effective.)
 
-The second time you run this program, you'll probably notice a drastic change in how fast it loads the data. That's because it's using the previously cached sample. If you want to load a fresh sample, use `ds.load_fresh_sample(...)`. 
+The second time you run this program, you'll probably notice a drastic change in how fast it loads the data. That's because it's using the previously cached sample. If you want to load a fresh sample, use `ds.load_fresh_sample(...)`. If you want to control the seed of the random number generator as it is sampling the data, pass a second argument to the `load_sample` or `load_fresh_sample` methods, i.e. `ds.load_fresh_sample(100, 42)` will reliably re-generate the *same* sample of data every time it runs.
 
 
 ## Data Source Option Settings
