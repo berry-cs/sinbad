@@ -263,7 +263,7 @@ ds.load()
 ds.print_description()
 ````
    
-The CSV files provided in this case are a little silly, because apparently the data is encoded in *JSON* format in the 'projects' column of a number of rows of the CSV file. This is a weird scenario with mixed data formats that can't be entirely handled in Sinbad, so you're better off going with the JSON-format files to begin with.
+The CSV files provided in this case are a little silly, because apparently the data is encoded in *JSON* format in the 'projects' column of a number of rows of the CSV file. This is a weird scenario with mixed data formats that can't be entirely handled (yet!) using only Sinbad, so you're better off going with the JSON-format files to begin with. (Otherwise would need to `import json` and use something like `json.loads(ds.fetch_first("projects"))` to decode the JSON strings in each row.)
    
 In any case, the point here was to demonstrate the use of the **"file-entry"** data source option to specify the file to extract and use from a ZIP archive.
 
@@ -271,7 +271,20 @@ In any case, the point here was to demonstrate the use of the **"file-entry"** d
 
 ## Sampling Data
 
+When developing and testing a program, it can be a little annoying to have to wait 30 seconds for a data set of 60,000 elements to load into memory every time you make a change and run your script. Sinbad provides facilities to randomly *sample* data from a data source so that you can work with a smaller set of the data during the initial development of your program. 
 
+To do so, use `load_sample` instead of `load`:
+
+````
+ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.json.gz")
+ds.load_sample(1000)
+ds.print_description()
+print(ds.data_length("data/projects"))
+````
+
+The first time you run this program, it will take time to load all of the data, but will then sample and cache a list of only 1000 randomly chosen elements. (The sampling process is recursive, so if you have data that is lists of dictionaries with lists in them, *every* list at every level of the data structure will be sampled to ensure that it has no more than 1000 elements.)
+
+The second time you run this program, you'll probably notice a drastic change in how fast it loads the data. That's because it's using the previously cached sample. If you want to load a fresh sample, use `ds.load_fresh_sample(...)`. 
 
 
 ## Data Source Option Settings
