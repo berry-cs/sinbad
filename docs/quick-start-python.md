@@ -295,8 +295,27 @@ The second time you run this program, you'll probably notice a drastic change in
 
 ## Option Settings
 
-params -- affect URL
-options -- background effect on behavior
+In the preceding sections, we've used both a `set_option` method as well as a `set_param` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not have any effect on the URL that is used to access a data source. 
+
+Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [https://data.worldbank.org/country/peru]. On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
+
+````
+ds = Data_Source.connect_as("csv", "http://api.worldbank.org/v2/en/country/per")
+ds.set_param("downloadformat", "csv")
+ds.set_option("skip-rows", "4")
+ds.set_option("file-entry", "API_PER_DS2_en_csv_v2.csv")
+ds.load();
+ds.print_description();
+````
+
+* The `set_param` method is used to supply the name+value pair that is ultimately add to the URL to fetch the data. If you wanted to, you could also have just included the entire constructed URL in the `connect` call: `ds = Data_Source.connect("http://api.worldbank.org/v2/en/country/PER?downloadformat=csv")`.
+
+* If you manually download the file provided by the CSV link, you will find it is a ZIP archive with a few files inside. Thus, we use `ds.set_option("file-entry", ...")` to specify the file that we want to extract from the ZIP file.
+
+* If you open up and example that particular CSV file (in a text editor or in Microsoft Excel, for example) you'll see that there are a few rows at the beginning of the file that are either empty or contain metadata. The fifth line of the file then actually provides the header labels of the data, followed by the remaining rows of actual data. So, we use the `"skip-rows"` option to tell Sinbad to skip the first 4 lines. Each different type of data source has its own options that it recognizes. The `"skip-rows"` option is specific to data in CSV format.
+
+
+
 
 
 
