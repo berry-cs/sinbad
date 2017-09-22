@@ -304,8 +304,8 @@ ds = Data_Source.connect_as("csv", "http://api.worldbank.org/v2/en/country/per")
 ds.set_param("downloadformat", "csv")
 ds.set_option("skip-rows", "4")
 ds.set_option("file-entry", "API_PER_DS2_en_csv_v2.csv")
-ds.load();
-ds.print_description();
+ds.load()
+ds.print_description()
 ````
 
 * The `set_param` method is used to supply the name+value pair that is ultimately add to the URL to fetch the data. If you wanted to, you could also have just included the entire constructed URL in the `connect` call: `ds = Data_Source.connect("http://api.worldbank.org/v2/en/country/PER?downloadformat=csv")`.
@@ -324,10 +324,28 @@ ds.print_description();
   This might be a little silly in this case, but nonetheless illustrates how we can skip several rows in the data, including the provided header row, and then provide our own header of labels for the data columns. The `ds.print_description()` output should reflect the supplied labels, which are also used to `fetch` data.
 
 
-
-
-
 ## Specification Files
+
+With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a distraction in your script. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded using a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
+
+For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec]. Specification files are in JSON format and can be edited in your text editor. 
+
+With this specification file, the data source can be loaded using simply:
+
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec')
+ds.load()
+````
+
+or even more concisely as:
+
+````
+ds = Data_Source.connect_load_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec')
+````
+
+(There are variants of `connect` named `connect_load` and `connect_load_as` that can be used when it is convenient to combine the two steps in one.)
+
+### Generating Specification Files
 
 
 
