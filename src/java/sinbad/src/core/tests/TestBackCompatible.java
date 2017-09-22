@@ -44,6 +44,8 @@ public class TestBackCompatible {
         
         System.out.println(ds.getDataAccess().getSchema().toString(true));
         System.out.println(ds.getCacheDirectory());
+        
+        ds.load();  // try reloading already loaded data
 
     }
     

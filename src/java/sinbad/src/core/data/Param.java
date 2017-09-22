@@ -35,9 +35,9 @@ public class Param {
 	/**
 	 * Import information to construct a param from the given map
 	 */
-	public Param(Map<String, String> pm) {
-        this(pm.get("key"), ParamType.fromString(pm.get("type")));
-        this.description = pm.getOrDefault("description", null);
+	public Param(Map<String, Object> pm) {
+        this(pm.get("key").toString(), ParamType.fromString(pm.get("type").toString()));
+        this.description = pm.getOrDefault("description", null).toString();
         this.required = pm.containsKey("required") && pm.get("required").equals("true");
     }
 

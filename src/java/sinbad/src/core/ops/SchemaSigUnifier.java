@@ -133,8 +133,8 @@ public class SchemaSigUnifier {
                 String[] csFlds = new String[cs.getFieldCount()];
                 for (int i = 0; i < csFlds.length; i++) csFlds[i] = cs.getFieldName(i);
                 
-                String commonPrefix = longestCommonPrefix(csFlds);
-                if (commonPrefix == null || (csFlds.length > 1 && !commonPrefix.endsWith("/")))
+                String commonPrefix = longestCommonPrefix(csFlds, '/');
+                if (csFlds.length > 1 && !commonPrefix.endsWith("/"))
                     return defaultVisit(cs);
                 
                 String[] pieces = commonPrefix.split("/");
@@ -289,9 +289,9 @@ public class SchemaSigUnifier {
 	}
 	
 	
-    protected static String longestCommonPrefix(String[] strings) {
+    protected static String longestCommonPrefix(String[] strings, char sep) {
         if (strings.length <= 0) {
-            return null;
+            return "";
         }
         
         for (int prefixLen = 0; prefixLen < strings[0].length(); prefixLen++) {
@@ -299,7 +299,14 @@ public class SchemaSigUnifier {
             for (int i = 1; i < strings.length; i++) {
                 if ( prefixLen >= strings[i].length() ||
                      strings[i].charAt(prefixLen) != c ) {
-                    // Mismatch found
+                    // Mismatch found...
+                    // so back up to the first separator
+                    while (prefixLen < strings[i].length() && 
+                            prefixLen > 0 &&
+                            strings[i].charAt(prefixLen) != sep) {
+                        prefixLen--;
+                    }
+                    
                     return strings[i].substring(0, prefixLen);
                 }
             }

@@ -54,29 +54,29 @@ public class DataSpecLoader {
             ds.setDescription((String)m.getOrDefault("description", null));
 
             if (m.containsKey("options")) {
-                List<Map<String,String>> opts = (List<Map<String, String>>) m.get("options");
-                for (Map<String,String> opt : opts) {
-                    ds.setOption(opt.get("name"), opt.get("value"));
+                List<Map<String,Object>> opts = (List<Map<String, Object>>) m.get("options");
+                for (Map<String,Object> opt : opts) {
+                    ds.setOption(opt.get("name").toString(), opt.get("value").toString());
                 }
             }
             
             if (m.containsKey("params")) {
-                List<Map<String,String>> params = (List<Map<String, String>>) m.get("params");
-                for (Map<String,String> pm : params) {
+                List<Map<String,Object>> params = (List<Map<String, Object>>) m.get("params");
+                for (Map<String,Object> pm : params) {
                     Param param = new Param(pm);
                     ds.addParam(param);
                     if (pm.containsKey("value")) {
-                        ds.setParam(pm.get("key"), pm.get("value"));
+                        ds.setParam(pm.get("key").toString(), pm.get("value").toString());
                     }
                 }
             }
             
             if (m.containsKey("cache")) {
-                Map<String,String> cacheOpts = (Map<String,String>)m.get("cache");
+                Map<String,Object> cacheOpts = (Map<String,Object>)m.get("cache");
                 if (cacheOpts.containsKey("timeout"))
-                    ds.setCacheTimeout(Integer.parseInt(cacheOpts.get("timeout")));
+                    ds.setCacheTimeout(Integer.parseInt(cacheOpts.get("timeout").toString()));
                 if (cacheOpts.containsKey("directory"))
-                    ds.setCacheDirectory(cacheOpts.get("directory"));
+                    ds.setCacheDirectory(cacheOpts.get("directory").toString());
             }
             
             if (m.containsKey("schema")) {

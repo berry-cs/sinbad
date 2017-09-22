@@ -64,7 +64,7 @@ public class CsvFactory implements IDataAccessFactory {
             delimiter = value.charAt(0);
         } else if ("streaming".equals(option)) {
             streaming = true;
-        } else if ("skiprows".equals(option)) {
+        } else if ("skiprows".equals(option) || "skip-rows".equals(option)) {
             skipRows = Integer.parseInt(value);
         } else if ("quote".equals(option)) {
             quote = value.charAt(0);

@@ -27,7 +27,7 @@ public class Errors {
         addError("ds:no-data", "no data available: %s --- make sure you called .load()", 1);
         addError("ds:no-class", "could not find a class named: %s", 1);
         addError("ds:invalid-spec", "invalid data specification", 0);
-        addError("ds:invalid-spec-file", "invalid data specification file: %1", 1);
+        addError("ds:invalid-spec-file", "invalid data specification file: %s", 1);
         
         addError("da:no-such-option", "no such option: %s", 1);
         addError("da:getcontents", "could not access contents as a primitive (string)", 0);
