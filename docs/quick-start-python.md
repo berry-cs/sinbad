@@ -11,6 +11,12 @@ This guide is intended for programmers with previous experience in Python who ar
 * [Cache Functionality](#cache-functionality)
 * [Query Parameters](#query-parameters)
 * [Inferring Data Format](#inferring-data-format)
+* [ZIP and Gzip Compressed Files](#zip-and-gzip-compressed-files)
+  + [Gzip files](#gzip-files)
+  + [ZIP archives](#zip-archives)
+* [Sampling Data](#sampling-data)
+* [Data Source Option Settings](#data-source-option-settings)
+* [Specification Files](#specification-files)
 
 
 
@@ -291,6 +297,10 @@ The second time you run this program, you'll probably notice a drastic change in
 
 params -- affect URL
 options -- background effect on behavior
+
+
+
+## Specification Files
 
 
 
