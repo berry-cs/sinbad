@@ -314,6 +314,14 @@ ds.print_description();
 
 * If you open up and example that particular CSV file (in a text editor or in Microsoft Excel, for example) you'll see that there are a few rows at the beginning of the file that are either empty or contain metadata. The fifth line of the file then actually provides the header labels of the data, followed by the remaining rows of actual data. So, we use the `"skip-rows"` option to tell Sinbad to skip the first 4 lines. Each different type of data source has its own options that it recognizes. The `"skip-rows"` option is specific to data in CSV format.
 
+* Another common option for CSV files is `"header"`. Sometimes a CSV file might not include a header. Or, as in the case of our World Bank data file, we might want to use different labels for the fields rather than the ones provided. Thus, we could provide an alternate set of option settings:
+
+  ````
+  ds.set_option("skip-rows", "5")
+  ds.set_option("header", "Country,CCode,Indicator,ICode,year60,year61,year62,year63,year64,year65,year66,year67,year68,year69,year70,year71,year72,year73,year74,year75,year76,year77,year78,year79,year80,year81,year82,year83,year84,year85,year86,year87,year88,year89,year90,year91,year92,year93,year94,year95,year96,year97,year98,year99,year00,year01,year02,year03,year04,year05,year06,year07,year08,year09,year10,year11,year12,year13,year14,year15,year16")
+  ````
+
+  This might be a little silly in this case, but nonetheless illustrates how we can skip several rows in the data, including the provided header row, and then provide our own header of labels for the data columns. The `ds.print_description()` output should reflect the supplied labels, which are also used to `fetch` data.
 
 
 
