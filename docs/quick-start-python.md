@@ -15,7 +15,7 @@ This guide is intended for programmers with previous experience in Python who ar
   + [Gzip files](#gzip-files)
   + [ZIP archives](#zip-archives)
 * [Sampling Data](#sampling-data)
-* [Data Source Option Settings](#data-source-option-settings)
+* [Option Settings](#option-settings)
 * [Specification Files](#specification-files)
 
 
@@ -260,7 +260,7 @@ is going to give you two errors.
 SinbadError: Specify a file-entry from the ZIP file: ['Kickstarter010.csv', 'Kickstarter012.csv', 'Kickstarter002.csv', ...]
 ````
 
-   because the ZIP file actually contains a number of CSV data file. To let Sinbad know which one to use, you'll need to specify an [option setting](#data-source-option-settings) for the `"file-entry"` option with a value of one of the names of the files in the list:
+   because the ZIP file actually contains a number of CSV data file. To let Sinbad know which one to use, you'll need to specify an [option setting](#option-settings) for the `"file-entry"` option with a value of one of the names of the files in the list:
    
 ````
 ds = Data_Source.connect_as("csv", "https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.zip")
@@ -293,7 +293,7 @@ The first time you run this program, it will take time to load all of the data, 
 The second time you run this program, you'll probably notice a drastic change in how fast it loads the data. That's because it's using the previously cached sample. If you want to load a fresh sample, use `ds.load_fresh_sample(...)`. If you want to control the seed of the random number generator as it is sampling the data, pass a second argument to the `load_sample` or `load_fresh_sample` methods, i.e. `ds.load_fresh_sample(100, 42)` will reliably re-generate the *same* sample of data every time it runs.
 
 
-## Data Source Option Settings
+## Option Settings
 
 params -- affect URL
 options -- background effect on behavior
