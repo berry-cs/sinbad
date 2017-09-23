@@ -170,7 +170,7 @@ The Sinbad library caches all data that is loaded unless you explicitly tell it 
 
 2. Data remains available on your computer even if you temporarily lose network connectivity. And, after the first load, usually, subsequent ones are faster because the data is being loaded locally rather than over the network.
 
-Nonetheless, sometimes a data source like that provided by Kiva is updated fairly frequently. To have Sinbad refresh its cache and redownload the latest data every now and then, you can provide it a cache timeout value in seconds. Place this *before* the call to `load`:
+Nonetheless, sometimes a data source - like that provided by Kiva - is updated fairly frequently. To have Sinbad refresh its cache and redownload the latest data every now and then, you can provide it a cache timeout value in seconds. Place this *before* the call to `load`:
 
 ````
 ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.json")
