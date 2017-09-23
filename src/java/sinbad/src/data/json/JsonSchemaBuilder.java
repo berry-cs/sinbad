@@ -44,6 +44,11 @@ public class JsonSchemaBuilder {
 
     private static ISchema inferArraySchema(JSONArray data, String path) {
         final int N = data.length();
+        if (N == 0) {
+            ListSchema ls = new ListSchema(path, new PrimSchema());
+            return ls;
+        }
+        
         // first see if everything is the same type of thing
         boolean allSame = true;
         Object first = data.get(0);

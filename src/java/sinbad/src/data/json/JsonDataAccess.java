@@ -1,12 +1,14 @@
 package data.json;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.json.JSONObject;
 import org.json.JSONPointer;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONPointerException;
 import org.json.JSONTokener;
 
@@ -24,7 +26,23 @@ public class JsonDataAccess extends FailAccess {
     public JsonDataAccess(InputStream is, int skipChars) {
         JSONTokener jt = new JSONTokener(is);
         for (int i = 0; i < skipChars; i++) { jt.next(); }  // allow skipping past some initial characters
-        data = jt.nextValue();
+        this.data = jt.nextValue();
+        if (jt.more()) {
+            // maybe build a list
+            ArrayList<Object> lst = new ArrayList<Object>();
+            lst.add(this.data);
+            while (jt.more()) {
+                try {
+                    lst.add(jt.nextValue());
+                } catch (JSONException e) {
+                    // just stop trying at this point
+                    break;
+                }
+            }
+            if (lst.size() > 1) {
+                this.data = new JSONArray(lst);
+            }
+        }
     }
     
     private JsonDataAccess(Object data) {
