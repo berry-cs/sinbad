@@ -4,19 +4,21 @@ This guide is intended for programmers with previous experience in Python who ar
 
 **Contents**
 
-* [Basics](#basics)
-* [Accessing Data](#accessing-data)
-* [Fetch Variants](#fetch-variants)
-* [Exploring Data Structure](#exploring-data-structure)
-* [Cache Functionality](#cache-functionality)
-* [Query Parameters](#query-parameters)
-* [Inferring Data Format](#inferring-data-format)
-* [ZIP and Gzip Compressed Files](#zip-and-gzip-compressed-files)
-  + [Gzip files](#gzip-files)
-  + [ZIP archives](#zip-archives)
-* [Sampling Data](#sampling-data)
-* [Option Settings](#option-settings)
-* [Specification Files](#specification-files)
+  * [Basics](#basics)
+  * [Accessing Data](#accessing-data)
+  * [Fetch Variants](#fetch-variants)
+  * [Exploring Data Structure](#exploring-data-structure)
+  * [Cache Functionality](#cache-functionality)
+  * [Query Parameters](#query-parameters)
+  * [Inferring Data Format](#inferring-data-format)
+  * [ZIP and Gzip Compressed Files](#zip-and-gzip-compressed-files)
+    + [Gzip files](#gzip-files)
+    + [ZIP archives](#zip-archives)
+  * [Sampling Data](#sampling-data)
+  * [Option Settings](#option-settings)
+  * [Specification Files](#specification-files)
+    + [Generating Specification Files](#generating-specification-files)
+    + [Query and Path Parameters](#query-and-path-parameters)
 
 
 
@@ -33,7 +35,7 @@ Sometimes you may need to invoke several methods to acheive step 1, and there ar
 
 ## Accessing Data
 
-[Kiva.org](https://www.kiva.org/) provides a nice developers' API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/] where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json]. With that URL, let's look at a complete Python script to access the data using Sinbad:
+[Kiva.org](https://www.kiva.org/) provides a nice developers' API that allows you to access all sorts of data about projects and loans. The main page for developers is [build.kiva.org/](http://build.kiva.org/) where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [api.kivaws.org/v1/loans/newest.json](http://api.kivaws.org/v1/loans/newest.json). With that URL, let's look at a complete Python script to access the data using Sinbad:
 
 ````
 from sinbad import Data_Source
@@ -162,13 +164,13 @@ The `data_length()` method produces the length of the list of available items at
 
 If you are reading this page, you're probably connected to the Internet somehow. If it's convenient, turn off the wireless connection on your computer, or disconnect your network cable, then try running your program above again. You should find out that it works, even with no Internet connectivity!
 
-The Sinbad library caches all data that is loaded unless you explicitly tell it otherwise. That means that the very first time you ran the program, it actually connected to [api.kiva.org] and downloaded the available data, but then it stored a copy of that data in a temporary directory on your computer. Every subsequent time that you ran the program, you were actually just reloading data that was stored on your own machine. This has a couple of benefits, most notably:
+The Sinbad library caches all data that is loaded unless you explicitly tell it otherwise. That means that the very first time you ran the program, it actually connected to [api.kiva.org](http://api.kiva.org) and downloaded the available data, but then it stored a copy of that data in a temporary directory on your computer. Every subsequent time that you ran the program, you were actually just reloading data that was stored on your own machine. This has a couple of benefits, most notably:
 
 1. You are not annoying the Kiva web service with constant requests to download data even if you run your program many times repeatedly within a short time span. (Many data sources - free or otherwise - place limits on the number of requests you can make, and some will block your IP if too many are made. Be sure to find and read the usage conditions and terms for any web-based data service that you use.)
 
 2. Data remains available on your computer even if you temporarily lose network connectivity. And, after the first load, usually, subsequent ones are faster because the data is being loaded locally rather than over the network.
 
-Nonetheless, sometimes a data source like that provided by Kiva is updated fairly frequently. To have Sinbad refresh its cache and redownload the latest data every now and then, you can provide it a cache timeout value in seconds. Place this *before* the call to `load`:
+Nonetheless, sometimes a data source - like that provided by Kiva - is updated fairly frequently. To have Sinbad refresh its cache and redownload the latest data every now and then, you can provide it a cache timeout value in seconds. Place this *before* the call to `load`:
 
 ````
 ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.json")
@@ -183,7 +185,7 @@ If you want to know where Sinbad is storing temporary cache files, use this: `pr
 
 ## Query Parameters
 
-Many APIs allow (or require) you to provide *query parameters* in the URL that you use to access the data. These need to be formatted using particular URL syntax involving `?`, `&`, and `...=...`. You can always construct a URL manually, but Sinbad allows you to supply parameters more conveniently. In the case of Kiva, studying the [API documentation for the loans/newest](http://build.kiva.org/api#GET*|loans|newest) URL point, several optional parameters are listed. The results Kiva provides are grouped into pages of 20 results at a time. If you want less results, or a different page, use the `set_param()` method to specify values for the appropriate parameters before `load()`:
+Many APIs allow (or require) you to provide *query parameters* in the URL that you use to access the data. These need to be formatted using particular URL syntax involving `?`, `&`, and `...=...`. You can always construct a URL manually, but Sinbad allows you to supply parameters more conveniently. In the case of Kiva, studying the [API documentation for the loans/newest](http://build.kiva.org/api#GET*%7Cloans%7Cnewest) URL point, several optional parameters are listed. The results Kiva provides are grouped into pages of 20 results at a time. If you want fewer results per page, or a different page, use the `set_param()` method to specify values for the appropriate parameters before `load()`:
 
 ````
 ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.json")
@@ -222,7 +224,7 @@ ds = Data_Source.connect_as("xml", "http://api.kivaws.org/v1/loans/newest.xml")
 
 ## ZIP and Gzip Compressed Files
 
-Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [https://webrobots.io/kickstarter-datasets/] lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
+Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [webrobots.io/kickstarter-datasets/](https://webrobots.io/kickstarter-datasets/) lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
 
 ### Gzip files
 
@@ -297,15 +299,15 @@ The second time you run this program, you'll probably notice a drastic change in
 
 In the preceding sections, we've used both a `set_option` method as well as a `set_param` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not have any effect on the URL that is used to access a data source. 
 
-Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [https://data.worldbank.org/country/peru]. On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
+Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [data.worldbank.org/country/peru](https://data.worldbank.org/country/peru). On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
 
 ````
 ds = Data_Source.connect_as("csv", "http://api.worldbank.org/v2/en/country/per")
 ds.set_param("downloadformat", "csv")
 ds.set_option("skip-rows", "4")
 ds.set_option("file-entry", "API_PER_DS2_en_csv_v2.csv")
-ds.load();
-ds.print_description();
+ds.load()
+ds.print_description()
 ````
 
 * The `set_param` method is used to supply the name+value pair that is ultimately add to the URL to fetch the data. If you wanted to, you could also have just included the entire constructed URL in the `connect` call: `ds = Data_Source.connect("http://api.worldbank.org/v2/en/country/PER?downloadformat=csv")`.
@@ -324,10 +326,87 @@ ds.print_description();
   This might be a little silly in this case, but nonetheless illustrates how we can skip several rows in the data, including the provided header row, and then provide our own header of labels for the data columns. The `ds.print_description()` output should reflect the supplied labels, which are also used to `fetch` data.
 
 
-
-
-
 ## Specification Files
 
+With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a distraction in your script. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded using a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
 
+For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec). Specification files are in JSON format and can be edited in a text editor. 
 
+With this specification file, the data source can be loaded using simply:
+
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec')
+ds.load()
+````
+
+or even more concisely as:
+
+````
+ds = Data_Source.connect_load_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec')
+````
+
+(There are variants of `connect` named `connect_load` and `connect_load_as` that can be used when it is convenient to combine the two steps in one.)
+
+### Generating Specification Files
+
+Specification files are simply JSON-format text files and can be created from scratch. An easier way to start, however, is to prepare your `Data_Source` object using `connect`, `set_option`, and `set_param` as necessary, and then use the `export()` method to save an initial version of the specification to a file with the given path, for example:
+
+````
+ds.export("c:\\Users\\IEUser\\Desktop\\spec.txt")
+````
+
+Now you can open the `spec.txt` file in an editor and tweak or modify the specification, for example to add a `description` and `info_url` entry, etc. 
+
+### Query and Path Parameters
+
+We discussed above the difference between options and parameters. Recall that parameter values are used to construct the URL of the data source. There are two forms of parameters supported by Sinbad:
+
+* *Query parameters* are added to the URL as query parameter pairs in `?...name=value&...` format.
+
+* *Path parameters* can also be defined for a data source object (often in a specification file) and are used to substitute or replace a portion of the URL with some value.
+
+As an example of each of the parameter types, consider this specification file: [raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec)
+
+If you try to connect and load without specifying parameters:
+
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec')
+ds.load()
+````
+
+Sinbad will raise an error: `SinbadError: not ready to load; missing params: ['airport_code']`. A call to `print_description()` (even before `load`) will reveal that there are two required parameters:
+
+````
+-----
+Data Source: FAA Airport Status
+URL: http://services.faa.gov/airport/status/@{airport_code}
+
+The following (connection) parameters may/must be set on this data source:
+   - airport_code (not set) [*required]
+   - format (currently set to: 'application/xml') [*required]
+
+*** Data not loaded *** ... use .load()
+````
+
+Here, `format` has already been provided a `value` in the specification file, but not `airport_code`. When a value is supplied, it will be substituted into the URL in place of the `@{airport_code}` placeholder:
+
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec')
+ds.set_param('airport_code', 'ATL')
+ds.load()
+ds.print_description()
+````
+
+results in:
+
+````
+Data Source: FAA Airport Status
+URL: http://services.faa.gov/airport/status/ATL?format=application%2Fxml
+
+The following (connection) parameters may/must be set on this data source:
+   - airport_code (currently set to: 'ATL') [*required]
+   - format (currently set to: 'application/xml') [*required]
+
+The following data is available:
+...
+````
