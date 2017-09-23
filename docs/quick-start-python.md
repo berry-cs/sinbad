@@ -33,7 +33,7 @@ Sometimes you may need to invoke several methods to acheive step 1, and there ar
 
 ## Accessing Data
 
-[Kiva.org](https://www.kiva.org/) provides a nice developers' API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/] where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json]. With that URL, let's look at a complete Python script to access the data using Sinbad:
+[Kiva.org](https://www.kiva.org/) provides a nice developers' API that allows you to access all sorts of data about projects and loans. The main page for developers is [http://build.kiva.org/](http://build.kiva.org/) where the various available data streams are listed and explained in detail. For our purposes, we are going to use the JSON feed of newest loans that are raising funds: [http://api.kivaws.org/v1/loans/newest.json](http://api.kivaws.org/v1/loans/newest.json). With that URL, let's look at a complete Python script to access the data using Sinbad:
 
 ````
 from sinbad import Data_Source
@@ -222,7 +222,7 @@ ds = Data_Source.connect_as("xml", "http://api.kivaws.org/v1/loans/newest.xml")
 
 ## ZIP and Gzip Compressed Files
 
-Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [https://webrobots.io/kickstarter-datasets/] lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
+Let's look at another interesting data source. This [web crawler project](https://webrobots.io/kickstarter-datasets/) has collected a number of data sets on Kickstarter projects. The page [https://webrobots.io/kickstarter-datasets/](https://webrobots.io/kickstarter-datasets/) lists files available in both JSON and CSV formats. If you hover over the links with your mouse, you'll notice that the JSON files are Gzip compressed and the CSV links point to ZIP archives.
 
 ### Gzip files
 
@@ -297,7 +297,7 @@ The second time you run this program, you'll probably notice a drastic change in
 
 In the preceding sections, we've used both a `set_option` method as well as a `set_param` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not have any effect on the URL that is used to access a data source. 
 
-Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [https://data.worldbank.org/country/peru]. On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
+Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [https://data.worldbank.org/country/peru](https://data.worldbank.org/country/peru). On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
 
 ````
 ds = Data_Source.connect_as("csv", "http://api.worldbank.org/v2/en/country/per")
@@ -328,7 +328,7 @@ ds.print_description()
 
 With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a distraction in your script. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded using a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
 
-For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec]. Specification files are in JSON format and can be edited in your text editor. 
+For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec). Specification files are in JSON format and can be edited in your text editor. 
 
 With this specification file, the data source can be loaded using simply:
 
