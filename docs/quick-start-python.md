@@ -363,7 +363,48 @@ We discussed above the difference between options and parameters. Recall that pa
 
 * *Path parameters* can also be defined for a data source object (often in a specification file) and are used to substitute or replace a portion of the URL with some value.
 
-As an example of each of the parameter types, consider this specification file:
+As an example of each of the parameter types, consider this specification file: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec)
 
+If you try to connect and load without specifying parameters:
 
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec')
+ds.load()
+````
 
+Sinbad will raise an error: `SinbadError: not ready to load; missing params: ['airport_code']`. A call to `print_description()` (even before `load`) will reveal that there are two required parameters:
+
+````
+-----
+Data Source: FAA Airport Status
+URL: http://services.faa.gov/airport/status/@{airport_code}
+
+The following (connection) parameters may/must be set on this data source:
+   - airport_code (not set) [*required]
+   - format (currently set to: 'application/xml') [*required]
+
+*** Data not loaded *** ... use .load()
+````
+
+Here, `format` has already been provided a `value` in the specification file, but not `airport_code`. When a value is supplied, it will be substituted into the URL in place of the `@{airport_code}` placeholder:
+
+````
+ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec')
+ds.set_param('airport_code', 'ATL')
+ds.load()
+ds.print_description()
+````
+
+results in:
+
+````
+Data Source: FAA Airport Status
+URL: http://services.faa.gov/airport/status/ATL?format=application%2Fxml
+
+The following (connection) parameters may/must be set on this data source:
+   - airport_code (currently set to: 'ATL') [*required]
+   - format (currently set to: 'application/xml') [*required]
+
+The following data is available:
+...
+````
