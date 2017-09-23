@@ -185,7 +185,7 @@ If you want to know where Sinbad is storing temporary cache files, use this: `pr
 
 ## Query Parameters
 
-Many APIs allow (or require) you to provide *query parameters* in the URL that you use to access the data. These need to be formatted using particular URL syntax involving `?`, `&`, and `...=...`. You can always construct a URL manually, but Sinbad allows you to supply parameters more conveniently. In the case of Kiva, studying the [API documentation for the loans/newest](http://build.kiva.org/api#GET*%7Cloans%7Cnewest) URL point, several optional parameters are listed. The results Kiva provides are grouped into pages of 20 results at a time. If you want less results, or a different page, use the `set_param()` method to specify values for the appropriate parameters before `load()`:
+Many APIs allow (or require) you to provide *query parameters* in the URL that you use to access the data. These need to be formatted using particular URL syntax involving `?`, `&`, and `...=...`. You can always construct a URL manually, but Sinbad allows you to supply parameters more conveniently. In the case of Kiva, studying the [API documentation for the loans/newest](http://build.kiva.org/api#GET*%7Cloans%7Cnewest) URL point, several optional parameters are listed. The results Kiva provides are grouped into pages of 20 results at a time. If you want fewer results per page, or a different page, use the `set_param()` method to specify values for the appropriate parameters before `load()`:
 
 ````
 ds = Data_Source.connect("http://api.kivaws.org/v1/loans/newest.json")
