@@ -122,7 +122,7 @@ public class TestBackCompatible {
     
     @Test
     public void testAirport() {
-        DataSource ds = DataSource.connectAs("XML", "http://services.faa.gov/airport/status/ATL").setParam("format", "application/xml").setCacheTimeout(1).load();
+        DataSource ds = DataSource.connectAs("XML", "http://services.faa.gov/airport/status/ATL").setParam("format", "application/xml").setCacheTimeout(60).load();
         ds.printUsageString();
         APStatus x = ds.fetch("core.tests.APStatus", "Name", "State", "Delay", "Weather/Weather");
         System.out.println(x);
@@ -239,7 +239,7 @@ public class TestBackCompatible {
     
     @Test
     public void testBartQuake() {
-        int DELAY = 5;   // 5 minute cache delay
+        int DELAY = 300;   // 5 minute cache delay
 
         DataSource ds = DataSource.connect("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson");
         ds.setCacheTimeout(DELAY);        
@@ -268,7 +268,7 @@ public class TestBackCompatible {
         Movie[] movies;
 
         DataSource ds = DataSource.connect("http://bigscreen.com/xml/nowshowing_new.xml");
-        ds.setCacheTimeout(15);
+        ds.setCacheTimeout(15 * 60);
         ds.load();
         ds.printUsageString();
         movies = ds.fetchArray("core.tests.Movie", "channel/item/title", "channel/item/description", "channel/item/link");

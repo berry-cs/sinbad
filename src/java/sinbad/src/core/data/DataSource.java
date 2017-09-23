@@ -319,10 +319,10 @@ public class DataSource implements IDataSource {
     }
     
     /**
-     * Sets the cache timeout value, in <em>minutes</em>.
+     * Sets the cache timeout value, in <em>seconds</em>.
      */
     public DataSource setCacheTimeout(int val) {
-        this.cacher = this.cacher.updateTimeout((long)val * 1000L * 60L);
+        this.cacher = this.cacher.updateTimeout((long)val * 1000L);
         return this;
     }
 
@@ -696,7 +696,7 @@ public class DataSource implements IDataSource {
     
     private void exportCacheInfo(Map<String, Object> spec) {
         Map<String, Object> m = new HashMap<String, Object>();
-        m.put("timeout", this.getCacheTimeout());
+        m.put("timeout", this.getCacheTimeout() / 1000);   // should be in seconds in the spec file
         if (!this.getCacheDirectory().equals(DataCacher.getDefaultCacheDir()))
             m.put("directory", this.getCacheDirectory());
         spec.put("cache", m);

@@ -78,7 +78,7 @@ public class XmlDataTest {
     
     //@Test
     public void testQuake() {
-        int DELAY = 5;   // 5 minute cache delay
+        int DELAY = 300;   // 5 minute cache delay
 
         DataSource ds = DataSource.connectAs("json", "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson");
         ds.setCacheTimeout(DELAY);        
