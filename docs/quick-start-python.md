@@ -328,7 +328,7 @@ ds.print_description()
 
 With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a distraction in your script. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded using a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
 
-For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec). Specification files are in JSON format and can be edited in your text editor. 
+For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec). Specification files are in JSON format and can be edited in a text editor. 
 
 With this specification file, the data source can be loaded using simply:
 
@@ -346,6 +346,24 @@ ds = Data_Source.connect_load_using('https://raw.githubusercontent.com/berry-cs/
 (There are variants of `connect` named `connect_load` and `connect_load_as` that can be used when it is convenient to combine the two steps in one.)
 
 ### Generating Specification Files
+
+Specification files are simply JSON-format text files and can be created from scratch. An easier way to start, however, is to prepare your `Data_Source` object using `connect`, `set_option`, and `set_param` as necessary, and then use the `export()` method to save an initial version of the specification to a file with the given path, for example:
+
+````
+ds.export("c:\\Users\\IEUser\\Desktop\\spec.txt")
+````
+
+Now you can open the `spec.txt` file in an editor and tweak or modify the specification, for example to add a `description` and `info_url` entry, etc. 
+
+### Query and Path Parameters
+
+We discussed above the difference between options and parameters. Recall that parameter values are used to construct the URL of the data source. There are two forms of parameters supported by Sinbad:
+
+* *Query parameters* are added to the URL as query parameter pairs in `?...name=value&...` format.
+
+* *Path parameters* can also be defined for a data source object (often in a specification file) and are used to substitute or replace a portion of the URL with some value.
+
+As an example of each of the parameter types, consider this specification file:
 
 
 
