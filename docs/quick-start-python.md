@@ -4,19 +4,21 @@ This guide is intended for programmers with previous experience in Python who ar
 
 **Contents**
 
-* [Basics](#basics)
-* [Accessing Data](#accessing-data)
-* [Fetch Variants](#fetch-variants)
-* [Exploring Data Structure](#exploring-data-structure)
-* [Cache Functionality](#cache-functionality)
-* [Query Parameters](#query-parameters)
-* [Inferring Data Format](#inferring-data-format)
-* [ZIP and Gzip Compressed Files](#zip-and-gzip-compressed-files)
-  + [Gzip files](#gzip-files)
-  + [ZIP archives](#zip-archives)
-* [Sampling Data](#sampling-data)
-* [Option Settings](#option-settings)
-* [Specification Files](#specification-files)
+  * [Basics](#basics)
+  * [Accessing Data](#accessing-data)
+  * [Fetch Variants](#fetch-variants)
+  * [Exploring Data Structure](#exploring-data-structure)
+  * [Cache Functionality](#cache-functionality)
+  * [Query Parameters](#query-parameters)
+  * [Inferring Data Format](#inferring-data-format)
+  * [ZIP and Gzip Compressed Files](#zip-and-gzip-compressed-files)
+    + [Gzip files](#gzip-files)
+    + [ZIP archives](#zip-archives)
+  * [Sampling Data](#sampling-data)
+  * [Option Settings](#option-settings)
+  * [Specification Files](#specification-files)
+    + [Generating Specification Files](#generating-specification-files)
+    + [Query and Path Parameters](#query-and-path-parameters)
 
 
 
