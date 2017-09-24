@@ -1,7 +1,8 @@
 from pprint import pprint
 import json
 
-from datasource import DataSource
+from sinbad import *
+
 
 endpoint = 'wss://open-data.api.satori.com'
 appkey = 'f2Ff4d4b92C40E629837E9a9BCc9CEfd'
