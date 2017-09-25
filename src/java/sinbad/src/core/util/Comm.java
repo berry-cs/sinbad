@@ -73,7 +73,7 @@ public class Comm {
                 sj.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "="
                         + URLEncoder.encode(entry.getValue(), "UTF-8"));
             }
-            System.err.println("req: " + sj.toString());
+            //System.err.println("req: " + sj.toString());
             byte[] params = sj.toString().getBytes(StandardCharsets.UTF_8);
             long length = params.length;
             

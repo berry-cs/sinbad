@@ -94,7 +94,7 @@ public class PrimSig implements ISig {
      */
     @Override
     public String toString() {
-        return "<" + getName() + ">";
+        return getName();
     }
 	
 }
