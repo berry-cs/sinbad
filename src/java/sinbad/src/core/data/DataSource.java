@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
+import org.json.JSONObject;
 
 import core.access.*;
 import core.cache.DataCacher;
@@ -50,6 +50,23 @@ public class DataSource implements IDataSource {
         plugins.put("JSON", new IDataSourcePlugin() {
             public IDataFormatInfer getInfer() { return new JsonInfer(); }
             public IDataAccessFactory getFactory() { return new JsonFactory(); } });
+    }
+    
+    static {
+        Preferences.incrementRunCount();
+        
+        JSONObject prefs = Preferences.loadPrefs();
+        if (prefs.optInt("run_count") == 1) {
+            //     comm.register_install()
+            System.out.println(String.format("Welcome to Sinbad (version %s).", core.data.Sinbad.VERSION));
+            System.out.println("For help and documentation, visit " + prefs.optString("server_base"));
+        } else if (prefs.optInt("run_count") == 10) {
+            prefs.put("share_usage", true);     // suggest as default
+            Preferences.savePrefs(prefs);
+            new PrefsGUI(true);
+        }
+        
+        Preferences.applyPreferences();
     }
     
     public static void initializeProcessing(Object papp) {
@@ -751,7 +768,17 @@ public class DataSource implements IDataSource {
             System.err.println("Could not display help (please check your network connection)!");
         }
     }
-    
+        
+    /**
+     * Display a GUI preferences dialog box
+     */
+    public static void preferences() {
+        new PrefsGUI();
+        // note that upon close, this dialog box abruptly ends the program.
+        // need to comment out the .preferences() call to enable the program
+        // to run normally again.
+    }
+        
     /**
      * Whether to display download progress (dots/progress bar in separate
      * thread) or not. Note that this is a *global* setting.
