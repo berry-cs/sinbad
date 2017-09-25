@@ -23,6 +23,19 @@ public class TestDataSource {
     }
     
     @Test
+    public void testJsonCollectNestedLists() {
+        DataSource ds = DataSource.connect("src/core/tests/nested_list.json");
+        ds.load();
+        ds.printUsageString(true);
+
+        ArrayList<String> names = ds.fetchStringList("products/name");
+        System.out.println(names.size());
+        System.out.println(names);
+        assertEquals(names.size(), 4);
+    }
+    
+    
+    @Test
     public void testLoadSpec() {
         DataSource ds = DataSource.connectUsing("src/core/tests/example.spec");
         ds.load();

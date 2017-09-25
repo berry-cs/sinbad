@@ -57,7 +57,7 @@ public class DataSource implements IDataSource {
         
         JSONObject prefs = Preferences.loadPrefs();
         if (prefs.optInt("run_count") == 1) {
-            //     comm.register_install()
+            Comm.registerInstall();
             System.out.println(String.format("Welcome to Sinbad (version %s).", core.data.Sinbad.VERSION));
             System.out.println("For help and documentation, visit " + prefs.optString("server_base"));
         } else if (prefs.optInt("run_count") == 10) {
@@ -446,99 +446,116 @@ public class DataSource implements IDataSource {
     }
     
     public DataSource load(boolean forceReload) {
-        if (!isConnected()) {
-            throw Errors.exception(DataSourceException.class, "ds:noconnect");
-        }
+        Thread t = new Thread(new DotPrinter(String.format("Loading %s (this may take a moment)", path)));
+        t.start();
         
-        if (!readyToLoad()) {
-            throw Errors.exception(DataSourceException.class, "ds:notready-params",
-                    StringUtils.join(missingParams().toArray(new String[]{}), ','));
-        }
+        boolean registerLoad = Preferences.sharePreferences();
+
+        try {
+            if (!isConnected()) {
+                throw Errors.exception(DataSourceException.class, "ds:noconnect");
+            }
+            
+            if (!readyToLoad()) {
+                throw Errors.exception(DataSourceException.class, "ds:notready-params",
+                        StringUtils.join(missingParams().toArray(new String[]{}), ','));
+            }
+            
+            String subtag = this.iomanager.getZipFileEntry() == null 
+                                ? "main" : "main-" + this.iomanager.getZipFileEntry();
+            String schemaSubtag = this.iomanager.getZipFileEntry() == null 
+                                ? "schema" : "schema-" + this.iomanager.getZipFileEntry();
+            
+            if (this.loaded 
+                    && !this.cacher.cacheStale(this.getFullPathURL(), subtag)
+                    && !forceReload) {
+                registerLoad = false;
+                return this;
+            }
         
-        String subtag = this.iomanager.getZipFileEntry() == null 
-                            ? "main" : "main-" + this.iomanager.getZipFileEntry();
-        String schemaSubtag = this.iomanager.getZipFileEntry() == null 
-                            ? "schema" : "schema-" + this.iomanager.getZipFileEntry();
-        
-        if (this.loaded 
-                && !this.cacher.cacheStale(this.getFullPathURL(), subtag)
-                && !forceReload) {
-            return this;
-        }
+            // get the raw data into/from the cache
+            String resolvedPath = this.cacher.resolvePath(this.getFullPathURL(), subtag, iomanager);
+            if (resolvedPath == null) 
+                throw Errors.exception(DataSourceException.class, "ds:no-input", path);
+            
+            // load any inferred options and add them to the factory
+            this.dataInfer.matchedBy(path); // because getOptions is only valid after matchedBy has been invoked
+            Map<String,String> options = this.dataInfer.getOptions();
+            for (Entry<String,String> e : options.entrySet()) { 
+                this.dataFactory.setOption(e.getKey(), e.getValue());
+            }
+            
+            // load schema from cached if appropriate and add it to the factory...
+            boolean cachedSchemaLoaded = false;
+            String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), schemaSubtag, iomanager);
+            if (!this.dataFactory.hasSchema() && cachedSchemaPath != null && !forceReload) {
+                try {
+                    InputStream cis = iomanager.createInput(cachedSchemaPath);
+                    //if (cis != null) {
+                        ObjectInputStream schis = new ObjectInputStream(cis);
+                        ISchema schema =  (ISchema)schis.readObject();
+                        schis.close();
+                        this.dataFactory.setSchema(schema);  // ... here
+                        //System.out.println("loaded cached schema: " + cachedSchemaPath);
+                        cachedSchemaLoaded = true;
+                    //}
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            // now use the factory to generate the data access object
+            InputStream is = iomanager.createInput(resolvedPath); 
+            this.dataAccess = this.dataFactory.newInstance(is); 
+            ISchema schema = this.dataAccess.getSchema();  // forces it to be built
+            
+            // cache the schema for later if it wasn't already
+            if (!cachedSchemaLoaded) {        
+                try {
+                    PipedInputStream pipis = new PipedInputStream();
+                    PipedOutputStream pipos = new PipedOutputStream(pipis);
+                    
     
-        // get the raw data into/from the cache
-        String resolvedPath = this.cacher.resolvePath(this.getFullPathURL(), subtag, iomanager);
-        if (resolvedPath == null) 
-            throw Errors.exception(DataSourceException.class, "ds:no-input", path);
-        
-        // load any inferred options and add them to the factory
-        this.dataInfer.matchedBy(path); // because getOptions is only valid after matchedBy has been invoked
-        Map<String,String> options = this.dataInfer.getOptions();
-        for (Entry<String,String> e : options.entrySet()) { 
-            this.dataFactory.setOption(e.getKey(), e.getValue());
-        }
-        
-        // load schema from cached if appropriate and add it to the factory...
-        boolean cachedSchemaLoaded = false;
-        String cachedSchemaPath = this.cacher.resolvePath(this.getFullPathURL(), schemaSubtag, iomanager);
-        if (!this.dataFactory.hasSchema() && cachedSchemaPath != null && !forceReload) {
-            try {
-                InputStream cis = iomanager.createInput(cachedSchemaPath);
-                //if (cis != null) {
-                    ObjectInputStream schis = new ObjectInputStream(cis);
-                    ISchema schema =  (ISchema)schis.readObject();
-                    schis.close();
-                    this.dataFactory.setSchema(schema);  // ... here
-                    //System.out.println("loaded cached schema: " + cachedSchemaPath);
-                    cachedSchemaLoaded = true;
-                //}
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        // now use the factory to generate the data access object
-        InputStream is = iomanager.createInput(resolvedPath); 
-        this.dataAccess = this.dataFactory.newInstance(is); 
-        ISchema schema = this.dataAccess.getSchema();  // forces it to be built
-        
-        // cache the schema for later if it wasn't already
-        if (!cachedSchemaLoaded) {        
-            try {
-                PipedInputStream pipis = new PipedInputStream();
-                PipedOutputStream pipos = new PipedOutputStream(pipis);
-                
-
-                Thread thr =
-                        new Thread() {
-                            public void run() {
-                                try {
-                                    ObjectOutputStream schos = new ObjectOutputStream(pipos);
-                                    schos.writeObject(schema);
-                                    schos.close();
-                                } catch (IOException e) {
-
-                                    DataSource.this.cacher.clearCacheData(DataSource.this.getFullPathURL(), 
-                                            schemaSubtag);
+                    Thread thr =
+                            new Thread() {
+                                public void run() {
+                                    try {
+                                        ObjectOutputStream schos = new ObjectOutputStream(pipos);
+                                        schos.writeObject(schema);
+                                        schos.close();
+                                    } catch (IOException e) {
+    
+                                        DataSource.this.cacher.clearCacheData(DataSource.this.getFullPathURL(), 
+                                                schemaSubtag);
+                                    }
                                 }
-                            }
-                        };
-                thr.start();
-                
-                this.cacher.addToCache(this.getFullPathURL(), schemaSubtag, pipis);
-                pipis.close();
-                
-                thr.join();
-                pipos.close();
-            } catch (IOException | InterruptedException e) {
-                // oh well, didn't work, so just clear it out of the cache completely
-                // in case it was partially stored or something
-                this.cacher.clearCacheData(this.getFullPathURL(), schemaSubtag);
+                            };
+                    thr.start();
+                    
+                    this.cacher.addToCache(this.getFullPathURL(), schemaSubtag, pipis);
+                    pipis.close();
+                    
+                    thr.join();
+                    pipos.close();
+                } catch (IOException | InterruptedException e) {
+                    // oh well, didn't work, so just clear it out of the cache completely
+                    // in case it was partially stored or something
+                    this.cacher.clearCacheData(this.getFullPathURL(), schemaSubtag);
+                }
+            } 
+    
+            this.loaded = true;
+        } finally {
+            if (t != null)  t.interrupt();
+            
+            if (registerLoad) {
+                Comm.registerLoad(readyToLoad() ? getFullPathURL() : this.path, 
+                                  this.formatType, 
+                                  this.loaded, 
+                                  this.iomanager.getZipFileEntry(), 
+                                  collectOptionsJSON());
             }
-        } 
-
-        this.loaded = true;
-        
+        }
         return this;
     }
     
@@ -575,6 +592,15 @@ public class DataSource implements IDataSource {
     protected String substParam(String fullpath, String key, String value) {
         return fullpath.replace((CharSequence)("@{" + key + "}"), (CharSequence)value);
     }
+    
+    // produces a JSON-formatted collect of datafactory options
+    protected String collectOptionsJSON() {
+        JSONObject obj = new JSONObject();
+        for (String k : this.dataFactory.getOptions()) {
+            obj.put(k, this.dataFactory.getOption(k));
+        }        
+        return obj.toString();
+    }
 
     
     /*
@@ -582,15 +608,28 @@ public class DataSource implements IDataSource {
      */
     
     public <T> T fetch(ISig sig) {
-        ISchema sch = this.dataAccess.getSchema();
-        IDataOp<T> op = SchemaSigUnifier.unifyWith(sch, sig);
-        return op.apply(this.dataAccess);
-    }
-    
-    public <T> T fetch(Class<T> cls, String... keys) {
         if (!this.hasData())
             throw Errors.exception(DataSourceException.class, "ds:no-data", this.getName());
-        
+
+        boolean success = false;
+        try {
+            ISchema sch = this.dataAccess.getSchema();
+            IDataOp<T> op = SchemaSigUnifier.unifyWith(sch, sig);
+            T result = op.apply(this.dataAccess);
+            success = true;
+            return result;
+        } finally {
+            if (Preferences.sharePreferences()) {
+                Comm.registerFetch(this.getFullPathURL(), 
+                                    this.formatType, 
+                                    this.iomanager.getZipFileEntry(), 
+                                    sig.toString(), 
+                                    success);
+            }
+        }
+    }
+    
+    public <T> T fetch(Class<T> cls, String... keys) {        
         ISig presig = SigUtils.buildCompSig(cls, keys);
         ISig sig = presig.apply(new SigClassUnifier(cls));
         return fetch(sig);
@@ -599,14 +638,30 @@ public class DataSource implements IDataSource {
     public <T> ArrayList<T> fetchList(Class<T> cls, String... keys) {
         if (!this.hasData())
             throw Errors.exception(DataSourceException.class, "ds:no-data", this.getName());
+        
         ISig sig = SigUtils.buildCompSig(cls, keys).apply(new SigClassUnifier(cls));
         ISig lsig = new ListSig(sig);
-        ISchema sch = this.dataAccess.getSchema();
-        IDataOp<Stream<T>> op = SchemaSigUnifier.unifyWith(sch, lsig);
-        Stream<T> d = op.apply(this.dataAccess);
-        return d.collect(Collectors.toCollection(ArrayList::new));
+        boolean success = false;
+        
+        try {
+            ISchema sch = this.dataAccess.getSchema();
+            IDataOp<Stream<T>> op = SchemaSigUnifier.unifyWith(sch, lsig);
+            Stream<T> d = op.apply(this.dataAccess);
+            ArrayList<T> result = d.collect(Collectors.toCollection(ArrayList::new));
+            success = true;
+            return result;
+        } finally {
+            if (Preferences.sharePreferences()) {
+                Comm.registerFetch(this.getFullPathURL(), 
+                                    this.formatType, 
+                                    this.iomanager.getZipFileEntry(), 
+                                    lsig.toString(), 
+                                    success);
+            }            
+        }
     }
 
+    
     /* The rest of the fetch...() methods are derived from the above */
 
     public <T> T fetch(String clsName, String... keys) {

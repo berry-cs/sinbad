@@ -10,10 +10,18 @@ This is not really well-organized, but it's a quick hack to port the python vers
 
 public class Preferences {
     
+    private static boolean sharePrefs = false;
+    
+    public static boolean sharePreferences() {
+        return sharePrefs;
+    }
+    
     public static void applyPreferences() {
         JSONObject prefs = loadPrefs();
         boolean b = prefs.optBoolean("print_load_progress");
-        DotPrinter.setEnabled(b);        
+        
+        DotPrinter.setEnabled(b);
+        sharePrefs = prefs.optBoolean("share_usage", false);
     }
 
     
