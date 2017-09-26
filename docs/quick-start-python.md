@@ -45,7 +45,7 @@ ds.load()
 ds.print_description()
 ````
 
-In this example, we've carried out step 1 (the `connect`) and step 2 (the `load`) of the three [basic steps](#basics) above and the `print_description` is going to help us figure out what data is available so you can decide how to `fetch` it (step 3).
+In this example, we've carried out step 1 (the `connect`) and step 2 (the `load`) of the three [basic steps](#basics) above and the `print_description` is going to help us figure out what data is available so we can decide how to `fetch` it (step 3).
 
 When you run the program, you should get a printout in your console that looks something like this (abbreviated):
 
@@ -78,7 +78,7 @@ dictionary with {
 }
 ````
 
-This listing displays the available *fields* of data you can extract using the fetch method. For many data sources, the names of the labels themselves provide sufficient hints to what information is being represented. The * indicate that each of these labels refer to a simple, atomic piece of data represented as a string (or number - Sinbad is not smart enough, yet, to automatically infer what type of data each label corresponds to). The listing also helps you have a sense of the structure of the data - how it is organized in terms of nested lists and dictionaries. To access particular elements of the data, you supply *paths* to the fields of interest. 
+This listing displays the available *fields* of data you can extract using the `fetch` method. For many data sources, the names of the labels themselves provide sufficient hints to what information is being represented. The * indicate that each of these labels refer to a simple, atomic piece of data represented as a string (or number - Sinbad is not smart enough, yet, to automatically infer what type of data each label corresponds to). The listing also helps you understand the structure of the data - how it is organized in terms of nested lists and dictionaries. To access particular elements of the data, you supply *paths* to the fields of interest. 
 
 Add the following two statements to the end of your program:
 
@@ -88,7 +88,7 @@ pprint(ds.fetch_first("loans/name", "loans/use",
                       "loans/location/country", "loans/loan_amount"))
 ````
 
-Here, the `fetch_first` method selects the first element of the list of loans and extracts four specified fields (name, us, country, loan_amount). Notice how the nested structure of the fields is captured in the paths separated by forward slashes. This should produce output that looks something like:
+Here, the `fetch_first` method selects the first element of the list of loans and extracts four specified fields (name, use, country, loan_amount). Notice how the nested structure of the fields is captured in the paths separated by forward slashes. This should produce output that looks something like:
 
 ````
  {'country': 'Kenya',
@@ -98,7 +98,7 @@ Here, the `fetch_first` method selects the first element of the list of loans an
          'business.'}
 ````
 
-An alternate way to express the same fetch behavior is to explicitly provide the `base_path`, which can be a little more concise: 
+An alternate way to express the same fetch behavior is to explicitly provide a `base_path`, which can be a little more concise: 
 
 ````
 ds.fetch_first("name", "use", "location/country", "loan_amount", base_path="loans")
@@ -107,6 +107,10 @@ ds.fetch_first("name", "use", "location/country", "loan_amount", base_path="loan
 ## Fetch Variants
 
 Now, what if you want all the data available, rather than just the first record? Try using the **`fetch`** method instead of `fetch_first`. The result should be intuitive. 
+
+````
+ds.fetch("name", "use", "location/country", "loan_amount", base_path="loans")
+````
 
 Let's explore another variant of `fetch`. Try this sequence of statements:
 
@@ -118,7 +122,9 @@ print(ds.fetch_random("loans/loan_amount"))
 pprint(ds.fetch_random("name", "use", "location/country", "loan_amount", base_path="loans"))
 ````
 
-Run the program three or four times and examine the output carefully. You'll notice that even though multiple calls are being made to `fetch_random`, it seems to be returning elements of the same row, where the row is randomly selected each time the program is run. If you really want to select independently random items, you'll need to re`load` the data before each `fetch_random`:
+Run the program three or four times and examine the output carefully. You'll notice that even though multiple calls are being made to `fetch_random`, it seems to be returning elements of the same row, where the row is randomly selected each time the program is run. This allows you to get consistent results when you fetch multiple fields in separate statements.
+
+If you really want to select independently random items, you'll need to re`load` the data before each `fetch_random`:
 
 ````
 ds.load()
@@ -137,7 +143,7 @@ If you want to just access all available data, you can do so using:
 all = ds.fetch()
 ````
 
-It's often not a good idea to print all of the data because it can cause your console/terminal to hang if there is a lot of it. In the Kiva case, you should only have 20 rows of data, so you could `pprint(all)` to look at it. You can also call any of the other `fetch` variants without any field paths to retrieve all the fields in the particular row. However, you need to make sure that either the top-level structure of the data is a list for that to make sense, or else provide a path to a list in the data, e.g. `ds.fetch_random('loans')` or `ds.fetch_ith(5, "loans")`.
+It's often not a good idea to print all of the data because it can cause your console/terminal to hang as it tries to dump it all out. In the Kiva case, you should only have 20 rows of data, so you could `pprint(all)` to look at it. You can also call any of the other `fetch` variants without any field paths to retrieve all the fields in the particular row. However, you need to make sure that either the top-level structure of the data is a list for that to make sense, or else provide a path to a list in the data, e.g. `ds.fetch_random('loans')` or `ds.fetch_ith(5, "loans")`.
 
 ## Exploring Data Structure
 
@@ -162,13 +168,13 @@ The `data_length()` method produces the length of the list of available items at
 
 ## Cache Functionality
 
-If you are reading this page, you're probably connected to the Internet somehow. If it's convenient, turn off the wireless connection on your computer, or disconnect your network cable, then try running your program above again. You should find out that it works, even with no Internet connectivity!
+If you are reading this page, you're probably connected to the Internet. If it's convenient, turn off the wireless connection on your computer, or disconnect your network cable, then try running your program above again. You should find out that it works, even with no Internet connectivity!
 
-The Sinbad library caches all data that is loaded unless you explicitly tell it otherwise. That means that the very first time you ran the program, it actually connected to [api.kiva.org](http://api.kiva.org) and downloaded the available data, but then it stored a copy of that data in a temporary directory on your computer. Every subsequent time that you ran the program, you were actually just reloading data that was stored on your own machine. This has a couple of benefits, most notably:
+The Sinbad library caches all data that is loaded unless you explicitly tell it otherwise. That means that the very first time you ran the program, it actually connected to [api.kiva.org](http://api.kiva.org) and downloaded the available data,  then  stored a copy of that data in a temporary directory on your computer. Every subsequent time that you ran the program, you were actually just reloading data that was stored on your own machine. This has a couple of benefits, most notably:
 
 1. You are not annoying the Kiva web service with constant requests to download data even if you run your program many times repeatedly within a short time span. (Many data sources - free or otherwise - place limits on the number of requests you can make, and some will block your IP if too many are made. Be sure to find and read the usage conditions and terms for any web-based data service that you use.)
 
-2. Data remains available on your computer even if you temporarily lose network connectivity. And, after the first load, usually, subsequent ones are faster because the data is being loaded locally rather than over the network.
+2. Data remains available on your computer even if you temporarily lack network connectivity. And, after the first load, usually, subsequent ones are faster because the data is being loaded locally rather than over the network.
 
 Nonetheless, sometimes a data source - like that provided by Kiva - is updated fairly frequently. To have Sinbad refresh its cache and redownload the latest data every now and then, you can provide it a cache timeout value in seconds. Place this *before* the call to `load`:
 
@@ -214,7 +220,7 @@ ds.print_description()
 pprint(ds.fetch_first("name", "use", "location/country", "loan_amount", base_path="loans/loan"))
 ````
 
-The two changes from the version presented in the [Accessing Data](#accessing-data) section above are the `xml` in the URL and the different `base_path="loans/loan"`. (XML tends to be more verbose than other formats and sometimes introduces many more layers of structure into the data.) 
+The two changes from the version presented in the [Accessing Data](#accessing-data) section above are the `xml` in the URL and the different `base_path="loans/loan"`. (XML tends to be more verbose than other formats and sometimes introduces  more layers of structure into the data.) 
 
 If for some reason Sinbad cannot infer the type of data being accessed, use the `connect_as` method to provide it a hint:
 
@@ -262,7 +268,7 @@ is going to give you two errors.
 SinbadError: Specify a file-entry from the ZIP file: ['Kickstarter010.csv', 'Kickstarter012.csv', 'Kickstarter002.csv', ...]
 ````
 
-   because the ZIP file actually contains a number of CSV data file. To let Sinbad know which one to use, you'll need to specify an [option setting](#option-settings) for the `"file-entry"` option with a value of one of the names of the files in the list:
+   because the ZIP file actually contains a number of CSV data files. To let Sinbad know which one to use, you'll need to specify an [option setting](#option-settings) for the `"file-entry"` option with a value of one of the names of the files in the list:
    
 ````
 ds = Data_Source.connect_as("csv", "https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kickstarter_2015-10-22T09_57_48_703Z.zip")
@@ -271,15 +277,15 @@ ds.load()
 ds.print_description()
 ````
    
-The CSV files provided in this case are a little silly, because apparently the data is encoded in *JSON* format in the 'projects' column of a number of rows of the CSV file. This is a weird scenario with mixed data formats that can't be entirely handled (yet!) using only Sinbad, so you're better off going with the JSON-format files to begin with. (Otherwise would need to `import json` and use something like `json.loads(ds.fetch_first("projects"))` to decode the JSON strings in each row.)
+The CSV files provided in this case are a little silly, because apparently the data is encoded in *JSON* format in the 'projects' column of a number of rows of the CSV file. This is a weird scenario with mixed data formats that can't be entirely handled (yet!) using only Sinbad, so you're better off going with the JSON-format files to begin with. (Otherwise you would need to `import json` and use something like `json.loads(ds.fetch_first("projects"))` to decode the JSON strings in each row.)
    
-In any case, the point here was to demonstrate the use of the **"file-entry"** data source option to specify the file to extract and use from a ZIP archive.
+In any case, the point here was to demonstrate the use of the **"file-entry"** data source option to specify the file to extract from a ZIP archive.
 
 
 
 ## Sampling Data
 
-When developing and testing a program, it can be a little annoying to have to wait 30 seconds for a data set of 60,000 elements to load into memory every time you make a change and run your script. Sinbad provides facilities to randomly *sample* data from a data source so that you can work with a smaller set of the data during the initial development of your program. 
+When developing and testing a program, it can be a little annoying to have to wait 30 seconds or longer for a large data set to load into memory every time you make a change and run your script. Sinbad provides facilities to randomly *sample* data from a data source so that you can work with a smaller set of the data during the initial development of your program. 
 
 To do so, use `load_sample` instead of `load`:
 
@@ -290,14 +296,14 @@ ds.print_description()
 print(ds.fetch_first("data/projects/name"))
 ````
 
-The first time you run this program, it will take time to load all of the data, but will then sample and cache a list of only 1000 randomly chosen elements. (The sampling process is recursive, so if you have data that is lists of dictionaries with lists in them, *every* list at every level of the data structure will be sampled to ensure that it has no more than 1000 elements. Actually, this data source is a little weird in terms of how they structured their JSON data, so the sampling currently doesn't quite work as you might expect, but nonetheless it is still pretty effective.)
+The first time you run this program, it will take time to load all of the data, but will then sample and cache a list of only 1000 randomly chosen elements. (The sampling process is recursive, so if you have data that is lists of dictionaries with lists in them, *every* list at every level of the data structure will be sampled to ensure that it has no more than 1000 elements. Actually, this data source is a little weird in terms of how they structured their JSON data, so the sampling currently doesn't quite work as you might expect, but it is still pretty effective.)
 
 The second time you run this program, you'll probably notice a drastic change in how fast it loads the data. That's because it's using the previously cached sample. If you want to load a fresh sample, use `ds.load_fresh_sample(...)`. If you want to control the seed of the random number generator as it is sampling the data, pass a second argument to the `load_sample` or `load_fresh_sample` methods, i.e. `ds.load_fresh_sample(100, 42)` will reliably re-generate the *same* sample of data every time it runs.
 
 
 ## Option Settings
 
-In the preceding sections, we've used both a `set_option` method as well as a `set_param` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not have any effect on the URL that is used to access a data source. 
+In the preceding sections, we've used both a `set_option` method as well as a `set_param` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not affect the URL that is used to access a data source. 
 
 Let's use another data source to explore the use of options in Sinbad. The World Bank maintains a large data set of information about economic indicators (statistics) for countries around the world. Here's a page for Peru: [data.worldbank.org/country/peru](https://data.worldbank.org/country/peru). On the right side, you should see a section with download links for data in CSV and other formats. If you hover over the link for CSV, you'll see that it is a URL that looks like: `http://api.worldbank.org/v2/en/country/PER?downloadformat=csv`. This looks like a base URL with a `downloadformat=csv` query parameter. Here's a Sinbad program that accesses the data:
 
@@ -310,13 +316,13 @@ ds.load()
 ds.print_description()
 ````
 
-* The `set_param` method is used to supply the name+value pair that is ultimately add to the URL to fetch the data. If you wanted to, you could also have just included the entire constructed URL in the `connect` call: `ds = Data_Source.connect("http://api.worldbank.org/v2/en/country/PER?downloadformat=csv")`.
+* The `set_param` method is used to supply the name+value pair that is ultimately added to the URL to fetch the data. If you wanted to, you could have just included the entire constructed URL in the `connect` call: `ds = Data_Source.connect("http://api.worldbank.org/v2/en/country/PER?downloadformat=csv")`.
 
 * If you manually download the file provided by the CSV link, you will find it is a ZIP archive with a few files inside. Thus, we use `ds.set_option("file-entry", ...")` to specify the file that we want to extract from the ZIP file.
 
-* If you open up and example that particular CSV file (in a text editor or in Microsoft Excel, for example) you'll see that there are a few rows at the beginning of the file that are either empty or contain metadata. The fifth line of the file then actually provides the header labels of the data, followed by the remaining rows of actual data. So, we use the `"skip-rows"` option to tell Sinbad to skip the first 4 lines. Each different type of data source has its own options that it recognizes. The `"skip-rows"` option is specific to data in CSV format.
+* If you open up and examine that particular CSV file (in a text editor or in Microsoft Excel, for example) you'll see that there are a few rows at the beginning of the file that are either blank or contain metadata. The fifth line of the file then actually provides the header labels of the data, followed by the remaining rows of actual data. So, we use the `"skip-rows"` option to tell Sinbad to skip the first 4 lines. Each different type of data source has its own options that it recognizes. The `"skip-rows"` option is specific to data in CSV format.
 
-* Another common option for CSV files is `"header"`. Sometimes a CSV file might not include a header. Or, as in the case of our World Bank data file, we might want to use different labels for the fields rather than the ones provided. Thus, we could provide an alternate set of option settings:
+* Another common option for CSV files is `"header"`. Sometimes a CSV file might not include a header. Or, as in the case of our World Bank data file, we might want to use our own labels for the fields rather than the ones provided. Thus, we could provide an alternate set of option settings:
 
   ````
   ds.set_option("skip-rows", "5")
@@ -328,7 +334,7 @@ ds.print_description()
 
 ## Specification Files
 
-With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a distraction in your script. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded using a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
+With some data sources, especially if you use them in more than one program, the statements needed to set options and parameters can be a minor distraction. Sinbad provides a mechanism to specify options, parameters, and other settings (like cache behavior) in a *specification file* which can then be loaded with a `connect_using(...)` method. You can generate your own specification files from a prepared `Data_Source` object using the `export()` method, which we'll discuss a little later below.
 
 For now, here's a link to a specification file for the Peru World Bank data source of the preceding section: [raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec](https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/peru_wb.spec). Specification files are in JSON format and can be edited in a text editor. 
 
@@ -349,10 +355,10 @@ ds = Data_Source.connect_load_using('https://raw.githubusercontent.com/berry-cs/
 
 ### Generating Specification Files
 
-Specification files are simply JSON-format text files and can be created from scratch. An easier way to start, however, is to prepare your `Data_Source` object using `connect`, `set_option`, and `set_param` as necessary, and then use the `export()` method to save an initial version of the specification to a file with the given path, for example:
+Specification files are simply JSON-format text files and can be created from scratch. An easier way to create them, however, is to prepare your `Data_Source` object using `connect`, `set_option`, and `set_param` as necessary, and then use the `export()` method to save an initial version of the specification to a file, for example:
 
 ````
-ds.export("c:\\Users\\IEUser\\Desktop\\spec.txt")
+ds.export("c:\\Users\\IEUser\\Desktop\\spec.txt")  # on Windows
 ````
 
 Now you can open the `spec.txt` file in an editor and tweak or modify the specification, for example to add a `description` and `info_url` entry, etc. 
