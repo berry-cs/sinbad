@@ -2,6 +2,8 @@ package core.util;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.WindowConstants;
 import org.json.*;
@@ -115,6 +117,13 @@ public class PrefsGUI {
         btns.add(save_btn);
         btns.add(Box.createHorizontalGlue());
         mainPane.add(btns);
+        
+        usage_info_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Preferences.launchBrowser(Preferences.loadPrefs().optString("server_base", "http://cs.berry.edu/sinbad")
+                                             + "/usage.php");
+            }
+        });
         
         save_btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

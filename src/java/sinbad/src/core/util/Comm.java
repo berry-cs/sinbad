@@ -21,7 +21,7 @@ import core.data.Sinbad;
 
 public class Comm {
 
-    public static String osInfo = System.getProperty("os.name") + " " + System.getProperty("os.version");
+    public static String osInfo = (System.getProperty("os.name") + " " + System.getProperty("os.version")).toLowerCase();
     public static String langInfo = "java " + System.getProperty("java.version");
     
     public static void registerInstall() {

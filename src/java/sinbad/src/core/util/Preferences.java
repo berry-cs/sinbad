@@ -28,7 +28,7 @@ public class Preferences {
     public static JSONObject loadPrefs() {
         JSONObject prefs = null;
         try {
-            JSONTokener jt = new JSONTokener(new FileReader(getSinbadPrefsDir()));
+            JSONTokener jt = new JSONTokener(new FileReader(getSinbadPrefsFile()));
             prefs = (JSONObject) jt.nextValue();
         } catch (FileNotFoundException e) {
             prefs = defaultPrefs();
@@ -42,7 +42,7 @@ public class Preferences {
                         "run_count", "first_use_ts", "last_use_ts", "server_base" };
         String str = prefs.toString(2);
         try {
-            FileWriter w = new FileWriter(getSinbadPrefsDir());
+            FileWriter w = new FileWriter(getSinbadPrefsFile());
             w.write(str);
             w.close();
             //System.err.println("saved:\n" + str);
@@ -77,7 +77,7 @@ public class Preferences {
 
 
     // https://stackoverflow.com/questions/11113974/what-is-the-cross-platform-way-of-obtaining-the-path-to-the-local-application-da
-    public static String getSinbadPrefsDir() {
+    public static String getSinbadPrefsFile() {
       String workingDirectory;
       String OS = (System.getProperty("os.name")).toUpperCase();
       if (OS.contains("WIN"))
@@ -91,7 +91,41 @@ public class Preferences {
           }
       }
       
-      workingDirectory += File.separator + "Sinbad" + File.separator + "sinbad_prefs.txt";
-      return workingDirectory;
+      workingDirectory += File.separator + "Sinbad";
+      File wd = new File(workingDirectory);
+      if (!wd.isDirectory()) {
+          wd.mkdirs();
+      }
+      
+      String prefsFile = workingDirectory + File.separator + "sinbad_prefs.txt";
+      return prefsFile;
+    }
+
+    
+    // https://stackoverflow.com/questions/5226212/how-to-open-the-default-webbrowser-using-java
+    public static void launchBrowser(String url) {
+        Runtime rt = Runtime.getRuntime();
+        try {
+            if (Comm.osInfo.contains("win")) {
+                rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (Comm.osInfo.contains("mac")) {
+                rt.exec("open " + url);
+            } else if (Comm.osInfo.contains("nix") || Comm.osInfo.contains("nux")) {
+                String[] browsers = { "google-chrome", "epiphany", "firefox", "mozilla", "konqueror",
+                        "netscape", "opera", "links", "lynx" };
+
+                StringBuffer cmd = new StringBuffer();
+                for (int i = 0; i < browsers.length; i++)
+                    if (i == 0)
+                        cmd.append(String.format("%s \"%s\"", browsers[i], url));
+                    else
+                        cmd.append(String.format(" || %s \"%s\"", browsers[i], url)); 
+                    // If the first didn't work, try the next browser and so on
+                rt.exec(new String[] { "sh", "-c", cmd.toString() });
+            }
+        } catch (IOException e) {
+            // fail fairly silently
+            e.printStackTrace();
+        }
     }
 }
