@@ -37,7 +37,7 @@ public class Param {
 	 */
 	public Param(Map<String, Object> pm) {
         this(pm.get("key").toString(), ParamType.fromString(pm.get("type").toString()));
-        this.description = pm.getOrDefault("description", null).toString();
+        this.description = pm.getOrDefault("description", "").toString();
         this.required = pm.containsKey("required") && pm.get("required").equals("true");
     }
 
