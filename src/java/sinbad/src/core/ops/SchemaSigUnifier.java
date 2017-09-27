@@ -205,7 +205,7 @@ public class SchemaSigUnifier {
                         
                         // really need to check if indexall comes before any makeconstructor op...
                         if (opL.toString().contains("indexall") && !(ss instanceof ListSig)) {  // this is very very ugly
-                            System.out.println("-flat-");
+                            //System.out.println("-flat-");
                             return (IDataOp<T>) opf.makeIndexAllFlattenOp(opL, sch.getPath());
                         } else {
                             return (IDataOp<T>) opf.makeIndexAllOp(op, sch.getPath());
