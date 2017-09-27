@@ -186,15 +186,20 @@ public class DataCacher {
     
     
     private String readAndCache(String path, InputStream is) throws IOException {
+        /*
         byte[] stuff = IOUtils.toByteArray(is);
         if (stuff == null) {
             return null;
-        }
+        }*/
+
         File cacheDir = new File(cacheDirectory, "dat" + path.hashCode());
         if (!cacheDir.exists()) cacheDir.mkdirs();
         File tempFile = File.createTempFile("cache", ".dat", cacheDir);
         OutputStream os = new FileOutputStream(tempFile);
-        IOUtils.write(stuff, os);
+        IOUtils.copy(is, os);
+        
+        /*IOUtils.write(stuff, os);*/
+        
         os.close();
         return tempFile.getCanonicalPath();
     }
