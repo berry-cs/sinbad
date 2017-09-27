@@ -32,6 +32,15 @@ public class TestDataSource {
         System.out.println(names.size());
         System.out.println(names);
         assertEquals(names.size(), 4);
+
+        ds = DataSource.connect("src/core/tests/nested_list2.json");
+        ds.load();
+        ds.printUsageString(true);
+
+        names = ds.fetchStringList("products/name");
+        System.out.println(names.size());
+        System.out.println(names);
+        assertEquals(3, names.size());
     }
     
     

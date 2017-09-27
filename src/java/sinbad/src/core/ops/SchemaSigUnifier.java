@@ -3,6 +3,7 @@ package core.ops;
 import static core.log.Errors.exception;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -188,6 +189,7 @@ public class SchemaSigUnifier {
     
     
     public static <T> IDataOp<T> unifyWith(ListSchema sch, ListSig sig) {
+        
         return 
                 sig.getElemType().apply(new ISigVisitor<IDataOp<T>>() {
                     // in all of these, 'ss' == s.getElemType()
@@ -195,13 +197,17 @@ public class SchemaSigUnifier {
                     // (LIST-LIST) rule -> this is for a list of things that are all the same object
                     @SuppressWarnings("unchecked")
                     public IDataOp<T> defaultVisit(ISig ss) {
-                        if (sch.getElementSchema().getPath() == null) {
-                            //return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(f.getElementSchema(), ss),
-                            //       f.getElementSchema().getPath());
-                            return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(sch.getElementSchema(), ss),sch.getPath()); 
+                        // first try unifying the schema element against the existing list signature
+                        // see if we get back a collection (list)
+                        IDataOp<Stream<T>> opL = unifyWith(sch.getElementSchema(), sig);
+                        IDataOp<T> op = unifyWith(sch.getElementSchema(), ss);
+                        //System.out.println("OPL: " + opL + "\nOP:  " + op);
+                        
+                        if (opL.toString().startsWith("indexall") && !(ss instanceof ListSig)) {  // this is very very ugly
+                            //System.out.println("-flat-");
+                            return (IDataOp<T>) opf.makeIndexAllFlattenOp(opL, sch.getPath());
                         } else {
-                            return (IDataOp<T>) opf.makeIndexAllOp(unifyWith(sch.getElementSchema(), ss),
-                                    sch.getPath());
+                            return (IDataOp<T>) opf.makeIndexAllOp(op, sch.getPath());
                         }
                     }
                     public IDataOp<T> visit(PrimSig ss) { return defaultVisit(ss); }

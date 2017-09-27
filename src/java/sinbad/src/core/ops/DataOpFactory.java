@@ -261,6 +261,24 @@ public class DataOpFactory {
 		};
 	}
 	
+	
+   public <T> IDataOp<Stream<T>> makeIndexAllFlattenOp(IDataOp<Stream<T>> op, String path) {
+        return new IDataOp<Stream<T>>() {
+            public Stream<T> apply(IDataAccess d) {
+                //System.out.println("FLATTENING ON: " + op);
+                return d.getAll(path).flatMap(d0 -> op.apply(d0)); 
+            }
+            
+            public String toString() {
+                return String.format("indexallflat(%s) ==> %s", path, op);
+            }
+
+            public final String name = "indexAllFlat";
+        };
+    }
+	   
+	
+	
 	/**
 	 * Produces an operation that when applied to data will expect to produce a single result,
 	 * but wraps it up as a stream (i.e. sequence/list) of data results
