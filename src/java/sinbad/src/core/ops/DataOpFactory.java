@@ -22,7 +22,7 @@ public class DataOpFactory {
 	 * Makes an IDataOp object that can parse an integer from a string
 	 * @return the IDataOp created, for parsing integers from data
 	 */
-	IDataOp<Integer> makeParseInt() {
+	public IDataOp<Integer> makeParseInt() {
 		return new IDataOp<Integer>() {
 			public Integer apply(IDataAccess d) {
 				String s = d.getContents();
@@ -31,19 +31,22 @@ public class DataOpFactory {
 			}		
 			
 			public String toString() { return "parseInt"; }
+            public final String name = "parseInt";
 		};
 	}
+	
 	/**
 	 * Makes an IDataOp object that can parse a string
 	 * @return the IDataOp created, for reading a string
 	 */
-	IDataOp<String> makeParseString() {
+	public IDataOp<String> makeParseString() {
 		return new IDataOp<String>() {
 			public String apply(IDataAccess d) {
 				return d.getContents();
 			}
             
             public String toString() { return "parseString"; }
+            public final String name = "parseString";
 		};
 	}
 
@@ -51,7 +54,7 @@ public class DataOpFactory {
 	 * Produces an operation that when applied to the data will attempt to parse a boolean value from the string
 	 * @return an IDataOp object that can be applied to an IDataAccess
 	 */
-	IDataOp<Boolean> makeParseBool(){
+	public IDataOp<Boolean> makeParseBool(){
 		return new IDataOp<Boolean>(){
 			public Boolean apply(IDataAccess d){
 				String s = d.getContents().toLowerCase();
@@ -66,6 +69,9 @@ public class DataOpFactory {
 					b = Boolean.parseBoolean(s);
 				return b;
 			};
+
+			public String toString() { return "parseBool"; }
+            public final String name = "parseBool";
 		};
 	}
 
@@ -73,13 +79,16 @@ public class DataOpFactory {
 	 * Produces an operation that when applied to data will attempt to parse a byte value from a String
 	 * @return an IDataOp object that can be applied to an IDataAccess object
 	 */
-	IDataOp<Byte> makeParseByte() {
+	public IDataOp<Byte> makeParseByte() {
 		return new IDataOp<Byte>() {
 			public Byte apply(IDataAccess d) {
 				String s = d.getContents();
 				if (s == null || s.equals("")) return 0;
 				else return Byte.parseByte(s);
 			}
+
+			public String toString() { return "parseByte"; }
+            public final String name = "parseByte";
 		};
 	}
 
@@ -87,7 +96,7 @@ public class DataOpFactory {
 	 * Produces an operation that when applied to data will attempt to parse a character from a String of data
 	 * @return an IDataOp object that can be applied to an IDataAccess object.
 	 */
-	IDataOp<Character> makeParseChar() {
+	public IDataOp<Character> makeParseChar() {
 		return new IDataOp<Character>(){
 			public Character apply(IDataAccess d){
 				String s = d.getContents();
@@ -96,6 +105,9 @@ public class DataOpFactory {
 				}else
 					return s.charAt(0);
 			}
+
+			public String toString() { return "parseChar"; }
+            public final String name = "parseChar";
 		};
 	}
 
@@ -103,7 +115,7 @@ public class DataOpFactory {
 	 * Produces an operation that when applied to data will attempt to parse a double from a String of data
 	 * @return an IDataOp object that can be applied to an IDataAccess object to parse a double from the data.
 	 */
-	IDataOp<Double> makeParseDouble() {
+	public IDataOp<Double> makeParseDouble() {
 
 		return new IDataOp<Double>() {
 			public Double apply(IDataAccess d) {
@@ -111,6 +123,9 @@ public class DataOpFactory {
 				if (s == null || s.equals("")) return 0.0;
 				else return Double.parseDouble(s);
 			}
+			
+            public String toString() { return "parseDouble"; }
+            public final String name = "parseDouble";
 		};
 	}
 
@@ -118,26 +133,33 @@ public class DataOpFactory {
 	 * Produces an operation that when applied to data will attempt to parse a float from a String of data
 	 * @return an IDataOp object that can be applied to an IDataAccess object to parse a float from the data.
 	 */
-	IDataOp<Float> makeParseFloat() {
+	public IDataOp<Float> makeParseFloat() {
 		return new IDataOp<Float>() {
 			public Float apply(IDataAccess d) {
 				String s = d.getContents();
 				if (s == null || s.equals("")) return 0.0f;
 				else return Float.parseFloat(s);
 			}
+			
+            public String toString() { return "parseFloat"; }
+            public final String name = "parseFloat";
 		};
 	}
+	
 	/**
 	 * Produces an operation that when applied to data will attempt to parse a long from a String of data
 	 * @return an IDataOp object that can be applied to an IDataAccess object to parse a long from the data.
 	 */
-	IDataOp<Long> makeParseLong() {
+	public IDataOp<Long> makeParseLong() {
 		return new IDataOp<Long>() {
 			public Long apply(IDataAccess d) {
 				String s = d.getContents();
 				if (s == null || s.equals("")) return 0L;
 				else return Long.parseLong(s);
 			}
+
+			public String toString() { return "parseLong"; }
+            public final String name = "parseLong";
 		};
 	}
 
@@ -149,7 +171,7 @@ public class DataOpFactory {
 	 * @param consParamOps - an Array of operations that can be applied to data to parse the parameters for the constructor
 	 * @return the IDataOp object that can be applied to data to create a new java object.
 	 */
-	<T> IDataOp<T> makeConstructor(Constructor<?> cons,IDataOp<T>[] consParamOps){
+	public <T> IDataOp<T> makeConstructor(Constructor<?> cons,IDataOp<T>[] consParamOps){
 		return new IDataOp<T>(){
 			@SuppressWarnings("unchecked")
             @Override
@@ -183,6 +205,7 @@ public class DataOpFactory {
 			    return String.format("new %s(%s)", cons.getDeclaringClass().getSimpleName(), StringUtils.join(consParamOps, ", "));
 			}
 
+            public final String name = "newObject";
 		};
 	}
 
@@ -198,7 +221,7 @@ public class DataOpFactory {
 	 * @param i - the index of the collection you intended to place the parsed data at
 	 * @return - an IDataOp object that can be applied to an IDataAccess object to parse a piece of a collection/list
 	 */
-	<T> IDataOp<T> makeIndexOp(IDataOp<T> op, String path, int i) {
+	public <T> IDataOp<T> makeIndexOp(IDataOp<T> op, String path, int i) {
 	    return new IDataOp<T>() {
 	        public T apply(IDataAccess d) {
 	            return op.apply(d.get(path, i));
@@ -207,8 +230,11 @@ public class DataOpFactory {
 	        public String toString() {
 	            return String.format("index(%s, %d) ==> %s", path, i, op);
 	        }
+	        
+            public final String name = "indexI";
 	    };
 	}
+	
 	/**
 	 * Produces an operation that when applied to data will attempt to place all pieces of that data into a collection/list
 	 * and parse its pieces using the operation provided
@@ -221,7 +247,7 @@ public class DataOpFactory {
 	 * @return an IDataOp object that can be applied to an IDataAccess object to build a list, 
 	 * where every piece is parsed with one operation
 	 */
-	<T> IDataOp<Stream<T>> makeIndexAllOp(IDataOp<T> op, String path) {
+	public <T> IDataOp<Stream<T>> makeIndexAllOp(IDataOp<T> op, String path) {
 		return new IDataOp<Stream<T>>() {
 			public Stream<T> apply(IDataAccess d) {
 				return d.getAll(path).map(d0 -> op.apply(d0)); 
@@ -230,6 +256,8 @@ public class DataOpFactory {
 			public String toString() {
 			    return String.format("indexall(%s) ==> %s", path, op);
 			}
+
+			public final String name = "indexAll";
 		};
 	}
 	
@@ -241,7 +269,7 @@ public class DataOpFactory {
 	 * @param path
 	 * @return
 	 */
-	<T> IDataOp<Stream<T>> makeWrapOp(IDataOp<T> op, String path){
+	public <T> IDataOp<Stream<T>> makeWrapOp(IDataOp<T> op, String path){
 		return new IDataOp<Stream<T>>(){
 			public Stream<T> apply(IDataAccess d){
 				return Stream.of(op.apply(d));
@@ -250,6 +278,8 @@ public class DataOpFactory {
 			public String toString() {
 			    return String.format("wrapop(%s, %s)", op, path);
 			}
+        
+			public final String name = "wrap";
 		};
 	}
 	
@@ -262,7 +292,7 @@ public class DataOpFactory {
 	 * @param path - the location of the data to select
 	 * @return an IDataOp object that can be applied to an IDataAccess object to select data from the given path and parse it.
 	 */
-	<T> IDataOp<T> makeSelectOp(IDataOp<T> op, String path) {
+	public <T> IDataOp<T> makeSelectOp(IDataOp<T> op, String path) {
 	    if (path == null || path.equals("")) {   // this is a no-op
 	        return op;
 	    }else
@@ -275,6 +305,7 @@ public class DataOpFactory {
 			    return String.format("select(\"%s\") ==> [%s]", path, op);
 			}
 
+            public final String name = "selectField";
 		};
 	}
 
