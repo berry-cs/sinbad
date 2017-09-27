@@ -27,8 +27,8 @@ public class TestSig {
     
     @Test
     public void testToString() {
-        assertEquals("<boolean>", BOOLEAN_SIG.toString());
-        assertEquals("<int>", INT_SIG.toString());
-        assertEquals("<String>", STRING_SIG.toString());
+        assertEquals("boolean", BOOLEAN_SIG.toString());
+        assertEquals("int", INT_SIG.toString());
+        assertEquals("String", STRING_SIG.toString());
     }
 }
