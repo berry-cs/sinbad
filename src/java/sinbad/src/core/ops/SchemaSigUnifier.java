@@ -135,7 +135,7 @@ public class SchemaSigUnifier {
                 for (int i = 0; i < csFlds.length; i++) csFlds[i] = cs.getFieldName(i);
                 
                 String commonPrefix = longestCommonPrefix(csFlds, '/');
-                if (csFlds.length > 1 && !commonPrefix.endsWith("/"))
+                if (csFlds.length > 1 && "".equals(commonPrefix)) //   take this out because longestCommonPrefix stops at it now: && !commonPrefix.endsWith("/"))
                     return defaultVisit(cs);
                 
                 String[] pieces = commonPrefix.split("/");
@@ -203,8 +203,9 @@ public class SchemaSigUnifier {
                         IDataOp<T> op = unifyWith(sch.getElementSchema(), ss);
                         //System.out.println("OPL: " + opL + "\nOP:  " + op);
                         
-                        if (opL.toString().startsWith("indexall") && !(ss instanceof ListSig)) {  // this is very very ugly
-                            //System.out.println("-flat-");
+                        // really need to check if indexall comes before any makeconstructor op...
+                        if (opL.toString().contains("indexall") && !(ss instanceof ListSig)) {  // this is very very ugly
+                            System.out.println("-flat-");
                             return (IDataOp<T>) opf.makeIndexAllFlattenOp(opL, sch.getPath());
                         } else {
                             return (IDataOp<T>) opf.makeIndexAllOp(op, sch.getPath());
