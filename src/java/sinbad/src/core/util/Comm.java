@@ -31,6 +31,15 @@ public class Comm {
     }
     
     
+    public static void registerMilestone() {
+        Map<String,String> d = prepareRequestData("milestone");
+        d.put("run_count", Preferences.loadPrefs().optString("run_count"));
+        d.put("first_use_ts", Preferences.loadPrefs().optString("first_use_ts"));
+        d.put("last_use_ts", Preferences.loadPrefs().optString("last_use_ts"));
+        makeRequest(d);        
+    }
+    
+    
     public static void registerFetch(String fullUrl, String formatType, String fileEntry,
                                      String sigStr, boolean gotData) {
         Map<String,String> d = prepareRequestData("usage");
@@ -93,7 +102,7 @@ public class Comm {
             
             JSONTokener jt = new JSONTokener(http.getInputStream());
             JSONObject obj = (JSONObject) jt.nextValue();
-            //System.out.println("NETWORK GOT:\n" + obj.toString(2));
+            handleResponse(obj);
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -108,6 +117,15 @@ public class Comm {
         }
     }
     
+
+    private static void handleResponse(JSONObject obj) {
+        //System.out.println("NETWORK GOT:\n" + obj.toString(2));
+        String launchURL = obj.optString("launch_url", null);
+        if (launchURL != null && launchURL.startsWith("http://")) {
+            Preferences.launchBrowser(launchURL);
+        }
+    }
+
 
     /* 
      adds 'type', 'version', 'token', 'os', and 'lang'

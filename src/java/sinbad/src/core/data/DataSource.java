@@ -56,14 +56,17 @@ public class DataSource implements IDataSource {
         Preferences.incrementRunCount();
         
         JSONObject prefs = Preferences.loadPrefs();
-        if (prefs.optInt("run_count") == 1) {
+        int rc = prefs.optInt("run_count");
+        if (rc == 1) {
             Comm.registerInstall();
             System.out.println(String.format("Welcome to Sinbad (version %s).", core.data.Sinbad.VERSION));
             System.out.println("For help and documentation, visit " + prefs.optString("server_base"));
-        } else if (prefs.optInt("run_count") == 10) {
+        } else if (rc == 10) {
             prefs.put("share_usage", true);     // suggest as default
             Preferences.savePrefs(prefs);
             new PrefsGUI(true);
+        } else if (rc % 250 == 0) {
+            Comm.registerMilestone();
         }
         
         Preferences.applyPreferences();
