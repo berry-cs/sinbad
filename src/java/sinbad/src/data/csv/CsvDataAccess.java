@@ -91,12 +91,13 @@ public class CsvDataAccess extends FailAccess {
     private ISchema buildSchema() {
         int nonNull = 0;
         for (String h : this.header) {
-            if (h != null) nonNull++;
+            if (h != null && !"".equals(h.trim())) 
+                nonNull++;
         }
         
         CompField[] fields = new CompField[nonNull];
         for (int i = 0; i < this.header.length; i++) {
-            if (this.header[i] != null) {
+            if (this.header[i] != null && !"".equals(this.header[i].trim())) {
                 PrimSchema ps = new PrimSchema(this.header[i]);  // basepath
                 fields[i] = new CompField(this.header[i], ps);
             }

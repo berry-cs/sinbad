@@ -20,6 +20,7 @@ import core.ops.*;
 import core.schema.*;
 import core.sig.*;
 import core.spec.DataSpecException;
+import core.spec.DataSpecGenerator;
 import core.spec.DataSpecLoader;
 import core.util.*;
 import data.csv.*;
@@ -239,7 +240,7 @@ public class DataSource implements IDataSource {
         String s = "-----\n";
         if (this.name != null) 
             s += "Data Source: " + this.name + "\n";
-        s += "URL: " + this.getFullPathURL() + "\n";
+        s += "URL: " + (readyToLoad() ? this.getFullPathURL() : this.path) + "\n";
         if (iomanager.getZipFileEntry() != null)
             s += "   (Zip file entry: " + iomanager.getZipFileEntry() + ")\n";
         if (verbose && formatType != null) 
@@ -386,6 +387,12 @@ public class DataSource implements IDataSource {
         return this;
     }
     
+    public DataSource setParam(String op, int value) { return this.setParam(op, ""+value); }
+    public DataSource setParam(String op, boolean value) { return this.setParam(op, ""+value); }
+    public DataSource setParam(String op, float value) { return this.setParam(op, ""+value); }
+    public DataSource setParam(String op, double value) { return this.setParam(op, ""+value); }
+    public DataSource setParam(String op, char value) { return this.setParam(op, ""+value); }
+    
     public List<String> missingParams() {
         ArrayList<String> ps = new ArrayList<String>();
         for (Param p : params.values()) {
@@ -421,6 +428,12 @@ public class DataSource implements IDataSource {
         }
         return this;
     }
+    
+    public DataSource setOption(String op, int value) { return this.setOption(op, ""+value); }
+    public DataSource setOption(String op, boolean value) { return this.setOption(op, ""+value); }
+    public DataSource setOption(String op, float value) { return this.setOption(op, ""+value); }
+    public DataSource setOption(String op, double value) { return this.setOption(op, ""+value); }
+    public DataSource setOption(String op, char value) { return this.setOption(op, ""+value); }
     
     public boolean hasData() {
         if (!isConnected()) {
@@ -750,6 +763,11 @@ public class DataSource implements IDataSource {
             return (long) this.dataAccess.getAll(this.dataAccess.getSchema().getPath()).count();
     }
 
+     public void export(String filename) {
+         new DataSpecGenerator(this).saveSpec(new File(filename));
+     }
+    
+    
     @Override
     public Map<String, Object> export() {
         Map<String, Object> spec = new HashMap<String, Object>();
