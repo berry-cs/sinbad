@@ -372,7 +372,7 @@ As an example of each of the parameter types, consider this specification file: 
 If you try to connect and load without specifying parameters:
 
 ````
-ds = Data_Source.connect_using('https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec')
+DataSource ds = DataSource.connectUsing("https://raw.githubusercontent.com/berry-cs/sinbad/master/docs/faa_status.spec");
 ds.load()
 ````
 
