@@ -19,7 +19,7 @@ Instructions for:
 ## Quick Start
 These links provide a concise introduction to the most prominent features of the Sinbad library. Use these if you are experienced in the programming language that you are using:
 
-* Java
+* [Java](quick-start-java)
 * [Python](quick-start-python)
 
 ## Tutorials

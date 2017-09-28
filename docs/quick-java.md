@@ -64,9 +64,9 @@ For example (with a CSV data source):
 
 ## Selecting From a .zip Archive
 To use a file that is one of several in a ZIP archive, set
-the "fileentry" option:
+the "file-entry" option:
 
-    ds.setOption("fileentry", "FACTDATA_MAR2016.TXT");
+    ds.setOption("file-entry", "FACTDATA_MAR2016.TXT");
 
 
 ## Cache Control
