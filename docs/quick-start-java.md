@@ -302,7 +302,6 @@ In any case, the point here was to demonstrate the use of the **"file-entry"** d
 
 
 
-
 ## Option Settings
 
 In the preceding sections, we've used both a `setOption` method as well as a `setParam` method. It is worth taking a moment to reflect on the distinction that Sinbad makes between a *parameter* and an *option*. **Parameters** are name+value pairs that ultimately show up somewhere in the URL that is constructed and used to fetch data. **Options** are name+value pairs that affect some other underlying behavior of the Sinbad library. Options do not affect the URL that is used to access a data source. 
@@ -332,6 +331,14 @@ ds.printUsageString();
   ````
 
   This might be a little silly in this case, but nonetheless illustrates how we can skip several rows in the data, including the provided header row, and then provide our own header of labels for the data columns. The `ds.printUsageString()` output should reflect the supplied labels, which are also used to `fetch` data.
+
+A side note: if you've been following along you should notice that when you `printUsageString` on this data source with the `header` option, it doesn't actually seem to be reflected in the names of the fields. That's because Sinbad not only caches the data but also the schema for the data. So if you ran the initial `load` on the data set where Sinbad figured out the header from the third line of the file, then it continues to use that as the header values. You'll need to call `load` with an extra parameter to force it to reevaluate the schema of the file based on the provided header, rather than using a cached version:
+
+````
+ds.setOption("header", "Country,CCode,Indicator,...");
+ds.load(true);
+````
+
 
 
 ## Specification Files
