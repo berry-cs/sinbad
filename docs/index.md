@@ -6,6 +6,8 @@
 
 If you are a novice programmer, you probably should go through the [tutorials](#tutorials) below after installing Sinbad. Experienced programmers may benefit more from the [quick start guides](#quick-start). You will also find links to a [quick reference](#quick-reference) and detailed [API documentation](#api-reference) below.
 
+For a list of data sources, visit the [Gallery](gallery).
+
 
 
 ----
@@ -41,8 +43,6 @@ These may be used as "cheatsheets".
 
 
 ## API Reference
-
-
 
 
 
