@@ -12,6 +12,7 @@
 * [Selecting From a .zip Archive](#selecting-from-a-zip-archive)
 * [Cache Control](#cache-control)
 * [Disable Download Progress Display](#disable-download-progress-display)
+* [View Preferences](#view-preferences)
 * [Using an Iterator](#using-an-iterator)
 * [Fetching Data](#fetching-data)
 
@@ -106,6 +107,14 @@ To turn off the dots that are printed while files are being downloaded:
 
 Note, this is a global setting and will apply to all data sources that
 are loaded after this statement has been executed.
+
+
+## View Preferences
+Launch preferences GUI window.
+
+    DataSource.preferences();
+    
+When preferences are saved, the program will immediately terminate and exit. Comment out or delete the statement above to enable the program to continue running as usual.
 
 
 ## Using an Iterator
