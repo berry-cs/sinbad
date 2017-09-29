@@ -1,7 +1,7 @@
 
 # Quick Reference (Java)
 
-** Contents **
+**Contents**
 
 * [Basic Template](#basic-template)
     + [Template for Processing](#template-for-processing)
