@@ -29,7 +29,10 @@ These pages provide a more leisurely and explanatory coverage of the features of
 * Python
 
 ## Quick Reference
+These may be used as "cheatsheets".
 
+* [Java](quick-java)
+* [Python](quick-python)
 
 
 ## API Reference
