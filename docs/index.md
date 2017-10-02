@@ -14,8 +14,8 @@ For a list of data sources, visit the [Gallery](gallery).
 
 ## Installation
 Instructions for:
-* Java
-* Python
+* [Java](install-java)
+* [Python](install-python)
 * ~~~Racket~~~
 
 ## Quick Start
