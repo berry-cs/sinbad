@@ -17,7 +17,7 @@ Welcome! This set of tutorials provides an introduction to *Sinbad* - a Java lib
 
 ### Downloading and Installing *Sinbad*
 
-* Follow the instructions [here](install/index.md).
+* Follow the instructions [here](http://berry-cs.github.io/sinbad/install-java).
 
 ### The Basics
 
