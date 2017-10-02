@@ -47,5 +47,16 @@ These may be used as "cheatsheets".
 * [Java](api-datasource-java)
 * [Python](api-datasource-python)
 
+-----
+
+## Publications & Presentations
+
+
+## Contact
+
+Bug reports, suggestions for improvement, code contributions, or requests for help using the library are very welcome.
+
+Use [this form](feedback) or email: [sinbad.data@gmail.com](mailto:sinbad.data@gmail.com).
+
 
 
