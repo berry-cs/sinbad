@@ -154,7 +154,7 @@ The *Sinbad* library saves all its cache data in a temporary directory area on y
 You can also clear all cached data from every program that uses *Sinbad* on your computer using the `Data_Source.clear_cache()` method. Note, again, that this will delete cached data for _all_ of the programs that you've written on your computer that use Sinbad, so use it carefully.
 
 
-## Complete Program Files
+## Complete Program File
 
 The complete source code for the program developed in this tutorial is available here:
 
