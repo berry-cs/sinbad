@@ -146,9 +146,9 @@ Now, you can easily change the value of the `id` string to one of the station id
 
 If you try running the weather data program we've written at different times during the day (on the same computer), you may notice something interesting -- the reported temperature never changes! That's because the *Sinbad* library _caches_ data that is loaded from a web service. What this means is that the very first time you connect to a particular URL, the library downloads the data and stores it somewhere in your computer's hard drive. If you run the program again and attempt to connect to the same URL, instead of actually going out and fetching the data again, the library simply uses the data it had previously downloaded and cached. The benefit of this is that it doesn't overload the data service with repeated requests. Many web-based data services enforce limits on the number of times per hour or day that you can connect and fetch data from them. By caching data, the *Sinbad* library tries to ensure that you don't run into these limits.
 
-However, sometimes you might  really want to connect to the web service and download fresh, rather than cached, data. To tell *Sinbad* that you want to fetch fresh data every so many minutes, use the `setCacheTimeout` method on the `DataSource` object. This method has a single parameter: the number of minutes after which data is considered "stale" and should be downloaded again from the data source upon connection. For example, to have your weather data refreshed every 15 minutes, insert the following statement after your call to `DataSource.connect()` and before `ds.load()`:
+However, sometimes you might  really want to connect to the web service and download fresh, rather than cached, data. To tell *Sinbad* that you want to fetch fresh data every so many minutes, use the `setCacheTimeout` method on the `DataSource` object. This method has a single parameter: the number of seconds after which data is considered "stale" and should be downloaded again from the data source upon connection. For example, to have your weather data refreshed every 15 minutes, insert the following statement after your call to `DataSource.connect()` and before `ds.load()`:
 
-    ds.setCacheTimeout(15);
+    ds.setCacheTimeout(15 * 60);
 
 You may have noticed the first time you ran your program a message like:
 
