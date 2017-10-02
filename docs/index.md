@@ -27,13 +27,13 @@ These links provide a concise introduction to the most prominent features of the
 ## Tutorials
 These pages provide a more leisurely and explanatory coverage of the features of the Sinbad library in the respective language. These are good if you are learning to program for the first time and are interested in using Sinbad to access data.
 
-* Java
+* **Java**
   + [Introduction](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome01.md)
   + [Fetching Primitive Type Arrays](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome02-arr.md)
   + [Fetching Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome02-obj.md)
   + Fetching Arrays of Objects (code examples: [simple](https://github.com/berry-cs/sinbad/raw/master/tutorials/java/Welcome03.java) and [full](https://raw.githubusercontent.com/berry-cs/sinbad/master/tutorials/java/Welcome03Full.java))
   
-* Python
+* **Python**
 
 ## Quick Reference
 These may be used as "cheatsheets".
@@ -44,8 +44,8 @@ These may be used as "cheatsheets".
 
 ## API Reference
 
-
-
+* [Java](api-datasource-java)
+* [Python](api-datasource-python)
 
 
 
