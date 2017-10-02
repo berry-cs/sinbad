@@ -28,7 +28,7 @@ With your class definition set (here's my [WeatherStation](WeatherStation.java))
 
 ## Fetching WeatherStation Data: Array
 
-We'll use the following URL to access a list of all weather stations utilized by the NOAA's National Weather Service: [weather.gov/xml/current_obs/index.xml](http://weather.gov/xml/current_obs/index.xml). Connect to and load the data as usual by defining a `DataSource` object and using the `connect` and `load` methods. Then, use the `fetchArray` method (instead of just `fetch`) to retrieve an array of data for all the weather stations. Here's what I have:
+We'll use the following URL to access a list of all weather stations utilized by the NOAA's National Weather Service: [weather.gov/xml/current_obs/index.xml](http://weather.gov/xml/current_obs/index.xml). Connect to and load the data as usual by defining a `DataSource` object and using the `connect` and `load` methods. Then, use the **`fetchArray`** method (instead of just `fetch`) to retrieve an array of data for all the weather stations. Here's what I have:
 
 ````
 DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/index.xml").load();
@@ -77,5 +77,52 @@ String state = "GA";
 
 
 ## Fetching WeatherStation Data: ArrayList
+
+We'll use the following URL to access a list of all weather stations utilized by the NOAA's National Weather Service: [weather.gov/xml/current_obs/index.xml](http://weather.gov/xml/current_obs/index.xml). Connect to and load the data as usual by defining a `DataSource` object and using the `connect` and `load` methods. Then, use the **`fetchList`** method (instead of `fetch`) to retrieve an `ArrayList` of data for all the weather stations. Here's what I have:
+
+````
+DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/index.xml").load();
+ArrayList<WeatherStation> allstns = ds.fetchList("WeatherStation", "station/station_name", 
+                                                 "station/station_id", "station/state",
+                                                 "station/latitude", "station/longitude");
+System.out.println("Total stations: " + allstns.size());
+````
+
+You should get a line printed out like:
+
+````
+Total stations: 2652
+````
+
+That means that `allstns` is a list of about 2,600 objects of the `WeatherStation` class you defined! 
+
+Now, you can do things with this list. For example, let's filter and print out only those that are located in a particular state:
+
+````
+String state = "GA";
+````
+
+* Write a loop that iterates through all over the weather station objects and prints out the id and name of those located in the given state.
+* Provide some way for the user to input the state abbreviation. 
+  * If you're using Java, you can use a `Scanner`:
+  
+        import java.util.Scanner;
+        ...
+        
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a state abbreviation: ");
+        String state = sc.next();
+        
+    Here's my complete [Welcome03_List.java](Welcome03_List.java) program.
+
+  * If you're using Processing, you can use a dialog box:
+  
+        import static javax.swing.JOptionPane.*;
+        ...
+        
+        String state = showInputDialog("Type in a state name...");
+        if (state != null) {  // only when the user presses the 'ok' button
+           ... // display the results
+        }
 
 
