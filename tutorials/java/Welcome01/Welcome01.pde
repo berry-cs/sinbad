@@ -5,7 +5,7 @@ void setup() {
 
   String id = "KATL";
   DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/" + id + ".xml"); 
-  ds.setCacheTimeout(15);  
+  ds.setCacheTimeout(15 * 60);  
   ds.load();
   //ds.printUsageString();
   float temp = ds.fetchFloat("temp_f");
