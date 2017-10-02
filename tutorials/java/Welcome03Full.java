@@ -116,7 +116,7 @@ class WeatherStation {
     */
    public Observation currentWeather() {
       DataSource obsds = DataSource.connect("http://weather.gov/xml/current_obs/" + id + ".xml");
-      obsds.setCacheTimeout(15).load();
+      obsds.setCacheTimeout(15 * 60).load();
       if (obsds.hasFields("temp_f", "weather", "wind_degrees", "observation_time_rfc822")) {
          return obsds.fetch("Observation", "weather", "temp_f", "wind_degrees", "observation_time_rfc822");
       } if (obsds.hasFields("temp_f", "wind_degrees", "observation_time_rfc822")) {
