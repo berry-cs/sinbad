@@ -24,7 +24,7 @@ Also, provide the following methods for the class:
 * `getName` (returns the `name`)
 * `isLocatedInState` (returns a boolean, whether the weather station is located in the given state)
 
-With your class definition set, go on to the next section and/or the one after it, depending on whether you want to access an array or an `ArrayList` of data.
+With your class definition set (here's my [WeatherStation](WeatherStation.java)), go on to the next section and/or the one after it, depending on whether you want to access an array or an `ArrayList` of data.
 
 ## Fetching WeatherStation Data: Array
 
@@ -37,3 +37,43 @@ WeatherStation[] allstns = ds.fetchArray("WeatherStation", "station/station_name
                                          "station/latitude", "station/longitude");
 System.out.println("Total stations: " + allstns.length);
 ````
+
+You should get a line printed out like:
+
+````
+Total stations: 2652
+````
+
+That means that `allstns` is a array of about 2,600 objects of the `WeatherStation` class you defined! 
+
+Now, you can do things with this array. For example, let's filter and print out only those that are located in a particular state:
+
+````
+String state = "GA";
+````
+
+* Write a loop that iterates through all over the weather station objects and prints out the id and name of those located in the given state.
+* Provide some way for the user to input the state abbreviation. 
+  * If you're using Java, you can use a `Scanner`:
+  
+        import java.util.Scanner;
+        ...
+        
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a state abbreviation: ");
+        String state = sc.next();
+
+  * If you're using Processing, you can use a dialog box:
+  
+        import static javax.swing.JOptionPane.*;
+        ...
+        
+        String state = showInputDialog("Type in a state name...");
+        if (state != null) {  // only when the user presses the 'ok' button
+           ... // display the results
+        }
+
+
+## Fetching WeatherStation Data: ArrayList
+
+
