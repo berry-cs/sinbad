@@ -5,7 +5,7 @@ public class Welcome02_Object {
    public static void main(String[] args) {
       String id1 = "KATL";
       DataSource ds1 = DataSource.connect("http://weather.gov/xml/current_obs/" + id1 + ".xml"); 
-      ds1.setCacheTimeout(15);  
+      ds1.setCacheTimeout(15 * 60);  
       ds1.load();
       //ds1.printUsageString();
 
@@ -14,7 +14,7 @@ public class Welcome02_Object {
       
       String id2 = "KSAV";
       DataSource ds2 = DataSource.connect("http://weather.gov/xml/current_obs/" + id2 + ".xml"); 
-      ds2.setCacheTimeout(15);  
+      ds2.setCacheTimeout(15 * 60);  
       ds2.load();
       
       Observation ob2 = ds2.fetch("Observation", "weather", "temp_f", "wind_degrees");
