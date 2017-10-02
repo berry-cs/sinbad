@@ -29,7 +29,7 @@ public class Welcome02_Array {
    
    public static void printWeatherInfo(String dataURL) {
       DataSource ds = DataSource.connect(dataURL);
-      ds.setCacheTimeout(15);  
+      ds.setCacheTimeout(15 * 60);  
       ds.load();
       if (ds.hasFields("temp_f", "location")) {
          float temp = ds.fetchFloat("temp_f");
