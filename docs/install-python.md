@@ -1,6 +1,6 @@
-# Installation
+# Installation (Python)
 
-The *Sinbad* library is intended for use with Python version 3.5 or later. Install using either a [terminal console](#terminal) or from a [Python shell](#python-shell)
+The *Sinbad* library is intended for use with Python version 3.5 or later. Install using either a  [Python shell](#python-shell) or from a [terminal console](#terminal).
 
 ## Python Shell
 
