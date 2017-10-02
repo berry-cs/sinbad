@@ -51,6 +51,10 @@ These may be used as "cheatsheets".
 
 ## Publications & Presentations
 
+* [ITiCSE '16 paper](https://doi.org/10.1145/2899415.2899437): "A Generic Framework for Engaging Online Data Sources in
+Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/iticse16-paper.pdf)] [ [slides](http://cs.berry.edu/sinbad/iticse16-slides.pdf)]
+* [SPLASH-E '15](http://2015.splashcon.org/track/splash2015-splash-e#event-overview) workshop presentation: "A Generic Framework for Engaging Online Data Sources in Introductory Programming Courses"
+* [SIGCSE '14](https://dl.acm.org/citation.cfm?id=2544280&CFID=633189652&CFTOKEN=58804699) poster: "Towards engaging big data for CS1/2" [ [local copy](http://cs.berry.edu/sinbad/bigdata-poster.pdf)]
 
 ## Contact
 
