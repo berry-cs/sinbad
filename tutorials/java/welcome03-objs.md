@@ -126,3 +126,20 @@ String state = "GA";
         }
 
 
+
+
+## Exercises
+
+Here are some extensions to the program above you can try working on. 
+
+* Using your `Observation` class from the [Fetching Objects](welcome02-obj.md) tutorial, add a method `currentWeather` to the `WeatherStation` class that uses the `id` of the weather station to connect to a `DataSource` at the URL `"http://weather.gov/xml/current_obs/" + id + ".xml"`. If the weather source has data for the fields `"temp_f", "weather", "wind_degrees"`, then fetch and return an `Observation` object with that data. 
+
+* Develop a `WeatherReporter` class whose constructor takes (1) an array or list of weather stations and (2) a state abbreviation. 
+  * The weather reporter object should filter the array/list of stations and save only those in the given state.
+  * Define a `report` method in the `WeatherReporter` class that prints out the id of each weather station and its observation information. It should also report on the average temperature as well as the coldest (or warmest) station.
+  
+At the bottom of this page is a link to a solution that also fetches and uses date/time information.
+
+-------
+
+Sample solution (Java): [Welcome03Full.java](Welcome03Full.java)
