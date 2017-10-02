@@ -62,6 +62,8 @@ String state = "GA";
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter a state abbreviation: ");
         String state = sc.next();
+        
+    Here's my complete [Welcome03.java](Welcome03.java) program.
 
   * If you're using Processing, you can use a dialog box:
   
