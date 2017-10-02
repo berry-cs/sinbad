@@ -1,4 +1,4 @@
-# Installation
+# Installation (Java/Processing)
 
 - Go to [http://cs.berry.edu/sinbad](http://cs.berry.edu/sinbad/)
 - Download the latest `sinbad.jar` file to your computer.
