@@ -35,9 +35,9 @@ These pages provide a more leisurely and explanatory coverage of the features of
   
 * **Python**
   + [Introduction](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome01.md)
-  + [Fetching Primitive Type Arrays](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome02_list.md)
-  + [Fetching Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome02-dict.md)
-  + [Fetching Arrays of Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
+  + [Fetching Simple Lists](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome02_list.md)
+  + [Fetching Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome02-dict.md)
+  + [Fetching Lists of Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
 
 ## Quick Reference
 These may be used as "cheatsheets".
