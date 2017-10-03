@@ -28,8 +28,7 @@ def print_weather_info(data_url):
     ds.set_cache_timeout(15 * 60)
     ds.load()
 
-    available = ds.field_list()
-    if "temp_f" in available and "location" in available:
+    if ds.has_fields("temp_f", "location"):
         temp = ds.fetch_float("temp_f")
         loc = ds.fetch("location")
         print("The temperature at", loc, "is", temp, "F")
