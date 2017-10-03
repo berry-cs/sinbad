@@ -1,7 +1,7 @@
 
 # Lists of Dictionary Objects
 
-In this tutorial, we'll see how to use the *Sinbad* library to access collections of objects. If you have followed along the [Fetching Dictionary Objects](welcome02_obj.md) tutorial, there is really not much difference!
+In this tutorial, we'll see how to use the *Sinbad* library to access collections of objects. If you have followed along the [Fetching Dictionary Objects](welcome02-dict.md) tutorial, there is really not much difference!
 
 ### Required Python Concepts
 
