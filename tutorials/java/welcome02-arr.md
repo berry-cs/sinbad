@@ -85,7 +85,7 @@ Let's fetch two more arrays of data from this source: the `xml_url`s and the `st
     String[] states = stns.fetchStringArray("station/state");
     System.out.println(states.length);
   
-I printed out the length of the `states` array to see how many elements were in it. There were the same as in the `ids` array. Most of the time with data like this, the three arrays will be of the same length, and the elements in each will correspond to information about the same station. These are called _parallel arrays_. In other words, `ids[0]`, `urls[0]`, and `states[0]` will provide the id, url, and state of the first station. Depending on the data, however, *Sinbad* might get a little mixed up though, so in general it would be better to fetch an array of objects, as will be described in a [later tutorial](welcome03.md).
+I printed out the length of the `states` array to see how many elements were in it. There were the same as in the `ids` array. Most of the time with data like this, the three arrays will be of the same length, and the elements in each will correspond to information about the same station. These are called _parallel arrays_. In other words, `ids[0]`, `urls[0]`, and `states[0]` will provide the id, url, and state of the first station. Depending on the data, however, *Sinbad* might get a little mixed up though, so in general it would be better to fetch an array of objects, as will be described in a [later tutorial](welcome03-objs.md).
 
 
 
