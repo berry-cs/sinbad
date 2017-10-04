@@ -1,4 +1,4 @@
-# Bazaar
+# Data Bazaar
 
 Click the life preservers  for code examples in your language:
 
@@ -19,4 +19,8 @@ Data Source  | **Name** | **Description** |  **Usage** | **Exercises**
 
 
 # More to explore...
+
+Data Source | Notes
+----------- | --------
+[NYC Open Data](https://opendata.cityofnewyork.us/data/) | Once you have selected a data set to view information about, click the "Download" button at the top right of the page; then *right-click* and copy the link to the CSV data. Use that URL to `connect` your `DataSource` object.
 
