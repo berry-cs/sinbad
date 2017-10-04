@@ -1,4 +1,4 @@
-# Gallery
+# Bazaar
 
 Click the life preservers  for code examples in your language:
 
@@ -18,4 +18,5 @@ Data Source  | **Name** | **Description** |  **Usage** | **Exercises**
 
 
 
-# More Coming Soon...
+# More to explore...
+
