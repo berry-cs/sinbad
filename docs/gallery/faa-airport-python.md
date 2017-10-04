@@ -23,7 +23,7 @@ from sinbad import *
 airport = "ATL"
 ds = DataSource.connect_as("xml", "http://services.faa.gov/airport/status/" + airport)
 ds.set_param("format", "application/xml")
-ds.set_cache_timeout(300)        # refresh every 10 minutes
+ds.set_cache_timeout(300)        # refresh every 5 minutes
 
 ds.load()
 x = ds.fetch("Name", "State", "Delay", "Weather/Weather")
