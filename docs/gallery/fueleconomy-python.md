@@ -32,7 +32,7 @@
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/ws/rest/fuelprices", format="xml")
 ds.print_description()
@@ -60,7 +60,7 @@ dictionary with {
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip")
 ds.print_description()
@@ -77,7 +77,7 @@ print( ds.fetch_random("make", "model", "year", "city08", "highway08") )
 
 ### Code
 
-    from datasource import DataSource
+    from sinbad import *
 
     ds = DataSource.connect("http://www.fueleconomy.gov/ws/rest/vehicle/menu/make", format="xml")
     ds.set_param("year", "2012")
@@ -90,7 +90,7 @@ print( ds.fetch_random("make", "model", "year", "city08", "highway08") )
 
 ### Code
 
-    from datasource import DataSource
+    from sinbad import *
 
     ds = DataSource.connect("http://www.fueleconomy.gov/ws/rest/vehicle/menu/options", format="xml")
     ds.set_param("year", "2012")
@@ -115,7 +115,7 @@ See previous one for searching for vehicle IDs, or use https://www.fueleconomy.g
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/ws/rest/vehicle/31819", format="xml")
 print( ds.fetch("make", "model", "trany", "year", "city08", "highway08") )
