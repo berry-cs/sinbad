@@ -13,6 +13,7 @@ import core.cache.DataCacher;
 import core.data.CacheConstants;
 import core.data.DataSource;
 import core.spec.DataSpecGenerator;
+import junit.framework.Assert;
 
 
 public class TestDataSource {
@@ -41,6 +42,17 @@ public class TestDataSource {
         System.out.println(names.size());
         System.out.println(names);
         assertEquals(3, names.size());
+    }
+    
+    
+    @Test
+    public void testFieldNames() {
+        DataSource ds = DataSource.connectAs("csv", "http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?8020793e8e76c164724bd267c730ad4c");
+        ds.clearENTIRECache();
+        ds.load();
+        ds.printUsageString();
+        System.out.println(ds.fieldNamesList());
+        assertNotNull(ds.fetchString(ds.fieldNames()[0]));
     }
     
     

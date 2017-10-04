@@ -84,6 +84,96 @@ System.out.println( cs[0] );
 ### Output
 
 ````
+The following data is available:
+   A list of:
+     structures with fields:
+     {
+       UCity : *
+       UCityA : *
+       UHighway : *
+       UHighwayA : *
+       VClass : *
+       atvType : *
+       barrels08 : *
+       barrelsA08 : *
+       c240Dscr : *
+       c240bDscr : *
+       charge120 : *
+       charge240 : *
+       charge240b : *
+       city08 : *
+       city08U : *
+       cityA08 : *
+       cityA08U : *
+       cityCD : *
+       cityE : *
+       cityUF : *
+       co2 : *
+       co2A : *
+       co2TailpipeAGpm : *
+       co2TailpipeGpm : *
+       comb08 : *
+       comb08U : *
+       combA08 : *
+       combA08U : *
+       combE : *
+       combinedCD : *
+       combinedUF : *
+       createdOn : *
+       cylinders : *
+       displ : *
+       drive : *
+       engId : *
+       eng_dscr : *
+       evMotor : *
+       feScore : *
+       fuelCost08 : *
+       fuelCostA08 : *
+       fuelType : *
+       fuelType1 : *
+       fuelType2 : *
+       ghgScore : *
+       ghgScoreA : *
+       guzzler : *
+       highway08 : *
+       highway08U : *
+       highwayA08 : *
+       highwayA08U : *
+       highwayCD : *
+       highwayE : *
+       highwayUF : *
+       hlv : *
+       hpv : *
+       id : *
+       lv2 : *
+       lv4 : *
+       make : *
+       mfrCode : *
+       model : *
+       modifiedOn : *
+       mpgData : *
+       phevBlended : *
+       phevCity : *
+       phevComb : *
+       phevHwy : *
+       pv2 : *
+       pv4 : *
+       range : *
+       rangeA : *
+       rangeCity : *
+       rangeCityA : *
+       rangeHwy : *
+       rangeHwyA : *
+       sCharger : *
+       startStop : *
+       tCharger : *
+       trans_dscr : *
+       trany : *
+       year : *
+       youSaveSpend : *
+     }
+-----
+
 39172
 Car [make=Alfa Romeo, model=Spider Veloce 2000, transmission=Manual 5-spd, year=1985, cityMPG=19.0, hwyMPG=25.0]
 ````
