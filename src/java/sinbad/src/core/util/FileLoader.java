@@ -141,7 +141,7 @@ public class FileLoader {
                     //e.printStackTrace();
                     return null;
                 }
-            } else if (lower.endsWith(".zip")) {
+            } else if (lower.endsWith(".zip") || lower.contains(".zip?")) {
                 try {
                     Thread t = null;
                     if (newpath.contains("://")) {

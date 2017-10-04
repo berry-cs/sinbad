@@ -457,6 +457,27 @@ public class DataSource implements IDataSource {
         return true;        
     }
     
+    public String[] fieldNames() {
+        String[] empty = new String[0];
+        if (!hasData() || this.dataAccess.getSchema() == null) return empty;
+        ISchema sch = this.dataAccess.getSchema();
+        
+        class FieldsCollector implements ISchemaVisitor<String[]> {
+            public String[] defaultVisit(ISchema s) { return empty; }
+            public String[] visit(PrimSchema s) { return defaultVisit(s); }
+            public String[] visit(ListSchema s) { return s.getElementSchema().apply(this); }
+            public String[] visit(CompSchema s) {
+                return s.getFieldMap().keySet().toArray(empty);
+             }            
+        };
+        
+        return sch.apply(new FieldsCollector());
+    }
+    
+    public List<String> fieldNamesList() {
+        return Arrays.asList(fieldNames());
+    }
+    
     public DataSource load() {
         return this.load(false);
     }
