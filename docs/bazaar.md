@@ -18,9 +18,29 @@ Data Source  | **Name** | **Description** |  **Usage** | **Exercises**
 
 
 
-# More to explore...
+## More to explore...
 
 Data Source | Notes
 ----------- | --------
 [NYC Open Data](https://opendata.cityofnewyork.us/data/) | Once you have selected a data set to view information about, click the "Download" button at the top right of the page; then *right-click* and copy the link to the CSV data. Use that URL to `connect` your `DataSource` object.
+[SFC Open Data](https://datasf.org/opendata/) | Similar to NYC Open Data
+[200,000+ Jeopardy! Questions](http://www.reddit.com/r/datasets/comments/1uyd0t/200000_jeopardy_questions_in_a_json_file/) | Available in JSON or CSV
+[data.gov Collection](https://catalog.data.gov/dataset) | Look for formats provided as CSV, JSON, or XML
+[OpenFlights](https://openflights.org/data.html) | Airport, airline and route data
+[OurAirports](http://ourairports.com/data/) | Similar to OpenFlights?
+[World Bank Open Data](https://data.worldbank.org/) | 
+[UN Data](http://data.un.org/) | 
+
+## Other meta-lists of data sources
+
+(Approximately ordered according to the apparent quality of the collection.)
+
+Site | Notes
+----------- | --------
+[Awesome Public Datasets](https://github.com/caesar0301/awesome-public-datasets) | Sorted by topic
+[Socrata Open Data](https://opendata.socrata.com/) | All kinds of contributed data sets. Once you have selected a data set to view information about, click the "Download" button at the top right of the page; then *right-click* and copy the link to the CSV data. Use that URL to `connect` your `DataSource` object.
+[Programmable Web API Directory](https://www.programmableweb.com/category/all/apis) | Looks like a lot of high-end APIs with complex connection protocols - may not be directly usable with Sinbad yet
+[datahub](http://datahub.io/dataset) | Somewhat messy and inconsistent quality/missing data
+[Datasets for Data Mining and Data Science](http://www.kdnuggets.com/datasets/index.html) | May be a bit dated
+
 
