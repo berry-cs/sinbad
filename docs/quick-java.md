@@ -5,7 +5,7 @@
 
 * [Basic Template](#basic-template)
     + [Template for Processing](#template-for-processing)
-* [Display Summary of Available Data](#display-summary-of-available-data)
+* [Examining Available Data](#examining-available-data)
 * [Other Connection Methods](#other-connection-methods)
 * [Connection Parameters](#connection-parameters)
 * [Data Source Options](#data-source-options)
@@ -37,11 +37,21 @@
 Then use `connect`, `load`, and `fetch...` as above.
 
 
-## Display Summary of Available Data
+## Examining Available Data
 After `ds.load()`:
 
     ds.printUsageString() 
 
+To test if field paths are valid:
+
+    ds.hasFields("...", ...)
+    
+To get an array (or list) of available top-level field names:
+
+    String[] fields = ds.fieldNames();
+    // or
+    List<String> fields = ds.fieldNamesList();
+    
 
 ## Other Connection Methods
 Specify a data format (`"CSV"`, `"XML"`, `"JSON"`, etc.):
