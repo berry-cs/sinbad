@@ -1,3 +1,7 @@
+# Requirements
+
+* Java 1.8 or later development environment (SDK)
+
 # Installation (Java/Processing)
 
 - Go to [http://cs.berry.edu/sinbad](http://cs.berry.edu/sinbad/)
