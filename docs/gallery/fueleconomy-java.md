@@ -110,6 +110,7 @@ System.out.println(makes);
         ds.setParam("year", "2012").setParam("make", "Honda").setParam("model", "Fit");
         ds.load();
 
+        // see bottom of page for MenuItem class definition
         MenuItem[] items =  ds.fetchArray("MenuItem", "menuItem/text", "menuItem/value");
         for (MenuItem m : items) {
             System.out.printf("%s\t\tID: %s\n", m.text, m.value);
@@ -149,6 +150,9 @@ Car [make=Honda, model=Fit, transmission=Automatic (S5), year=2012, cityMPG=27.0
 
 - [http://www.fueleconomy.gov/feg/ws/index.shtml#vehicle](http://www.fueleconomy.gov/feg/ws/index.shtml#vehicle)
 - [http://www.fueleconomy.gov/feg/ws/index.shtml#fuelprices](http://www.fueleconomy.gov/feg/ws/index.shtml#fuelprices)
+
+
+------
 
 
 ## Additional class definitions
