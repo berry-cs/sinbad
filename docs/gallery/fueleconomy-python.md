@@ -12,19 +12,19 @@
 
 ## Source
 
-http://www.fueleconomy.gov/feg/ws/index.shtml
+[http://www.fueleconomy.gov/feg/ws/index.shtml](http://www.fueleconomy.gov/feg/ws/index.shtml)
 
 **Data services**
 
-- Fuel prices (national average?): http://www.fueleconomy.gov/ws/rest/fuelprices
-- All vehicle data: http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip
-- Data for a specific vehicle: http://www.fueleconomy.gov/ws/rest/vehicle/31873
+- Fuel prices (national average?): [http://www.fueleconomy.gov/ws/rest/fuelprices](http://www.fueleconomy.gov/ws/rest/fuelprices)
+- All vehicle data: [http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip](http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip)
+- Data for a specific vehicle: [http://www.fueleconomy.gov/ws/rest/vehicle/31873](http://www.fueleconomy.gov/ws/rest/vehicle/31873)
 
-  Can use https://www.fueleconomy.gov/feg/findacar.shtml to interactively search for a particular vehicle; then note the "id" query parameter in the URL that you are directed to and use that to query the data service.
+  Can use [https://www.fueleconomy.gov/feg/findacar.shtml](https://www.fueleconomy.gov/feg/findacar.shtml) to interactively search for a particular vehicle; then note the "id" query parameter in the URL that you are directed to and use that to query the data service.
 
-- Makes for a particular year: http://www.fueleconomy.gov/ws/rest/vehicle/menu/make?year=2012
-- Models for a particular year and make: http://www.fueleconomy.gov/ws/rest/vehicle/menu/model?year=2012&make=Honda
-- Model options and the associated vehicle ID for a particular year, make and model: http://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=2012&make=Honda&model=Fit
+- Makes for a particular year: [http://www.fueleconomy.gov/ws/rest/vehicle/menu/make?year=2012](http://www.fueleconomy.gov/ws/rest/vehicle/menu/make?year=2012)
+- Models for a particular year and make: [http://www.fueleconomy.gov/ws/rest/vehicle/menu/model?year=2012&make=Honda](http://www.fueleconomy.gov/ws/rest/vehicle/menu/model?year=2012&make=Honda)
+- Model options and the associated vehicle ID for a particular year, make and model: [http://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=2012&make=Honda&model=Fit](http://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=2012&make=Honda&model=Fit)
 
 
 ## Fuel prices
@@ -32,7 +32,7 @@ http://www.fueleconomy.gov/feg/ws/index.shtml
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/ws/rest/fuelprices", format="xml")
 ds.print_description()
@@ -60,7 +60,7 @@ dictionary with {
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip")
 ds.print_description()
@@ -77,7 +77,7 @@ print( ds.fetch_random("make", "model", "year", "city08", "highway08") )
 
 ### Code
 
-    from datasource import DataSource
+    from sinbad import *
 
     ds = DataSource.connect("http://www.fueleconomy.gov/ws/rest/vehicle/menu/make", format="xml")
     ds.set_param("year", "2012")
@@ -90,7 +90,7 @@ print( ds.fetch_random("make", "model", "year", "city08", "highway08") )
 
 ### Code
 
-    from datasource import DataSource
+    from sinbad import *
 
     ds = DataSource.connect("http://www.fueleconomy.gov/ws/rest/vehicle/menu/options", format="xml")
     ds.set_param("year", "2012")
@@ -115,7 +115,7 @@ See previous one for searching for vehicle IDs, or use https://www.fueleconomy.g
 ### Code
 
 ````
-from datasource import DataSource
+from sinbad import *
 
 ds = DataSource.connect_load("http://www.fueleconomy.gov/ws/rest/vehicle/31819", format="xml")
 print( ds.fetch("make", "model", "trany", "year", "city08", "highway08") )
@@ -131,5 +131,5 @@ print( ds.fetch("make", "model", "trany", "year", "city08", "highway08") )
 
 ## Metadata (site-provided)
 
-- http://www.fueleconomy.gov/feg/ws/index.shtml#vehicle
-- http://www.fueleconomy.gov/feg/ws/index.shtml#fuelprices
+- [http://www.fueleconomy.gov/feg/ws/index.shtml#vehicle](http://www.fueleconomy.gov/feg/ws/index.shtml#vehicle)
+- [http://www.fueleconomy.gov/feg/ws/index.shtml#fuelprices](http://www.fueleconomy.gov/feg/ws/index.shtml#fuelprices)
