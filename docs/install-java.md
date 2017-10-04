@@ -1,4 +1,11 @@
+
 # Installation (Java/Processing)
+
+## Requirements
+
+* Java 1.8 or later development environment (SDK)
+
+## Quick Install
 
 - Go to [http://cs.berry.edu/sinbad](http://cs.berry.edu/sinbad/)
 - Download the latest `sinbad.jar` file to your computer.
