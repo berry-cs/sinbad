@@ -15,6 +15,8 @@ See in particular feeds listed on the right side of the [GeoJSON summary](https:
 
 ## All Earthquakes (Past Hour)
 
+***Note:*** if no earthquakes have been recorded in the last hour, these sample programs will of course throw an error. You could change the URL to "...all_day.geojson" instead of "...all_hour.geojson" in that case to get it to run, but you will probably get a lot more data.
+
 ### Code
 
 ````
