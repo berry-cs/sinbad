@@ -14,7 +14,6 @@ For a list of data sources, visit the [Bazaar](bazaar).
 Instructions for:
 * [Java](install-java)
 * [Python](install-python)
-* ~~~Racket~~~
 
 ## Quick Start
 These links provide a concise introduction to the most prominent features of the Sinbad library. Use these if you are experienced in the programming language that you are using:
