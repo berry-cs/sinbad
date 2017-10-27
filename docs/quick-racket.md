@@ -67,6 +67,28 @@ For example (with a CSV data source):
     (sail-to "..." (format "csv") 
              (option "header" "ID,Name,Call sign,Country,Active") ...)
 
+## Selecting From a .zip Archive
+To use a file that is one of several in a ZIP archive, set
+the "file-entry" option in a clause:
+
+    (sail-to ... (option "file-entry" "FACTDATA_MAR2016.TXT"))
+
+
+## Cache Control
+Control frequency of caching (or disable it) using a `cache-timeout` clause:
+
+    (sail-to ... (cache-timeout <seconds>) ...)
+    ; may also use  (cache-timeout NEVER-RELOAD)  -- always use cache
+    ; or            (cache-timeout NEVER-CACHE)   -- always fetches from URL
+
+Show where files are cached:
+
+    (cache-directory ds)
+    
+Clear all cache files (for *all* data sources):
+
+    (clear-entire-cache ds)
+
 
 
 
