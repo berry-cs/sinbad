@@ -1,7 +1,16 @@
 # Quick Reference (Racket)
 
 **Contents**
-
+  * [Basic Template](#basic-template)
+  * [Examining Available Data](#examining-available-data)
+  * [Other Connection Methods](#other-connection-methods)
+  * [Connection Parameters](#connection-parameters)
+  * [Data Source Options](#data-source-options)
+  * [Selecting From a .zip Archive](#selecting-from-a-zip-archive)
+  * [Cache Control](#cache-control)
+  * [Disable Download Progress Display](#disable-download-progress-display)
+  * [View Preferences](#view-preferences)
+  * [Fetching Data](#fetching-data)
 
 
 ## Basic Template
