@@ -9,6 +9,7 @@ This guide is intended for programmers with previous experience in Racket who ar
   * [Basics](#basics)
   * [Accessing Data](#accessing-data)
   * [Fetch Variants](#fetch-variants)
+    + [Binding to User-Defined Structures](#binding-to-user-defined-structures)
   * [Exploring Data Structure](#exploring-data-structure)
   * [Cache Functionality](#cache-functionality)
   * [Query Parameters](#query-parameters)
