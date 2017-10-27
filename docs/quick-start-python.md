@@ -260,7 +260,7 @@ ds = Data_Source.connect("https://s3.amazonaws.com/weruns/forfun/Kickstarter/Kic
 
 is going to give you two errors.
 
-1. First, it can't infer the data type (`SinbadError: could not infer data format for https://s3...'). Fix this by using `.connect_as("csv", ...)` instead of just `.connect(...)`.
+1. First, it can't infer the data type (`SinbadError: could not infer data format for https://s3...`). Fix this by using `.connect_as("csv", ...)` instead of just `.connect(...)`.
 
 2. Then, it will complain: 
 
