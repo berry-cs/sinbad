@@ -119,29 +119,29 @@ Extract data by field names/paths using the appropriate function(s) below.
 ;;; GENERAL PURPOSE -----
 
 (fetch ds)  
-   ; fetches all available data (structured with lists and association lists)
+     ; fetches all available data (structured with lists and association lists)
 
 (fetch ds "path/to/field1" ...) 
-  ; fetches lists (of lists, possibly) of data from the specified fields
+     ; fetches lists (of lists, possibly) of data from the specified fields
 (fetch ds "path/to/field1" ... (base-path "aaa/bbb"))  
-  ; using optional base-path clause
+     ; using optional base-path clause
 
 (fetch ds (assoc "path/to/field1" ...) (base-path "aaa/bbb")) 
-  ; produce a dictionary (association list) of extracted data (base-path is optional)
+     ; produce a dictionary (association list) of extracted data (base-path is optional)
 
 (fetch ds (<constr/func> "path/to/field1" ...) (base-path "aaa/bbb")) 
-  ; apply an explicit constructor or other function to the extracted data (base-path is optional)
+     ; apply an explicit constructor or other function to the extracted data (base-path is optional)
 
 
 ;;; RANDOM -----
 
 (fetch-random ds ...)   
-  ; same patterns as for (fetch ds ...) above
+     ; same patterns as for (fetch ds ...) above
 
 
 ;;; POSITIONAL -----
 
-  ; same patterns as for (fetch ds ...) above, excluding #:select clause
+     ; same patterns as for (fetch ds ...) above, excluding #:select clause
 (fetch-first ds ....)   
 (fetch-second ds ...)
 (fetch-third ds ...)
@@ -163,5 +163,5 @@ Extract data by field names/paths using the appropriate function(s) below.
 ;;; ADVANCED -----
 
 (fetch* ds ...)   
-  ; Use underlying field signature API to extract data (see API Reference)
+     ; Use underlying field signature API to extract data (see API Reference)
 ````
