@@ -1,5 +1,7 @@
 # EPA Fuel Economy Data (Racket Usage)
 
+*Note:* Code output provided for programs run in "Intermediate Student" language, but code should also run in `#lang racket` similarly.
+
 **Contents**
 - [Source](#source)
 - [Fuel prices](#fuel-prices)
