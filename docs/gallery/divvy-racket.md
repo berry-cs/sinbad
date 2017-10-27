@@ -31,6 +31,8 @@
 ; produces association list
 (fetch-random divvy-live (assoc "stationName" "availableBikes" "availableDocks" "status")
                 (base-path "stationBeanList"))
+                
+; use (fetch ...) instead of (fetch-random ...) to get a list of (lists of) *all* station data
 ````
 
 ### Output
