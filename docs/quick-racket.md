@@ -66,8 +66,8 @@ For example:
              (param "format" "raw") ...)
 
 ## Data Source Options
-Some data sources provide (or require) additional information to
-process them once they have been downloaded. The available _options_
+Some data sources provide post-processing options to manipulate the 
+data once it has been downloaded. The available _options_
 are format-specific and are listed in the `(manifest)` information.
 
 Use an `(option "<name>" "<value>")` clause in the `sail-to`.
