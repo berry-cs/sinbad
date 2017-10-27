@@ -38,17 +38,23 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Fetching Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome02-dict.md)
   + [Fetching Lists of Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
 
+* **Racket**
+  + coming soon...
+
+
 ## Quick Reference
 These may be used as "cheatsheets".
 
 * [Java](quick-java)
 * [Python](quick-python)
+* [Racket](quick-racket)
 
 
 ## API Reference
 
 * [Java](api-datasource-java)
 * [Python](api-datasource-python)
+* [Racket](api-datasource-racket)
 
 -----
 
