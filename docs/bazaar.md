@@ -4,6 +4,7 @@ Click the life preservers  for code examples in your language:
 
 * ![life preserver - java](https://openclipart.org/image/40px/svg_to_png/280409/lifesaver-colour.png) **Java**
 * ![life preserver - python](https://openclipart.org/image/40px/svg_to_png/3332/barretr-Lifesaver.png) **Python**
+* ![lambda - racket](racket-logo.png) **Racket**
 
 ----
 
