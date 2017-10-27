@@ -89,6 +89,77 @@ Clear all cache files (for *all* data sources):
 
     (clear-entire-cache ds)
 
+## Disable Download Progress Display
+To turn off (or on) the dots that are printed while resources are being downloaded/sampled/loaded:
+
+    (dot-printer-enabled #f)   ; disable dots
+    (dot-printer-enabled #t)   ; enable dots
+
+Note, this is a global setting and will apply to all data sources that
+are loaded after this expression has been evaluated.
+
+
+## View Preferences
+
+[NOT YET IMPLEMENTED]
+
+Launch preferences GUI window.
+
+    (preferences ds)
+    
+When preferences are saved, the program will immediately terminate and exit. Comment out or delete the expression above to enable the program to continue running as usual.
 
 
 
+## Fetching Data
+
+Extract data by field names/paths using the appropriate function(s) below.
+
+````
+;;; GENERAL PURPOSE -----
+
+   ; fetches all available data (structured with lists and association lists)
+(fetch ds)  
+
+  ; fetches lists (of lists, possibly) of data from the specified fields
+(fetch ds "path/to/field1" ...) 
+  ; using optional base-path clause
+(fetch ds "path/to/field1" ... (base-path "aaa/bbb"))  
+
+  ; produce a dictionary (association list) of extracted data (base-path is optional)
+(fetch ds (assoc "path/to/field1" ...) (base-path "aaa/bbb")) 
+
+  ; apply an explicit constructor or other function to the extracted data (base-path is optional)
+(fetch ds (<constr/func> "path/to/field1" ...) (base-path "aaa/bbb")) 
+
+
+;;; RANDOM -----
+  ; same patterns as for (fetch ds ...) above
+(fetch-random ds ...)   
+
+
+;;; POSITIONAL -----
+  ; same patterns as for (fetch ds ...) above, excluding #:select clause
+(fetch-first ds ....)   
+(fetch-second ds ...)
+(fetch-third ds ...)
+(fetch-ith ds i ...)    ; i >= 0
+
+;;; TYPE CONVERTING -----
+
+(fetch-number ds "path/to/field")
+(fetch-first-number ds "path/to/field")
+(fetch-ith-number ds i "path/to/field")   ; i >= 0
+(fetch-random-number ds "path/to/field")
+
+(fetch-boolean ds "path/to/field")
+(fetch-first-boolean ds "path/to/field")
+(fetch-ith-boolean ds i "path/to/field")   ; i >= 0
+(fetch-random-boolean ds "path/to/field")
+
+
+;;; ADVANCED -----
+
+  ; Use underlying field signature API to extract data (see API Reference)
+(fetch* ds ...)   
+````
