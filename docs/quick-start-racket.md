@@ -161,6 +161,28 @@ It's often not a good idea to print all of the data because it can cause your co
 
 You can call any of the other `fetch` variants without any field paths to retrieve all the fields in the particular record. However, you need to make sure that either the top-level structure of the data is a list for that to make sense, or else provide a path to a list in the data, e.g. `(fetch-random kiva-ds "loans")` or `(fetch-ith kiva-ds 5 "loans")`.
 
+### Binding to User-Defined Structures
+
+Fields in the data can be extracted individually using primitive `fetch-` methods like `fetch-number`, `fetch-boolean`, or as lists and association lists as demonstrated above. However, Sinbad also allows you to *bind* the data to objects of any structure that you define yourself.
+
+For example, add the following structure definition to your file:
+
+````
+(define-struct loan (person use amt ctry))
+````
+
+Now try:
+
+````
+(fetch-random kiva-ds (make-loan "name" "use" "loan_amount" "location/country") (base-path "loans"))
+````
+
+Fetching a list of all the loans is simply a matter of using `fetch` again instead of `fetch-random`. The following expression produces a list of 20 `loan` structures:
+
+````
+(fetch kiva-ds (make-loan "name" "use" "loan_amount" "location/country") (base-path "loans"))
+````
+
 
 ## Exploring Data Structure
 
