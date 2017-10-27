@@ -48,7 +48,6 @@ public class TestDataSource {
     @Test
     public void testFieldNames() {
         DataSource ds = DataSource.connectAs("csv", "http://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip?8020793e8e76c164724bd267c730ad4c");
-        ds.clearENTIRECache();
         ds.load();
         ds.printUsageString();
         System.out.println(ds.fieldNamesList());
