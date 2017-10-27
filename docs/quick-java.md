@@ -97,7 +97,7 @@ the "file-entry" option:
 ## Cache Control
 Control frequency of caching (or disable it):
 
-    ds.setCacheTimeout(<minutes>); 
+    ds.setCacheTimeout(<seconds>); 
     // may use  CacheConstants.NEVER_CACHE
     //      or  CacheConstants.NEVER_RELOAD (always caches)
 
