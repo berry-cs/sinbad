@@ -65,6 +65,11 @@ Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/itic
 * [SPLASH-E '15](http://2015.splashcon.org/track/splash2015-splash-e#event-overview) workshop presentation: "A Generic Framework for Engaging Online Data Sources in Introductory Programming Courses"
 * [SIGCSE '14](https://dl.acm.org/citation.cfm?id=2544280&CFID=633189652&CFTOKEN=58804699) poster: "Towards engaging big data for CS1/2" [ [local copy](http://cs.berry.edu/sinbad/bigdata-poster.pdf)]
 
+### About the name
+
+*SINBAD* was selected as a rough acronym for **S**tructured **IN**ference and **B**inding **A**utomatically to **D**ata -- the main idea behind the library initially developed in Java. The name was also selected to invoke the sense of adventure, magical experience, and fantastic achievement reminiscent of the voyages of Sinbad the Sailor in the stories of the Arabian Nights. 
+
+
 ## Contact
 
 Bug reports, suggestions for improvement, code contributions, or requests for help using the library are very welcome.
