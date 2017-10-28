@@ -67,7 +67,7 @@ Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/itic
 
 ### About the name
 
-*SINBAD* was selected as a rough acronym for **S**tructured **IN**ference and **B**inding **A**utomatically to **D**ata -- the main idea behind the library initially developed in Java. The name was also selected to invoke the sense of adventure, magical experience, and fantastic achievement reminiscent of the voyages of Sinbad the Sailor in the stories of the Arabian Nights. 
+*SINBAD* was selected as a rough acronym for **S**tructured **IN**ference and **B**inding **A**utomatically to **D**ata -- the main idea behind the library initially developed in Java. The name was also selected to invoke the sense of adventure, magical experience, and fantastic achievement reminiscent of the voyages of Sinbad the Sailor in the stories of the Arabian Nights. Through this library, we hope to help students experience some of the adventure and magic of Computer Science early on in their programming courses.
 
 
 ## Contact
