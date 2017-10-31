@@ -59,6 +59,12 @@ or, for fields of a particular structure nested in the hierarchy of data:
 
     ds.field_list( ".../..." )
     
+To determine how many records of data (in a list) are available:
+
+    ds.data_length()
+    # or, in a nested list:
+    ds.data_length(".../...")
+
 
 ## Other Connection Methods
 
