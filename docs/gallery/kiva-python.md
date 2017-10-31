@@ -8,14 +8,14 @@
 
 ## Source
 
-Kiva is a non-profit microfinance company with a "mission to connect people through lending to alleviate poverty. By leveraging the internet and crowdfunding, Kiva allows anyone, for as little as $25, to help a borrower start or grow a business, go to school, access clean energy or realize their potential." [http://kiva.org]
+Kiva is a non-profit microfinance company with a "mission to connect people through lending to alleviate poverty. By leveraging the internet and crowdfunding, Kiva allows anyone, for as little as $25, to help a borrower start or grow a business, go to school, access clean energy or realize their potential." [http://kiva.org](http://kiva.org)
 
-Kiva provides a wonderful, free data API at the site http://build.kiva.org/. For a complete list of all URL data access patterns, go to the https://build.kiva.org/api page. Since there are so many different ways to access data, below we only demonstrate a few.
+Kiva provides a wonderful, free data API at the site [http://build.kiva.org/](http://build.kiva.org/). For a complete list of all URL data access patterns, go to the [https://build.kiva.org/api](https://build.kiva.org/api) page. Since there are so many different ways to access data, below we only demonstrate a few.
 
 
 ## Newest Loans
 
-Returns a simple list of the most recent fundraising loans (up to 20 per page, multiple pages available). Here are the API docs: http://build.kiva.org/api#GET*|loans|newest.
+Returns a simple list of the most recent fundraising loans (up to 20 per page, multiple pages available). Here are the [API docs](http://build.kiva.org/api#GET*|loans|newest).
 
 ### Code
 
@@ -123,7 +123,7 @@ print(ds.fetch("paging"))
 
 ## Loan Lenders
 
-Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above) can be obtained based on http://build.kiva.org/api#GET*|loans|:id|lenders.
+Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above). [API doc](http://build.kiva.org/api#GET*|loans|:id|lenders).
 
 ### Code
 
