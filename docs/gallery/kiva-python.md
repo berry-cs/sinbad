@@ -15,7 +15,7 @@ Kiva provides a wonderful, free data API at the site [http://build.kiva.org/](ht
 
 ## Newest Loans
 
-Returns a simple list of the most recent fundraising loans (up to 20 per page, multiple pages available). Here are the [API docs](http://build.kiva.org/api#GET*|loans|newest).
+Returns a simple list of the most recent fundraising loans (up to 20 per page, multiple pages available). Here are the API docs: http://build.kiva.org/api#GET*|loans|newest.
 
 ### Code
 
@@ -123,7 +123,8 @@ print(ds.fetch("paging"))
 
 ## Loan Lenders
 
-Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above). [API doc](http://build.kiva.org/api#GET*|loans|:id|lenders).
+Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above).
+API docs: http://build.kiva.org/api#GET*|loans|:id|lenders.
 
 ### Code
 
