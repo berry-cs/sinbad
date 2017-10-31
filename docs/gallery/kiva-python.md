@@ -2,7 +2,8 @@
 
 **Contents**
 - [Source](#source)
-
+- [Newest Loans](#newest-loans)
+- [Loan Lenders](#loan-lenders)
 
 
 ## Source
@@ -120,7 +121,7 @@ print(ds.fetch("paging"))
 ````
 
 
-## Lenders to a Loan
+## Loan Lenders
 
 Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above) can be obtained based on http://build.kiva.org/api#GET*|loans|:id|lenders.
 
