@@ -123,8 +123,10 @@ print(ds.fetch("paging"))
 
 ## Loan Lenders
 
-Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above).
+Obtain a list of (public) lenders to a particular loan.
 [API docs](http://build.kiva.org/api#GET*%7Cloans%7C:id%7Clenders).
+
+Note: the loan ID can be extracted from loan data fetched as in the examples above, or you can browse [Kiva website](http://kiva.org) and note the loan ID in the URL of any particular loan that is accessed interactively via the links on the site.
 
 ### Code
 
