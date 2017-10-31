@@ -119,3 +119,53 @@ print(ds.fetch("paging"))
 {'page': '42', 'total': '5563', 'page_size': '30', 'pages': '186'}
 ````
 
+
+## Lenders to a Loan
+
+Obtain a list of (public) lenders to a particular loan (based on loan ID -- see examples above) can be obtained based on http://build.kiva.org/api#GET*|loans|:id|lenders.
+
+### Code
+
+````
+from sinbad import *
+
+loan_id = str(1406539)
+ds = Data_Source.connect_load("https://api.kivaws.org/v1/loans/" + loan_id + "/lenders.json")
+
+print(ds.fetch("name", "lender_id", base_path = "lenders"))
+
+ds.print_description()
+````
+
+### Output
+
+````
+[{'name': 'Samantha', 'lender_id': 'samantha6090'}, 
+ {'name': 'Mission Belt Co', 'lender_id': 'themissionbeltco'},
+ {'name': 'Christelle', 'lender_id': 'christelle8701'}]
+-----
+Data Source: https://api.kivaws.org/v1/loans/1406539/lenders.json
+
+The following data is available:
+dictionary with {
+  lenders : list of:
+              dictionary with {
+                country_code : *
+                image : dictionary with {
+                          id : *
+                          template_id : *
+                        }
+                lender_id : *
+                name : *
+                uid : *
+                whereabouts : *
+              }
+  paging : dictionary with {
+             page : *
+             page_size : *
+             pages : *
+             total : *
+           }
+}
+````
+
