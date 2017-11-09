@@ -12,7 +12,7 @@ where *T<sub>a</sub>* is the air temperature in Fahrenheit degrees and *v* is th
 
 Design a function that computes the wind chill based on this formula, given temperature (F) and wind speed (MPH). If the temperature is above 50&deg;F or the wind speed is below 3, then your function should produce `false` to indicate that the computation is not defined. Otherwise, *round* the result to the nearest whole number.
 
-Make sure you follow the design recipe. You may use [this website](http://www.nws.noaa.gov/om/cold/wind_chill.shtml) to generate sample data for examples/tests, but make sure you calculate at least one test yourself "by hand". 
+Make sure you follow the design recipe. You may use [this website](http://www.nws.noaa.gov/om/cold/wind_chill.shtml) to generate sample data for examples/tests, but make sure you calculate at least one example yourself "by hand". 
 
 *Hints:*
 
