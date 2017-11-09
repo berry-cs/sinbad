@@ -1,4 +1,4 @@
-# "Real Data" Activity : Weather 
+# "Real Data" Activity : Weather (Expressions)
 
 In this activity, you'll write expressions to compute important pieces of flight and airport-related information based on current weather conditions. By the end of the exercises, you will be applying your expressions to live, online weather observations provided by the NOAA/National Weather Service.
 
