@@ -39,7 +39,9 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Fetching Lists of Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
 
 * **Racket**
-  + coming soon...
+  + [Expressions & Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/welcome1-expr.md)
+  + [Functions on Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/welcome2-func.md)
+  + more coming soon...
 
 
 ## Quick Reference
