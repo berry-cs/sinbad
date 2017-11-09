@@ -1,6 +1,6 @@
 # "Real Data" Activity : Functions on Weather 
 
-In this activity, we will work on *designing* simple functions that operate on weather-related information. Picking up from the first activity, we'll then apply our functions to live data provided by the NWS.
+In this activity, we will work on *designing* simple functions that operate on weather-related information. Picking up from the [first activity in this series](welcome1-expr.md), we'll then apply our functions to live data provided by the NWS.
 
 ## Warmup: Wind Chill
 
