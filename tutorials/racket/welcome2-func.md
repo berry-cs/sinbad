@@ -18,9 +18,9 @@ Make sure you follow the Design Recipe. You may use [this website](http://www.nw
 
 * Use `expt` to compute the power of one number raised to another. 
 * Use `round` to round.
-* The usage of `expt` with decimal powers will produce "inexact" numbers (as DrRacket calls them). To deal with testing in the presence of inexact numbers, you will need to use `check-within` to check if the actual value is within a particular tolerance amount from the expected amount, or else apply `inexact->exact` to the final result in the function after rounding (at which point you should be able to use the usual `check-expect` form for your tests). A `check-within` expression is written like:
+* The usage of `expt` with decimal powers will produce "inexact" numbers (as DrRacket calls them). To deal with testing in the presence of inexact numbers, you will need to use `check-within` to check if the actual value is within a particular tolerance amount from the expected amount, or else apply `inexact->exact` to the final result in the function after rounding (at which point you should be able to use the usual `check-expect` form for your tests). In the case of the former option, a `check-within` expression is written like:
 
-    (check-within  (wind-chill 49 6)  46  0.1)
+        (check-within  (wind-chill 49 6)  46  0.1)
 
 
 ## Real Data
