@@ -78,7 +78,7 @@ with different numbers and text, of course. Note that with all those numbers flo
    
 3. If the name of a location is very long, it may not look very nice in the image produced by your code in the previous exercise. Design a function `split-if-longer` that takes a string and a number. If the length of the string is longer than the number, then the function produces a string with "\n" inserted in the middle of the given string. ("\n" is the newline character). For example, `(split-if-longer "abcdefg" 6)` produces `"abc\ndefg"`, while `(split-if-longer "abcdefg" 16)` produces the same string, unchanged. (Hint: look up operations like `string-length`, `substring`, `string-append`, and `floor`.)
 
-   Incorporate your `split-if-longer` function into your `obs->image` function.
+   Incorporate your `split-if-longer` function into your `obs->image` function. For example, split the location name if it is longer than 40 characters.
    
 4. As in a previous exercise, set up a second data source and load an observation from it:
 
