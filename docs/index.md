@@ -43,6 +43,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Functions on Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather2-func.md) (atomic data)
   + [Describing Differentials](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather3-interv.md) (intervals)
   + [Bike Share Usage Fees](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare1-usagefees.md) (enumerations)
+  + [Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather4-struct.md) (simple structures)
   + more coming soon...
   
 
