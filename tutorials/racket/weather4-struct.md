@@ -21,7 +21,7 @@ For example, the following: `(make-obs "Home" 34.3 -85.2 65 90 9 "Fair")` repres
 (define WORK-OBS (make-obs "Work" 33.2 -85.15 62 83 8 "Fair"))
 ````
 
-A complete sample data definition is provided at the very bottom of this page.
+A complete sample data definition is provided at the very bottom of this page, but write out your own first and then compare.
 
 
 
