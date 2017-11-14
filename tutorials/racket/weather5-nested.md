@@ -55,7 +55,7 @@ should result in the `HOME-OBS` structure as defined above, or
 
     (make-obs "Home" (make-loc 34.3 -85.2) <an-image> 65 90 9 "Fair")
 
-* Now you can use make-obs/data to construct proper nested structures while fetching raw data from your data source:
+* Now you can use `make-obs/data` to construct proper nested structures while fetching raw data from your data source:
 
       (define current-obs
         (fetch ds (make-obs/data "location" "latitude" "longitude" 
