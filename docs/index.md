@@ -39,6 +39,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Fetching Lists of Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
 
 * **Racket**
+This set of tutorials/guided activities roughly follows the sequence of topics in [How to Design Programs, 2nd edition](www.ccs.neu.edu/home/matthias/HtDP2e/).
   + [Expressions & Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather1-expr.md) (simple expressions/data)
   + [Functions on Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather2-func.md) (atomic data)
   + [Describing Differentials](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather3-interv.md) (intervals)
