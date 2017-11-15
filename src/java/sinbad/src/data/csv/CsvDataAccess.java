@@ -96,10 +96,11 @@ public class CsvDataAccess extends FailAccess {
         }
         
         CompField[] fields = new CompField[nonNull];
-        for (int i = 0; i < this.header.length; i++) {
+        for (int i = 0, j = 0; i < this.header.length; i++) {
             if (this.header[i] != null && !"".equals(this.header[i].trim())) {
                 PrimSchema ps = new PrimSchema(this.header[i]);  // basepath
-                fields[i] = new CompField(this.header[i], ps);
+                fields[j] = new CompField(this.header[i], ps);
+                j++;
             }
         }
         return new ListSchema(new CompSchema(fields));
