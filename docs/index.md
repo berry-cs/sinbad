@@ -39,7 +39,17 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Fetching Lists of Dictionary Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/python/welcome03-objs.md)
 
 * **Racket**
-  + coming soon...
+
+  This set of tutorials/guided activities roughly follows the sequence of topics in [How to Design Programs, 2nd edition](http://www.ccs.neu.edu/home/matthias/HtDP2e/).
+  + [Expressions & Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather1-expr.md) (simple expressions/data)
+  + [Functions on Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather2-func.md) (atomic data)
+  + [Describing Differentials](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather3-interv.md) (intervals)
+  + [Bike Share Usage Fees](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare1-usagefees.md) (enumerations)
+  + [Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather4-struct.md) (simple structures)
+  + [Latitude/Longitude Functions](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md) (simple structures)
+  + [Nested Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather5-nested.md) (nested structures)
+  + more coming soon...
+  
 
 
 ## Quick Reference
@@ -64,6 +74,11 @@ These may be used as "cheatsheets".
 Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/iticse16-paper.pdf)] [ [slides](http://cs.berry.edu/sinbad/iticse16-slides.pdf)]
 * [SPLASH-E '15](http://2015.splashcon.org/track/splash2015-splash-e#event-overview) workshop presentation: "A Generic Framework for Engaging Online Data Sources in Introductory Programming Courses"
 * [SIGCSE '14](https://dl.acm.org/citation.cfm?id=2544280&CFID=633189652&CFTOKEN=58804699) poster: "Towards engaging big data for CS1/2" [ [local copy](http://cs.berry.edu/sinbad/bigdata-poster.pdf)]
+
+### About the name
+
+*SINBAD* was selected as a rough acronym for **S**tructure **IN**ference and **B**inding **A**utomatically to **D**ata -- the main idea behind the library initially developed in Java. The name was also selected to invoke the sense of adventure, magical experience, and fantastic achievement reminiscent of the voyages of Sinbad the Sailor in the stories of the Arabian Nights. Through this library, we hope to help students experience some of the adventure and magic of Computer Science early on in their programming courses.
+
 
 ## Contact
 

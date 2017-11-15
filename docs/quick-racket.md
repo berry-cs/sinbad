@@ -2,11 +2,13 @@
 
 **Contents**
   * [Basic Template](#basic-template)
+  * [Sampling Data](#sampling-data)
   * [Examining Available Data](#examining-available-data)
   * [Other Connection Methods](#other-connection-methods)
   * [Connection Parameters](#connection-parameters)
   * [Data Source Options](#data-source-options)
   * [Selecting From a .zip Archive](#selecting-from-a-zip-archive)
+  * [Disable Missing Field Errors](#disable-missing-field-errors)
   * [Cache Control](#cache-control)
   * [Disable Download Progress Display](#disable-download-progress-display)
   * [View Preferences](#view-preferences)
@@ -24,6 +26,20 @@
            (load)       ; to immediately load data as well
            (manifest))  ; to view data schema upon load
 ````
+
+## Sampling Data
+
+Use a `sample` clause instead of `load`:
+
+````
+(sail-to "..."
+         (sample <amt> [<seed>]))
+````
+
+The `<amt>` argument is a number that approximately controls the maximum number of elements that are sampled from any lists in the data (at all levels of the data hierarchy). The `<seed>` is an optional natural number used to seed the random number generator before the sample is extracted. 
+ 
+ Sampled data is cached and reloaded from cache if the same code is run again. To force a fresh sample to be generated, use a `(fresh-sample ... ...)` clause instead of `sample`.
+
 
 ## Examining Available Data
 
@@ -82,6 +98,12 @@ the "file-entry" option in a clause:
 
     (sail-to ... (option "file-entry" "FACTDATA_MAR2016.TXT"))
 
+## Disable Missing Field Errors
+As data is being `fetch`ed, if a specified field name is not found in the data, a value of #false will be returned and a warning message will be printed, e.g. `warning: missing data for colors`. To prevent such a warning message from being displayed (for example, when you *expect* some records to have missing field values), set an "ignore-missing" option:
+
+    (sail-to ... (option "ignore-missing" "colors"))
+    
+The value provided may be either a single string or a list of strings. The value(s) cannot contains a slash `/`.
 
 ## Cache Control
 Control frequency of caching (or disable it) using a `cache-timeout` clause:
