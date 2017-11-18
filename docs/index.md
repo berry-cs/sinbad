@@ -48,6 +48,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather4-struct.md) (simple structures)
   + [Latitude/Longitude Functions](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md) (simple structures)
   + [Nested Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather5-nested.md) (nested structures)
+  + [Bike Share Trips and Users](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare2-trips.md) (itemizations/nested structures)
   + more coming soon...
   
 
