@@ -81,3 +81,10 @@ You've likely used Google Maps before to plan out a trip. The average person use
 
 2. The `sinbad/extras` "teachpack" (i.e. code library) provides a function named `open-browser-to` that takes a URL string and displays the URL using the default web browser on your computer. To use it, `(require sinbad/extras)` at the top of your program file, then try something like: `(open-browser-to (trip-map-url T-random))`. Great work!
 
+
+## Additional Functions
+
+1. In a previous activity, you wrote a function to compute the `manhattan-distance` between two locations. Design a function named **`trip-mph`** that computes the miles-per-hour traveled for a given `trip`. Use the Manhattan distance between the start and end locations and divide that by the trip duration (in hours). You may need to use `check-within` to express your examples: `(check-within (trip-mph SHOPPING-TRIP) 7.29 0.01)`
+
+2. When dealing with real data sources, sometimes you'll find it necessary to filter out bad data elements. Design a function named `non-zero-locs?` that takes a trip and  produces `true` only if both latitude and longitude values of the start and end locations are non-zero. If at least one of the coordinates is zero, the function produces `false`. (Hint: You previously wrote a `non-zero-loc?` function that may be useful. Follow the template, though, as you start developing `non-zero-locs?`.)
+
