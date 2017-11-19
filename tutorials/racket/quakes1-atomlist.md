@@ -5,11 +5,11 @@ The United States Geological Service (USGS) provides live feeds of earthquake ev
 
 ## Warmup: Functions on Lists
 
-1. Design a function named **`how-many-in-ca`** that takes a list of strings and produces a count of how many of them contain the word "California" or the abbreviation "CA". 
+1. Design a function named **`how-many-in-ca`** that takes a list of strings and produces a count of how many of them contain the word "California" or the abbreviation "CA". (Look up the `string-contains?` function in the Help Desk if you need to.)
 
-2. Design a function named **`how-many-in`** that takes a string and a list of strings and produce the number of strings in the list that contain the given string.
+2. Design a function named **`how-many-in`** that takes a string and a list of strings and produces the number of strings in the list that contain the given string.
 
-3. Design a function named **`how-many->=`** that takes a threshold (number) and a list of numbers and produce a count of how many elements in the list are greater than or equal to the given threshold. For example, `(how-many->= 5 (list 4 8 3 9 5 2 10 1 1 2))` should produce `4`.
+3. Design a function named **`how-many->=`** that takes a threshold (number) and a list of numbers and produces a count of how many elements in the list are greater than or equal to the given threshold. For example, `(how-many->= 5 (list 4 8 3 9 5 2 10 1 1 2))` should produce `4`.
 
 ## Data: Daily Quakes
 
@@ -18,7 +18,7 @@ The United States Geological Service (USGS) provides live feeds of earthquake ev
 ````
 (define Qs
   (sail-to "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
-           (cache-timeout (* 60 60))   ; every hour
+           (cache-timeout (* 15 60))   ; refresh data every 15 minutes
            (manifest)
            (load)))
 ````
@@ -35,7 +35,7 @@ Instead of fetching just a single value, you can fetch a list of all the `place`
 
 If you check the length of this list, it probably has at least a hundred elements in it:  `(length quake-places)`. You can also just view the entire list by typing `quake-places` in the Interactions area, but in general you should be careful about viewing large lists of data because it can cause DrRacket to become unresponsive if there is so much data that it overflows the Interactions area as it tries to display it all.
 
-1. Now, use your `how-many-in-ca` and `how-many-in` functions to examine how many quakes have occurred in a various locations.
+1. Now, use your `how-many-in-ca` and `how-many-in` functions to examine how many quakes have occurred in various locations.
 
 2. Fetch a list of all the quake magnitudes, using the data element path `"features/properties/mag"`. Play with applying your `how-many->=` function to the data.
 
@@ -69,7 +69,7 @@ When you have finished each of these functions, you can try them out on the list
 
 The list of places in the earthquake data often contains duplicates since multiple quakes occur in some places of the world every day. Suppose you wanted to extract a list of just the unique places mentioned in the data, where each place is mentioned in the list just once.
 
-1. First, develop a function that extracts the name of a place from a string like `"5km NNW of Shasta Lake, California"`. For this string, your function should just produce `"Shasta Lake, California"`. If there is no substring " of ", the function should produce the string it was given with no modifications. The `sinbad/extras` library contains a function `string-position` that produces the position of a the first occurrence of a substring in another string. For example, `(string-position "wo" "hello world")` produces `6`.  Experiment with the `string-position` function to understand how it works. Then use it, along with `string-contains?` and `substring` to implement your function.
+1. First, develop a function that extracts the name of a place from a string like `"5km NNW of Shasta Lake, California"`. For this string, your function should just produce `"Shasta Lake, California"`. If there is no substring `" of "`, the function should produce the string it was given with no modifications. The `sinbad/extras` library contains a function `string-position` that produces the position of the first occurrence of a substring in another string. For example, `(string-position "wo" "hello world")` produces `6`.  Experiment with the `string-position` function to understand how it works. Then use it, along with `string-contains?` and `substring` to implement your function.
 
 2. Design a function named **`cons/unique`** that takes a string and a list of strings and `cons`es the given string onto the list only if it is not already a member of the list. For example, `(cons/unique "A" (list "B" "C"))` produces `(list "A" "B" "C")`, whereas `(cons/unique "C" (list "B" "C"))` produces `(list "B" "C")`.
 
