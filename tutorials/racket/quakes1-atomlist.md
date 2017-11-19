@@ -9,7 +9,11 @@ The United States Geological Service (USGS) provides live feeds of earthquake ev
 
 2. Design a function named **`how-many-in`** that takes a string and a list of strings and produces the number of strings in the list that contain the given string.
 
-3. Design a function named **`how-many->=`** that takes a threshold (number) and a list of numbers and produces a count of how many elements in the list are greater than or equal to the given threshold. For example, `(how-many->= 5 (list 4 8 3 9 5 2 10 1 1 2))` should produce `4`.
+3. Design a function named **`how-many->=`** that takes a threshold (number) and a list of numbers and produces a count of how many elements in the list are greater than or equal to the given threshold. For example, 
+````
+(how-many->= 5 (cons 4 (cons 8 (cons 3 (cons 9 (cons 5 (cons 2 (cons 10 (cons 1 (cons 1 (cons 2 empty)))))))))))
+````
+should produce `4`.
 
 ## Data: Daily Quakes
 
@@ -45,7 +49,7 @@ When you have finished each of these functions, you can try them out on the list
 
 1. Design a function named **`how-many-between`** that takes two numbers, `lo` and `hi`, and a list of numbers and produces the numbers of elements in the given list that are *greater than or equal* to `lo` and *strictly less than* `hi`. For example, 
 
-        (check-expect (how-many-between 3 5 (list 4 8 3 9 5 2 10 1 1 2)) 2)
+        (check-expect (how-many-between 3 5 (cons 4 (cons 8 (cons 3 (cons 9 (cons 5 (cons 2 (cons 10 (cons 1 (cons 1 (cons 2 empty))))))))))) 2)
 
     Use the template for a list of numbers as you develop the function. Make sure you work out a good set of examples before you start defining the body.
     
@@ -54,15 +58,9 @@ When you have finished each of these functions, you can try them out on the list
 3. Design a function **`places-in`** that takes a name (a string) and a list of strings and produces a list of only those strings that contain the given name. For example:
 
 ````
-(check-expect (places-in "CA" (list  "North Nenana, Alaska"
-                                     "Aguanga, CA"
-                                     "Rincon, Puerto Rico"
-                                     "Cobb, California"
-                                     "Mammoth Lakes, CA"
-                                     "The Geysers, CA"
-                                     "Sutton-Alpine, Alaska"
-                                     "Balao, Ecuador"))
-              (list "Aguanga, CA" "Mammoth Lakes, CA" "The Geysers, CA"))
+(check-expect (places-in "CA" (cons "North Nenana, Alaska" (cons "Aguanga, CA" (cons "Rincon, Puerto Rico" (cons "Cobb, California"
+                              (cons "Mammoth Lakes, CA" (cons "The Geysers, CA" (cons "Sutton-Alpine, Alaska" (cons "Balao, Ecuador" empty)))))))))
+              (cons "Aguanga, CA" (cons "Mammoth Lakes, CA" (cons "The Geysers, CA" empty))))
 ````
 
 ## Challenge
@@ -71,12 +69,9 @@ The list of places in the earthquake data often contains duplicates since multip
 
 1. First, develop a function that extracts the name of a place from a string like `"5km NNW of Shasta Lake, California"`. For this string, your function should just produce `"Shasta Lake, California"`. If there is no substring `" of "`, the function should produce the string it was given with no modifications. The `sinbad/extras` library contains a function `string-position` that produces the position of the first occurrence of a substring in another string. For example, `(string-position "wo" "hello world")` produces `6`.  Experiment with the `string-position` function to understand how it works. Then use it, along with `string-contains?` and `substring` to implement your function.
 
-2. Design a function named **`cons/unique`** that takes a string and a list of strings and `cons`es the given string onto the list only if it is not already a member of the list. For example, `(cons/unique "A" (list "B" "C"))` produces `(list "A" "B" "C")`, whereas `(cons/unique "C" (list "B" "C"))` produces `(list "B" "C")`.
+2. Design a function named **`cons/unique`** that takes a string and a list of strings and `cons`es the given string onto the list only if it is not already a member of the list. For example, `(cons/unique "A" (cons "B" (cons "C" empty)))` produces `(cons "A" (cons "B" (cons "C" empty)))`, whereas `(cons/unique "C" (cons "B" (cons "C" empty)))` produces `(cons "B" (cons "C" empty))`.
 
 3. Develop a function named **`unique-places`** that produces a list of unique place names given a list of places where quakes have occurred. The two preceding functions you defined should be helpful, once you have laid out the template for this function. Develop several examples/test cases before you try to define the body. Here's one:
 
-        (check-expect (unique-places (list "10km E of A"
-                                           "B" "7km SW of C"
-                                           "A" "5km N of B"
-                                           "22km NE of D"))
-                      (list "C" "A" "B" "D"))
+        (check-expect (unique-places (cons "10km E of A" (cons "B" (cons "7km SW of C" (cons "A" (cons "5km N of B" (cons "22km NE of D" empty)))))))
+                      (cons "C" (cons "A" (cons "B" (cons "D" empty)))))
