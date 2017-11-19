@@ -49,6 +49,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Latitude/Longitude Functions](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md) (simple structures)
   + [Nested Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather5-nested.md) (nested structures)
   + [Bike Share Trips and Users](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare2-trips.md) (itemizations/nested structures)
+  + [Simple Lists with Earthquake Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes1-atomlist.md) (lists of strings/numbers)
   + more coming soon...
   
 
