@@ -51,6 +51,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Bike Share Trips and Users](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare2-trips.md) (itemizations/nested structures)
   + [Simple Lists with Earthquake Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes1-atomlist.md) (lists of strings/numbers)
   + [Bike Share User Ages](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare3-ages.md) (lists of atomic data/non-empty lists)
+    + [Bike Share: Handling Large Amounts of Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare-sampling.md)
   + more coming soon...
   
 
