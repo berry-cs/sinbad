@@ -50,6 +50,7 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Nested Structures with Weather Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather5-nested.md) (nested structures)
   + [Bike Share Trips and Users](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare2-trips.md) (itemizations/nested structures)
   + [Simple Lists with Earthquake Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes1-atomlist.md) (lists of strings/numbers)
+  + [Bike Share User Ages](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare3-ages.md) (lists of atomic data/non-empty lists)
   + more coming soon...
   
 
