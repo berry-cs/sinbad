@@ -154,7 +154,7 @@ where the prefix of the URL is fixed and there are as many locations as you want
 
     You should now be able to evaluate this expression in the Interactions area to view the map in your browser: `(open-browser-to (quake-markers all-quakes))`.
     
-3. If you'd like to be a little more fancy, you can enhance your `quake-markers` function to take a second parameter, `zoom-level`, that is either `false` or a number between 1 and 20. If it is `false`, the function should work just like it already does. If a number is provided, add a `"&zoom=<zoom-level>"` in the URL string right after the `scale=2`, e.g.:
+3. [OPTIONAL] If you'd like to be a little more fancy, you can enhance your `quake-markers` function to take a second parameter, `zoom-level`, that is either `false` or a number between 1 and 20. If it is `false`, the function should work just like it already does. If a number is provided, add a `"&zoom=<zoom-level>"` in the URL string right after the `scale=2`, e.g.:
 
         (check-expect (quake-markers (list Qx1 Qx2) 2)
                       "https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&zoom=2&size=500x300&markers=size:tiny|37.6,-118.83|38.2,-117.3|")
