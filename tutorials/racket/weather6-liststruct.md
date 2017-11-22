@@ -3,7 +3,7 @@
 
 Now that you are familiar with both structures and lists, let's revisit the data provided by the National Weather Service (NWS). If you view the web page [www.weather.gov/xml/current_obs/](http://www.weather.gov/xml/current_obs/) you should see an "XML" button link to download a list of all available stations in that format.
 
-* First, find your work for the "Nested Structures with Weather Data" activity and copy it all to a new, blank file in DrRacket. Make sure you are in the "Beginning Student with List Abbreviations" language level.
+* First, find your work for the ["Nested Structures with Weather Data"](weather5-nested.md) activity and copy it all to a new, blank file in DrRacket. Make sure you are in the "Beginning Student with List Abbreviations" language level.
 
 * At the bottom of the file, set up a new data connection to the list of stations:
 
