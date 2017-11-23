@@ -54,7 +54,6 @@ These pages provide a more leisurely and explanatory coverage of the features of
     + [Bike Share: Handling Large Amounts of Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare-sampling.md)
   + [Mapping Quakes](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes2-liststruct.md) (lists of structures)
   + [Weather Stations and Observations](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather6-liststruct.md) (lists of structures)
-  + more coming soon...
   
 
 
