@@ -24,6 +24,7 @@ Data Source  | **Name** | **Description** |  **Usage** | **Exercises**
 
 Data Source | Notes
 ----------- | --------
+[CORGIS Datasets](https://think.cs.vt.edu/corgis/) | Items listed under the "Raw Datasets" should work with *Sinbad*
 [NYC Open Data](https://opendata.cityofnewyork.us/data/) | Once you have selected a data set to view information about, click the "Download" button at the top right of the page; then *right-click* and copy the link to the CSV data. Use that URL to `connect` your `DataSource` object.
 [SFC Open Data](https://datasf.org/opendata/) | Similar to NYC Open Data
 [200,000+ Jeopardy! Questions](http://www.reddit.com/r/datasets/comments/1uyd0t/200000_jeopardy_questions_in_a_json_file/) | Available in JSON or CSV
