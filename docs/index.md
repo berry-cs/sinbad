@@ -12,7 +12,7 @@ For a list of data sources, visit the [Bazaar <img src="bazaar.png" alt="bazaar"
 
 ## Installation
 Instructions for:
-* [Java](install-java)
+* [Java/Processing](install-java)
 * [Python](install-python)
 * [Racket](install-racket)
 
@@ -26,7 +26,7 @@ These links provide a concise introduction to the most prominent features of the
 ## Tutorials
 These pages provide a more leisurely and explanatory coverage of the features of the Sinbad library in the respective language. These are good if you are learning to program for the first time and are interested in using Sinbad to access data.
 
-* **Java**
+* **Java/Processing**
   + [Introduction](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome01.md)
   + [Fetching Primitive Type Arrays](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome02-arr.md)
   + [Fetching Objects](https://github.com/berry-cs/sinbad/blob/master/tutorials/java/welcome02-obj.md)
