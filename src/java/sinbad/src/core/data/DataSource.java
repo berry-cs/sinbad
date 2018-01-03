@@ -727,6 +727,7 @@ public class DataSource implements IDataSource {
     public double fetchDouble(String key) { return fetch(Double.class, key); }
     public float fetchFloat(String key) { return fetch(Float.class, key); }
     public int fetchInt(String key) { return fetch(Integer.class, key); }
+    public long fetchLong(String key) { return fetch(Long.class, key); }
     public String fetchString(String key) { return fetch(String.class, key); }
     
     public boolean[] fetchBooleanArray(String key) {
@@ -746,6 +747,9 @@ public class DataSource implements IDataSource {
     }
     public int[] fetchIntArray(String key) {
         return ArrayUtils.toPrimitive(fetchArray(Integer.class, key));
+    }
+    public long[] fetchLongArray(String key) {
+        return ArrayUtils.toPrimitive(fetchArray(Long.class, key));
     }
     public String[] fetchStringArray(String key) {
         return fetchArray(String.class, key);
@@ -768,6 +772,9 @@ public class DataSource implements IDataSource {
     }
     public ArrayList<Integer> fetchIntList(String key) {
         return fetchList(Integer.class, key);
+    }
+    public ArrayList<Long> fetchLongList(String key) {
+        return fetchList(Long.class, key);
     }
     public ArrayList<String> fetchStringList(String key) {
         return fetchList(String.class, key);
