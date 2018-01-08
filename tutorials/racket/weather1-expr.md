@@ -102,7 +102,7 @@ There are several steps that may be required for step 1, and there are a variety
 
 In the program you just wrote, we told you that the label for the piece of data representing the current temperature in Fahrenheit was `temp_f`. How might you figure out what other pieces of data are available? There are at least two ways to do so. 
 
-1. The first is to look for documentation on the web site that provides the data. In our case, if you go to the main web site for the "Current Weather Conditions" data that is provided by the NWS, `http://weather.gov/xml/current_obs/`, the last sentence of the first paragraph contains a link to a "Product Description Document". If you click on that, you get a PDF document with a example, on the second page, of a data set in XML format. 
+1. The first is to look for documentation on the web site that provides the data. In our case, if you go to the main web site for the "Current Weather Conditions" data that is provided by the NWS, [http://weather.gov/xml/current_obs/](`weather.gov/xml/current_obs/`), the last sentence of the first paragraph contains a link to a "Product Description Document". If you click on that, you get a PDF document with a example, on the second page, of a data set in XML format. 
 
    It is not very friendly-looking, and indeed, different web sites will provide better or worse documentation of the available pieces of data they supply. If you are working on an assignment for class, the instructor or teaching assistant can help you find and figure out the documentation for a given data source.
 
@@ -204,7 +204,7 @@ The *Sinbad* library saves all its cache data in a temporary directory area on y
 2. Extend your program to display a summary of the current weather conditions (`"Weather Conditions: Partly cloudy."`, `"Weather Conditions: Overcast."`, etc.). You will need to find the appropriate data element label to use.
 
 
-3. To make it easier to change the weather station that we are fetching data from, let's break out the station code and use an expression to construct the actual URL using it. FIll in the dot's here with an appropriate expression:
+3. To make it easier to change the weather station that we are fetching data from, let's break out the station code and use an expression to construct the actual URL using it. Fill in the dots here with an appropriate expression:
 
 ````
 (define STN-CODE "KRMG")
