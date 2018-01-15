@@ -57,6 +57,8 @@ Try running your program with a data source for a station where the temperature 
 
 
 
+<hr />
+
 ## Exercises
 
 1. Design a function that produces a textual classification of the wind conditions based on the [Beaufort Wind Scale](http://www.spc.noaa.gov/faq/tornado/beaufort.html). Note that the wind speed units for this are in *knots*.
