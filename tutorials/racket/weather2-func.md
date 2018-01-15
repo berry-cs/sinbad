@@ -77,9 +77,9 @@ Try running your program with a data source for a station where the temperature 
    
 3. The code below produces a nice little info-graphic based on wind speed (knots) and direction (degrees). However, the code is a mess - there are lots of redundancies and it is hard to understand. 
 
-   Rewrite the code using functions so that there is less redundancy in the expressions. Make sure you follow the Design Recipe for each function.
+   Rewrite the code using functions so that there is less redundancy in the expressions. Include signatures and purpose comments for each function you introduce.
    
-   Also, turn `wind-graphic` into a function definition with two parameters: `wind-speed-kts` and `wind-degrees`. This should make the code more reusable, and you can fetch and apply the appropriate data elements from a data source to generate a wind info-graphic based on live conditions. Make sure you can do that!
+   Also, turn `wind-graphic` into a function definition with two parameters: `wind-speed-kts` and `wind-degrees`. (You may find you need to change another definition into a function as well in the process.) This should make the code more reusable, and you can fetch and apply the appropriate data elements from a data source to generate a wind info-graphic based on live conditions. Make sure you can do that!
    
 ````
 ;;; FIRST, RUN THIS CODE TO SEE WHAT IT PRODUCES
