@@ -128,6 +128,25 @@ Try running your program with a data source for a station where the temperature 
 wind-graphic
 ````
 
+   ### Bonus
+
+   Once you have reorganized `wind-graphic` as a function, you could wrap everything in the program up with one more function that takes a station code directly and produces the corresponding wind graphic. Add the following to the bottom of your program file and run it, then try typing in the Interactions area expressions like: `(wind-graphic/stn "KATL")` or `(wind-graphic/stn "KBOS")`.
+
+````
+;; wind-graphic/stn : String -> Image
+;; produces an image of the wind conditions for the given NWS station code
+
+; (no check-expect tests because depends on current conditions!)
+; (need to check it interactively by verified web page conditions with the image)
+
+(define (wind-graphic/stn stn-code)
+  (fetch
+   (sail-to (string-append "http://weather.gov/xml/current_obs/" stn-code ".xml")
+           (load)
+           ;(manifest)
+           (cache-timeout 300))
+   (wind-graphic "wind_kt" "wind_degrees")))
+````
 
 
 
