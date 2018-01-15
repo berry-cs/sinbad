@@ -143,7 +143,6 @@ wind-graphic
   (fetch
    (sail-to (string-append "http://weather.gov/xml/current_obs/" stn-code ".xml")
            (load)
-           ;(manifest)
            (cache-timeout 300))
    (wind-graphic "wind_kt" "wind_degrees")))
 ````
