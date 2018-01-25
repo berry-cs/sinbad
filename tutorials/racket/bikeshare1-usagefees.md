@@ -16,11 +16,11 @@ There are basically two types of customers: those with a membership or those wit
 
 * Design a function named **`usage-fee`** that takes a type of rider and a trip duration in seconds, and computes the usage fees (if any) that are to be charged for that trip. Use the template from the previous step. Make sure your function is thoroughly tested.
 
-* Let's get some data now to run on your program. Click on the link to "downloadable files" at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). Then scroll down and choose the most recent "JC-...csv.zip" file. (The "JC-" prefix indicates Jersey City, and these files are much smaller than the full New York City data files that don't have that prefix.) Right click on the file you've chosen and copy the link address/URL to that file. 
+* Let's get some data now to run on your program. Click on the link to "downloadable files" at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). Then scroll down and look for the most recent "JC-...csv.zip" file. (The "JC-" prefix indicates Jersey City, and these files are much smaller than the full New York City data files that don't have that prefix.) Right click on the file you've found and copy the link address/URL to that file. 
 
 * Back in your DrRacket program, `(require sinbad)` and then `sail-to` the URL that you copied, e.g. `"https://s3.amazonaws.com/tripdata/JC-201709-citibike-tripdata.csv.zip"`, with a `load` and `manifest` clause. Identify which labels provide you the rider type and the duration of a trip.
 
-* Add the following expression after your `sail-to` form:
+* Add the following expression after your `sail-to` expression in your file:
 
             (data-length ds)
 
