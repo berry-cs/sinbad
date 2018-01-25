@@ -5,7 +5,7 @@
 
 Suppose we would like to produce brief reports on the relative difference in temperature between two locations. In addition to saying whether one is "warmer" or "colder" than the other, we would also like to modify the basic description as "slightly ... than" or "much ... than". We'll define a "slight" difference as being between 0 and 5 degrees apart and a "much warmer/colder" difference as being more than 15 degrees apart. For example, if it is 65&deg; at home and 82&deg; at work, then home is "much colder than" work.
 
-* You should have learned by now how to write out data definitions for values that fall into intervals. Based on the paragraph above, write out a definition for `TempDiff` (a temperature differential). You should have 7 clauses in your data definintion (one for the 0 case, and 6 other intervals). Don't forget to write out a template.
+* You should have learned by now how to write out data definitions for values that fall into intervals. Based on the paragraph above, write out a definition for `TempDiff` (a temperature differential). You should have 7 clauses in your data definintion (one for the 0 case, and 6 other intervals, e.g. between 0 and 5, between 0 and -5, between 5 and 15, etc.). Don't forget to write out a template.
 
 * Design a function named `difference->description` that takes a number representing a temperature differential and produces a string of words describing it (i.e. "the same as", "warmer than", "slightly warmer than", etc.)
 
