@@ -35,6 +35,7 @@ Now, add a definition for another station, `STN-CODE-2` (e.g. `"KJFK"`) and anot
               (fetch ds-2 "location") (fetch ds-2 "temp_f"))
 ````
 
+You can find station codes by going to [http://weather.gov/xml/current_obs/](http://weather.gov/xml/current_obs/), selecting a state from the dropdown choice box, and then making a note of the four-letter code in parentheses after the observation locations listed.
 
 
 
