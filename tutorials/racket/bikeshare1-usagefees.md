@@ -21,7 +21,7 @@ There are basically two types of customers: those with a membership or those wit
 * Back in your DrRacket program, `(require sinbad)` and then `sail-to` the URL that you copied, e.g. `"https://s3.amazonaws.com/tripdata/JC-201709-citibike-tripdata.csv.zip"`, with a `load` and `manifest` clause. Identify which labels provide you the rider type and the duration of a trip.
 
 * Add the following expression after your `sail-to` form:
-      (data-length ds)
+            (data-length ds)
   Then run your program. You should see quite a large number printed out, probably in the tens of thousands. That indicates the number of trips for which data is included in the data set. The program that you've developed so far, however, is only ready to work on one trip at a time. So we are going to pick a random trip to apply your function to when your program is run. Add these expressions to your file:
   
       (fetch-random ds "usertype")
