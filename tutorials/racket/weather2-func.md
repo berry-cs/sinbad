@@ -53,7 +53,9 @@ This still extracts the  "temp_f" and "wind_mph" data labels from the data sourc
 
 With this particular data source, you can validate your wind chill computation because the data already includes an element for the wind chill (in both &deg;F and &deg;C). See if you can use the `manifest` to find the appropriate data label and add an expression to your program to fetch it. See if the wind chill value you are computing matches that of the NWS.
 
-Try running your program with a data source for a station where the temperature is greater than 70&deg;F. (`KSDM` is a code for an airport in San Diego, CA.) You should find that the NWS in that case probably doesn't even provide a wind chill data element (check the `manifest`). *Sinbad* might display an warning message to alert you to that fact, but your program should still run ok and your function should produce `false` if you handled this scenario correctly.
+Try running your program with a data source for a station where the temperature is greater than 70&deg;F. (e.g. `KSDM` is a code for an airport in San Diego, CA.) You should find that the NWS in that case probably doesn't even provide a wind chill data element (check the `manifest`). *Sinbad* might display an warning message to alert you to that fact, but your program should still run ok and your function should produce `false` if you handled this scenario correctly.
+
+You can find station codes by going to [http://weather.gov/xml/current_obs/](http://weather.gov/xml/current_obs/), selecting a state from the dropdown choice box, and then making a note of the four-letter code in parentheses after the observation locations listed.
 
 
 
