@@ -10,7 +10,7 @@ In this activity, we will work on *designing* simple functions that operate on w
 
 where *T<sub>a</sub>* is the air temperature in Fahrenheit degrees and *v* is the wind speed in miles per hour. Note that the wind chill temperature is only defined for temperatures 50&deg;F or below and wind speeds of 3 mph or faster.
 
-Design a function that computes the wind chill based on this formula, given temperature (F) and wind speed (MPH). If the temperature is above 50&deg;F or the wind speed is below 3, then your function should produce `false` to indicate that the computation is not defined. Otherwise, *round* the result to the nearest whole number.
+Design a function named `wind-chill` that computes the wind chill based on this formula, given temperature (F) and wind speed (MPH). If the temperature is above 50&deg;F or the wind speed is below 3, then your function should produce `false` to indicate that the computation is not defined. Otherwise, *round* the result to the nearest whole number.
 
 Make sure you follow the Design Recipe. You may use [this website](http://www.nws.noaa.gov/om/cold/wind_chill.shtml) to generate sample data for examples/tests, but make sure you calculate at least one example yourself "by hand" before you start writing the function body.
 
