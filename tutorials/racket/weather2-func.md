@@ -63,7 +63,7 @@ You can find station codes by going to [http://weather.gov/xml/current_obs/](htt
 
 ## Exercises
 
-1. Design a function named `wind-condition` that produces a textual classification of the wind conditions based on the [Beaufort Wind Scale](http://www.spc.noaa.gov/faq/tornado/beaufort.html). Note that the wind speed units for this are in *knots*.
+1. Design a function named `wind-condition` that takes a wind speed and produces a textual classification of the wind conditions based on the [Beaufort Wind Scale](http://www.spc.noaa.gov/faq/tornado/beaufort.html). Note that the wind speed units for this are in *knots*.
 
    Apply your function to the "wind_kt" element from the NWS data source.
    
