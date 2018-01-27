@@ -90,6 +90,7 @@ You can find station codes by going to [http://weather.gov/xml/current_obs/](htt
 (require 2htdp/image)
 
 
+; *** when you have turned wind-graphic into a function, you should comment out these constant definitions
 (define wind-speed-kts 25)
 (define wind-degrees 220)
 
