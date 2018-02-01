@@ -103,7 +103,7 @@ with different numbers and text, of course. Note that with all those numbers flo
 
 ````
 ;; A WeatherObs is a structure:
-;;   (make-obs String Number Number Number String Number Number)
+;;   (make-obs String Number Number Number String Number String)
 ;; interpretation: current weather conditions at the station identified
 ;;   by name and latitude/longitude coordinates.
 ;;   temp is in degrees Fahrenheit
