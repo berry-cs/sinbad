@@ -29,7 +29,15 @@ When writing examples/test cases involving inexact numbers, you'll have to use `
 
    [This website](http://www.onlineconversion.com/map_greatcircle_distance.htm) may be useful as you work out a few of your own examples.
 
-2. When measuring distance along city streets, using the direct distance between two locations is not accurate because streets are usually arranged in a grid. A better measure of distance is that of Manhattan distance or so-called [taxicab distance](https://en.wikipedia.org/wiki/Taxicab_geometry). 
+2. (Optional) Design a `round-to/exact` function that takes a number and an integer (whole number) and produces the given number as an *exact* number rounded to the given number of decimal places. For example, `(round-to/exact #i245.74638 2)` should produce `245.75`.
+
+   Hint: the functions `round`, `expt`, `inexact->exact` may be helpful. Be sure to develop lots of examples before you work on the function body.
+
+3. Design a function `loc->string` that produces a comma-separated string representation of a latitude/longitude location. For example, `(loc->string (make-loc 40.72 -74.04))` should produce `"40.72,-74.04"`.
+
+4. When dealing with real data sources, sometimes you'll find it necessary to filter out bad data elements. Design a function `non-zero-loc?` that takes a `loc` and produces `true` only if both latitude and longitude values are non-zero. If either or both of the coordinates are zero, the function produces `false`.
+
+5. When measuring distance along city streets, using the direct distance between two locations is not accurate because streets are usually arranged in a grid. A better measure of distance is that of Manhattan distance or so-called [taxicab distance](https://en.wikipedia.org/wiki/Taxicab_geometry). 
 
    Design a function `manhattan-distance` that takes two `loc`s and produces the distance obtained by first traveling horizontally (East-West, keeping the latitude the same) and then vertically (North-South, keeping the longitude the same) on the surface of the Earth. For example,
   
@@ -40,15 +48,6 @@ When writing examples/test cases involving inexact numbers, you'll have to use `
 ````
 
    [This website](http://www.onlineconversion.com/map_greatcircle_distance.htm) may be useful as you work out a few of your own examples.
-
-3. (Optional) Design a `round-to/exact` function that takes a number and an integer (whole number) and produces the given number as an *exact* number rounded to the given number of decimal places. For example, `(round-to/exact #i245.74638 2)` should produce `245.75`.
-
-   Hint: the functions `round`, `expt`, `inexact->exact` may be helpful. Be sure to develop lots of examples before you work on the function body.
-
-4. Design a function `loc->string` that produces a comma-separated string representation of a latitude/longitude location. For example, `(loc->string (make-loc 40.72 -74.04))` should produce `"40.72,-74.04"`.
-
-5. When dealing with real data sources, sometimes you'll find it necessary to filter out bad data elements. Design a function `non-zero-loc?` that takes a `loc` and produces `true` only if both latitude and longitude values are non-zero. If either or both of the coordinates are zero, the function produces `false`.
-
 
 
 
