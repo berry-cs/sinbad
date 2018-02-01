@@ -30,6 +30,9 @@ represents an observation at "Home" (located at 34.3, -85.2) as having a tempera
                            (bitmap/url "http://forecast.weather.gov/images/wtf/small/bkn.png") 62 83 8 "Fair"))
 ````
 
+Make sure you provide templates as part of each of your data definitions.
+
+
 ## Constructing Nested Data
 
 When fetching data from our data source, you sometimes need to do more than just apply the constructor for your structure (e.g. `make-obs`) in the `fetch` expression. If you have nested structures or need to manipulate the raw data a little before making a structure, you'll need to define your own "constructor-ish" function to do so and use that with the `fetch` operator. In this section, we'll see how that works.
