@@ -70,7 +70,7 @@ should result in the `HOME-OBS` structure as defined above, or
 
 ## Exercises
 
-1. You've probably used Google Maps before to search for directions or look for a location. It's possible to formulate a URL "by hand" that will directly open a map view in a browser and place a marker on a particular latitude/longitude. The pattern of the URL is `"http://maps.google.com/maps/place/<name>/@<lat>,<lng>,<zoom-level>z"` where *name* is a search term, *lat* and *lng* are the coordinates (in decimal format) upon which the map is centered and *zoom-level* is a number between 1 and 20 or so (larger numbers mean more zoomed in).
+1. You've probably used Google Maps before to search for directions or look for a location. It's possible to formulate a URL "by hand" that will directly open a map view in a browser and place a marker on a particular latitude/longitude. The pattern of the URL is `"http://www.google.com/maps/place/<name>/@<lat>,<lng>,<zoom-level>z"` where *name* is a search term, *lat* and *lng* are the coordinates (in decimal format) upon which the map is centered and *zoom-level* is a number between 1 and 20 or so (larger numbers mean more zoomed in).
 
    Design a function named `obs-map-url` that takes an `obs` structure and a zoom level (whole number between 1 and 20) and produces a string that is the corresponding Google Maps URL. For example, `(obs-map-url HOME-OBS 15)` should produce the string `"http://www.google.com/maps/place/Home/@34.3,-85.2,15z"`
    
