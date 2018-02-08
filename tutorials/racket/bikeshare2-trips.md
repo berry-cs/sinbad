@@ -18,7 +18,7 @@ To get started, provide complete data definitions for each of the following (be 
         ;;  - "Customer"  
         ;;  - (make-subscriber String Number)
 
-   Finish this off with a structure definition, interpretation, etc.
+   Finish this off with a structure definition, interpretation, template, etc.
    
 3. A `trip` has a start and end *location*, duration in minutes, and user. Note that trips will contain nested structures: `loc`s and, often, `subscriber`s. Remember how references in the types comment should relate to something in the template for the data definition. Here's an example of a piece of data:
 
