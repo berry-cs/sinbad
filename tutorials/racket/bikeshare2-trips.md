@@ -54,7 +54,7 @@ When fetching data from our data source, we will need to do more than just apply
 
 1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. Recall that for subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
 
-   You have previously written a similar function - for the purpose of this exercise, forget about that for a moment. Start from scratch and follow the template as you design this function. It should suggest that you develop a helper function on a *user*, for which you should also follow the template as you develop it.
+   Follow the template as you design this function. It should suggest that you develop a helper function on a *user*, for which you should also follow the template as you develop it.
 
 2. You should now be able to construct a random trip from the data, and compute its usage fee:
 
