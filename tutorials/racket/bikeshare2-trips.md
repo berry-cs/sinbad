@@ -49,8 +49,11 @@ When fetching data from our data source, we will need to do more than just apply
         (check-expect (make-trip/data 40.72 -74.04 40.71 -74.05 600 "Subscriber" 1 1998)
                       SHOPPING-TRIP)
 
+-----
 
-## Usage Fee (take 2)
+## FUNCTIONS
+
+### Usage Fee (take 2)
 
 1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. Recall that for subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
 
@@ -70,7 +73,7 @@ When fetching data from our data source, we will need to do more than just apply
         (trip-usage-fee T-random)
 
 
-## Mapping Trips
+### Mapping Trips
 
 You've likely used Google Maps before to plan out a trip. The average person uses the service in an interactive way, clicking and typing in their start and end locations on a form at the website. However, you can also directly generate a Google Maps trip by constructing a URL of the form `https://www.google.com/maps/dir/<start-loc>/<end-loc>` and typing it directly into your browser location bar. Here, the `<start-loc>` and `<end-loc>` are a pair of latitude/longitude coordinates separated by a comma, for instance, `40.72,-74.04`.
 
@@ -82,7 +85,7 @@ You've likely used Google Maps before to plan out a trip. The average person use
 2. The `sinbad/extras` "teachpack" (i.e. code library) provides a function named `open-browser-to` that takes a URL string and displays the URL using the default web browser on your computer. To use it, `(require sinbad/extras)` at the top of your program file, then try something like: `(open-browser-to (trip-map-url T-random))`. Great work!
 
 
-## Additional Functions
+### Additional Functions
 
 1. In a previous activity, you wrote a function to compute the `manhattan-distance` between two locations. Design a function named **`trip-mph`** that computes the miles-per-hour traveled for a given `trip`. Use the Manhattan distance between the start and end locations and divide that by the trip duration (in hours). You may need to use `check-within` to express your examples: `(check-within (trip-mph SHOPPING-TRIP) 7.29 0.01)`
 
