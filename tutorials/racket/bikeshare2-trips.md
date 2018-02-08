@@ -12,7 +12,7 @@ In this activity, we will continue working with the CitiBike service data for Je
 To get started, provide complete data definitions for each of the following (be sure to include examples and templates).
 
 1. Locations: a structure `loc` with latitude and longitude -- you should have this already from a previous activity.
-2. Users are *either* a daily purchaser, represented by a string "Customer" or a subscriber, who has a gender ("Male" or "Female") and a year of birth. You should recognization that you need a data definition for an itemization that starts off something like this:
+2. Users are *either* a daily purchaser, represented by a string "Customer" or a subscriber, who has a gender ("Male" or "Female") and a year of birth. You should recognize that you need a data definition for an itemization that starts off something like this:
 
         ;; A User is either:
         ;;  - "Customer"  
