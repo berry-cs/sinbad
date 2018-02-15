@@ -36,6 +36,21 @@ public class CsvDataTest {
     }
     
     @Test
+    public void testBaltimoreData() {
+        InputStream example = new FileLoader().createInput("https://data.baltimorecity.gov/api/views/k5ry-ef3g/rows.csv?accessType=DOWNLOAD");
+        IDataAccess csv = new CsvFactory().newInstance(example);
+        
+        assertEquals("4509 BELAIR ROAD\nBaltimore, MD\n", csv.get(null, 0).get("Location 1").getContents());
+        Stream<IDataAccess> s = csv.getAll(null);
+        IDataAccess[] rows = s.toArray(IDataAccess[]::new);
+
+        assertEquals("4509 BELAIR ROAD\nBaltimore, MD\n", rows[0].get("Location 1").getContents());
+        for (IDataAccess ida : rows) { 
+            rows[0].get("Location 1").getContents();
+        }
+    }
+    
+    @Test
     public void testSingleRow() {
         InputStream example = new FileLoader().createInput("src/data/tests/example.csv");
         IDataAccess csv = new CsvFactory().newInstance(example);
@@ -91,6 +106,8 @@ public class CsvDataTest {
         CsvInfer ci2 = new CsvInfer("\t");
         assertEquals(true, ci1.matchedBy("example.csv"));
         assertEquals(false, ci2.matchedBy("example.csv"));
+        assertEquals(true, ci2.matchedBy("example.tsv?yes"));
+        assertEquals(true, ci1.matchedBy("https://data.baltimorecity.gov/api/views/k5ry-ef3g/rows.csv?accessType=DOWNLOAD"));
     }
 }
 

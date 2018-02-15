@@ -44,6 +44,7 @@ public class CsvDataAccess extends FailAccess {
         sts.getFormat().setDelimiter(this.delimiter);
         sts.setMaxCharsPerColumn(10000);
         sts.getFormat().setQuote(this.quote);
+        sts.getFormat().setComment('\0');   // disable comments
         
         p = new CsvParser(sts);
         //System.err.println(p.parseAll(new InputStreamReader(is)));
@@ -250,7 +251,7 @@ public class CsvDataAccess extends FailAccess {
             public String getContents() {
                 int j = headerIndex.get(field);
                 if (j >= row.length) {
-                    throw exception(DataAccessException.class, "da:index", j);
+                    throw exception(DataAccessException.class, "da:index/field", j, field);
                 }
                 if (row[j] == null) {
                     return "";
