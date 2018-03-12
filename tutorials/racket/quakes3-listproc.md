@@ -193,6 +193,8 @@ The `direct-distance` function that you wrote for a previous activity will be he
                             (list "c" "a")
                             (list "c" "b")
                             (list "c" "c")))
+                            
+    Hint: you could use two `map`s over the given list, and then `foldr` over the result with `append`.
 
 3. Develop a function named **`closest-pair`** that takes one parameter: a list of quakes. It produces a list of exactly two quakes -- the pair of quakes from the given list that are the closest to each other but not at exactly the same location. (Sometimes, there are duplicate quake reports in the data, and the distance between those would come out to be zero, so you need to exclude them.)
 
