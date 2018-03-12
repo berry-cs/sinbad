@@ -22,25 +22,35 @@ You should have [https://github.com/berry-cs/sinbad/blob/master/tutorials/racket
         (define Qx2 (make-quake "Arizona" "today 7pm" 1.1 (make-loc 38.2 -117.3)))
         (define Qx3 (make-quake "Winchester, California" "today 2:30pm" 5.2 (make-loc 33.6 -117.1)))
 
+## Selecting Quakes
+
+When developing these functions, follow the design recipe, but use the indicated abstract list processing function for the body of each one. You should develop helper functions as appropriate.
+
+2. Design a function named **`quakes-with-mag`** that takes two numbers, a `lo` and a `hi`, and a list of quakes and produces only those quakes on the list whose magnitude is greater than or equal to `lo` and less than `hi`.  **Use `filter`**. For example,
+
+            (check-expect (quakes-with-mag 1 5 (list Qx1 Qx2 Qx3))   (list Qx1 Qx2))
+            (check-expect (quakes-with-mag 3 7 (list Qx1 Qx2 Qx3))   (list Qx1 Qx3))
+
+3. Design a function named **`quakes-in`** that takes a place (string) and a list of quakes and produces a list of only those quakes whose location contains the place as a substring (look up the **`string-contains?`** function). **Use `filter`**. For example,
+
+            (check-expect (quakes-in "California" (list Qx1 Qx2 Qx3))  (list Qx1 Qx3))
+            (check-expect (quakes-in "Arizona" (list Qx1 Qx2 Qx3))     (list Qx2))
+
+
+
+
+
 ## Generating Maps
 
-Now, you'll design a function that uses a Google web service to generate a map image of quake locations. To generate maps with multiple markers on them, Google provides a [Static Maps](https://developers.google.com/maps/documentation/static-maps/intro) service that generates images based on a URL that you construct. For our purposes, we need to generate a URL that looks like:
+Now, you'll design a function that uses a Google web service to generate a map image of quake locations. To generate maps with multiple markers on them, Google provides a [Static Maps](https://developers.google.com/maps/documentation/static-maps/intro) service that generates images based on a URL that you construct. For our purposes, we need to generate a URL string that looks like:
 
     https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&size=500x300&markers=size:tiny|<location>|<location>|...
 
-where the prefix of the URL is fixed and there are as many locations as you want listed as comma-separated latitude/longitude pairs, separated by the pipe character `|`.
+where the prefix of the URL is fixed and there are as many locations as you want listed at the end of the URL as comma-separated latitude/longitude pairs, separated by the pipe character `|`.
 
 2. 
 
 
-
-## Selecting Quakes
-
-Here are a couple more functions that you can use to filter the entire list of quakes, enabling you to selectively map them. For example, you could evaluate `(open-browser-to (quake-markers (quakes-in "CA" all-quakes)))`.
-
-2. Design a function named **`quakes-with-mag`** that takes two numbers, a `lo` and a `hi`, and a list of quakes and produces only those quakes on the list whose magnitude is greater than or equal to `lo` and less than `hi`.
-
-2. Design a function named **`quakes-in`** that takes a place (string) and a list of quakes and produces a list of only those quakes whose location contains the place as a substring.
 
 
 
