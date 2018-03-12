@@ -201,7 +201,7 @@ The `direct-distance` function that you wrote for a previous activity will be he
    Hint: given the list of quakes, use `all-pairs` to generate a list of all possible pairs. Then `filter` the pairs to remove those whose distance between the `first` and `second` elements of the pair is zero. Next, `sort` the pairs according to the distance between the components of each pair (use `<=`). Finally, take the `first` element of the sorted result -- that should be the closest pair of quakes from the given list.
 
 
-You should be apply to apply your `closest-quake-to` and `closest-pair` and other functions you defined above to the USGS quake data: find the closest quake to your location; or the closest two quakes of magnitude greater than 4, etc.
+You should be apply to apply your `closest-quake-to` and `closest-pair` and other functions you defined above to the USGS quake data: find the closest quake to your location; or the closest two quakes of magnitude greater than 4 `(closest-pair (quakes-with-mag 4 10 all-quakes))`, etc.
 
 
 
