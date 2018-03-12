@@ -7,7 +7,7 @@ In this set of exercises you'll design functions to filter and map (literally) q
 
 ## Data Definitions
 
-You should have [latlong-utils.md | previously developed] a data definition and some functions for location coordinates (latitude/longitude). Copy your data definition and functions from that file into your file for this activity.
+You should have [https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md | previously developed] a data definition and some functions for location coordinates (latitude/longitude). Copy your data definition and functions from that file into your file for this activity.
 
 
 1. Provide a data definition for a `Quake` which keeps track of:
@@ -26,7 +26,7 @@ You should have [latlong-utils.md | previously developed] a data definition and 
 
 Now, you'll design a function that uses a Google web service to generate a map image of quake locations. To generate maps with multiple markers on them, Google provides a [Static Maps](https://developers.google.com/maps/documentation/static-maps/intro) service that generates images based on a URL that you construct. For our purposes, we need to generate a URL that looks like:
 
-    https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&size=500x300&markers=size:tiny|&lt;location&gt;|&lt;location&gt;|...
+    https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&size=500x300&markers=size:tiny|<location>|<location>|...
 
 where the prefix of the URL is fixed and there are as many locations as you want listed as comma-separated latitude/longitude pairs, separated by the pipe character `|`.
 
