@@ -127,6 +127,40 @@ Notice how we specified a common `base-path` of `"features"` for all the field p
 
 However, we need to deal with the issue of the time being a timestamp number instead of a string and the coordinates being a list instead of a location structure...
 
+## Converting Timestamp to String
+
+If you `(require sinbad/extras)` at the top of your file, you'll have access to a few useful functions dealing with dates.
+  - `seconds->date` takes a number of seconds and produces a `date` structure (made up of individual fields for year, month, day, hour, minute, and a bunch more).
+  - `date->string` produces a string representation of the data in a `date` structure.
+
+Experiment with these in the Interactions area to see how they work. Use [www.epochconverter.com/](https://www.epochconverter.com/) to generate or test timestamp values.
+
+6. Design a function named **`timestamp->string`** that converts a numeric timestamp in *milliseconds* (be careful) to a string description of the date and time. For example, `(timestamp->string 1510800677610)` should produce `"Wednesday, November 15th, 2017 9:51:17pm"`. 
+
+## Constructing Quakes from Data
+
+7. Develop a function named **`make-quake/data`** that produces a quake structure given the description of where it occurred, a timestamp in milliseconds, a magnitude, and a triple (list) of longitude, latitude, and depth coordinates. For instance,
+
+````
+(check-expect (make-quake/data "Somewhere" 1511195390000 4.2 (list -117.3 38.2 5))  ; NOTE: longitude, latitude order
+              (make-quake "Somewhere"
+                          "Monday, November 20th, 2017 11:29:50am"
+                          4.2
+                          (make-loc 38.2 -117.3)))                                  ; NOTE: latitude, longitude order
+````
+
+Now you should be able to load a list of `Quake` structures that respects your data definition above:
+
+````
+(define all-quakes
+  (fetch Qs (make-quake/data "properties/place"
+                             "properties/time"
+                             "properties/mag"
+                             "geometry/coordinates")
+         (base-path "features")))
+````
+
+Examine the results of typing `(first all-quakes)`, `(second all-quakes)`, `(first (reverse all-quakes))` (the last quake in the list) in the Interactions area.
 
 
 
