@@ -1,4 +1,4 @@
-# "Real Data" : Mapping Quakes
+# "Real Data" : Selecting & Mapping Quakes
 **[Data: Lists of structures + Abstract List Functions]**
 
 Now that you are familiar with both structures and lists, and some abstract functions for processing lists, let's revisit the United States Geological Service (USGS) data feed of earthquake events recorded around the world at [https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php](https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
