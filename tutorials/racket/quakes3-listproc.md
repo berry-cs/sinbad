@@ -48,11 +48,18 @@ Now, you'll design a function that uses a Google web service to generate a map i
 
 where the prefix of the URL is fixed and there are as many locations as you want listed at the end of the URL as comma-separated latitude/longitude pairs, separated by the pipe character `|`.
 
-2. 
+4. Develop a function named **`quake-loc-pairs->string`** that takes a list of quakes and produces a **string** of comma-separated latitude/longitude locations of all the quakes in the given list appended together with the pipe character between them. **Use `foldr` and `map`**. For example:
+
+            (check-expect (quake-loc-pairs->string (list Qx1 Qx2 Qx3))  
+                          "37.6,-118.83|38.2,-117.3|33.6,-117.1|")
+
+   (To make things simpler, note that there is a final `|` character at the end of the string.)
 
 
+5. Now, design a function named **`quake-markers`** that uses `quake-loc-pairs->string` to generate the complete Google Maps URL. For example: 
 
-
+            (check-expect (quake-markers (list Qx1 Qx2 Qx3))
+                          "https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&size=500x300&markers=size:tiny|37.6,-118.83|38.2,-117.3|33.6,-117.1|")
 
 
 
