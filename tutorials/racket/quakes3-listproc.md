@@ -61,6 +61,9 @@ where the prefix of the URL is fixed and there are as many locations as you want
             (check-expect (quake-markers (list Qx1 Qx2 Qx3))
                           "https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&scale=2&size=500x300&markers=size:tiny|37.6,-118.83|38.2,-117.3|33.6,-117.1|")
 
+   When you're done with this function, you should be able to `(require 2htdp/image)` and use the `bitmap/url` function to fetch the Google Maps image from the URL built by `quake-markers`. For example, typing `(bitmap/url (quake-markers (list Qx1 Qx2 Qx3)))` in the Interactions area should get you an image with three location markers on it -- one near Los Angeles in southern California, one more north in California, and one across the border in Arizona.
+   
+   
 
 
 
