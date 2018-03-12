@@ -7,7 +7,7 @@ In this set of exercises you'll design functions to filter and map (literally) q
 
 ## Data Definitions
 
-You should have [https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md](previously developed) a data definition and some functions for location coordinates (latitude/longitude). Copy your data definition and functions from that file into your file for this activity.
+You should have [previously developed](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/latlong-utils.md) a data definition and some functions for location coordinates (latitude/longitude). Copy your data definition and functions from that file into your file for this activity.
 
 
 1. Provide a data definition for a `Quake` which keeps track of:
