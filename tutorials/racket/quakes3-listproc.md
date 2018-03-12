@@ -64,6 +64,70 @@ where the prefix of the URL is fixed and there are as many locations as you want
    When you're done with this function, you should be able to `(require 2htdp/image)` and use the `bitmap/url` function to fetch the Google Maps image from the URL built by `quake-markers`. For example, typing `(bitmap/url (quake-markers (list Qx1 Qx2 Qx3)))` in the Interactions area should get you an image with three location markers on it -- one near Los Angeles in southern California, one more north in California, and one across the border in Arizona.
    
    
+## Connecting to Real Data
+
+The United States Geological Service (USGS) provides live feeds of earthquake events recorded around the world at https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php. The data provides a number of pieces of information for every quake event, including the magnitude.
+
+Set up a connection to the data source:
+
+````
+(require sinbad)
+
+(define Qs
+  (sail-to "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+           (cache-timeout (* 15 60))   ; every 15 minutes
+           (manifest)
+           (load)))
+````
+
+and examine the manifest to see what fields might be of interest. 
+
+Let's try fetching a few individual ones. Add the following lines of code to your program and run it:
+
+````
+(fetch-first Qs "features/properties/place")
+(fetch-first Qs "features/properties/time")
+(fetch-first Qs "features/properties/mag")
+(fetch-first Qs "features/geometry/coordinates")
+````
+
+You should get something like:
+
+````
+"20km ESE of Anza, CA"
+1511194604400
+0.53
+(list -116.4746667 33.4876667 16.07)
+````
+
+There are a couple of things to note here: 
+- the `time` field is a timestamp in milliseconds. You can use a website like [www.epochconverter.com/](https://www.epochconverter.com/) to convert it to a human-readable form. 
+- the `coordinates` are a list of three numbers: the *longitude* (first), then *latitude*, and the *depth* (in km) of the quake.
+
+You could go ahead and fetch a list of quake structures at this point, although the results will not respect your data definition above:
+
+````
+(define all-quakes
+  (fetch Qs (make-quake "properties/place"
+                        "properties/time"
+                        "properties/mag"
+                        "geometry/coordinates")
+         (base-path "features")))
+````
+
+Notice how we specified a common `base-path` of `"features"` for all the field paths and used the residual paths as the parameters for the `make-quake`. An equivalent way to write this would be:
+
+````
+(define all-quakes
+  (fetch Qs (make-quake "features/properties/place"
+                        "features/properties/time"
+                        "features/properties/mag"
+                        "features/geometry/coordinates")))
+````
+
+However, we need to deal with the issue of the time being a timestamp number instead of a string and the coordinates being a list instead of a location structure...
+
+
 
 
 
