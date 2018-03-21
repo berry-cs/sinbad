@@ -131,7 +131,7 @@ However, we need to deal with the issue of the time being a timestamp number ins
 
 If you `(require sinbad/extras)` at the top of your file, you'll have access to a few useful functions dealing with dates.
   - `seconds->date` takes a number of seconds and produces a `date` structure (made up of individual fields for year, month, day, hour, minute, and a bunch more).
-  - `date->string` produces a string representation of the data in a `date` structure.
+  - `date->string` produces a string representation of the data in a `date` structure. Use `(date->string (make-date...) true)` to format a date structure as a string and include the time in the string that is produced.
 
 Experiment with these in the Interactions area to see how they work. Use [www.epochconverter.com/](https://www.epochconverter.com/) to generate or test timestamp values.
 
