@@ -123,7 +123,7 @@ where
    (list "Mozambique" 1)))
 ````
 
-Select the colors of the country names randomly from a list of colors that is some subset you choose of this list of valid [color names](https://cs.berry.edu/webdocs-common/csc120/docs/colors.html).
+Select the colors of the country names randomly from a list of colors that is some subset you choose of this list of valid [color names](https://cs.berry.edu/webdocs-common/csc120/docs/colors.html). Note that the colors in the bars have to match the colors of the labels in the legend.
 
 
 ### Option B
