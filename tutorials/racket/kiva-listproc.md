@@ -90,12 +90,59 @@ See what results the functions you have written above produce when applied to `L
 
 ## Graphs and Clouds
 
-After finishing all of the above, **choose one** of the following two exercises (a) or (b). The first one is worth 6 points and is sufficient for getting full credit for this part of the assignment. The second option is more challenging and worth 10 to 15 points, so you will receive extra credit if you complete it successfully.
+After finishing all of the above, **choose one** of the following two exercises (a) or (b). The first one is sufficient for getting full credit for this part of the assignment. The second option is more challenging and you will receive extra credit if you complete it successfully.
 
-* Option A: Develop a function, `stats->chart`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a colored bar chart, complete with legend. For example:
+### Option A
 
-![kiva-chart.png](kiva-chart.png)
+Develop a function, `stats->chart`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a colored bar chart, complete with legend. For example:
 
+<img src="kiva-chart.png" width="400">
+
+where
+
+````
+(define sample-stats
+  (list
+   (list "Mongolia" 9)
+   (list "Philippines" 58)
+   (list "Peru" 15)
+   (list "Uganda" 2)
+   (list "Tajikistan" 2)
+   (list "Bolivia" 26)
+   (list "Azerbaijan" 1)
+   (list "Kenya" 22)
+   (list "Guatemala" 1)
+   (list "Benin" 1)
+   (list "Senegal" 1)
+   (list "Lebanon" 1)
+   (list "Nicaragua" 11)
+   (list "Mexico" 5)
+   (list "Costa Rica" 7)
+   (list "Nepal" 18)
+   (list "Tanzania" 5)
+   (list "Mozambique" 1)))
+````
+
+Select the colors of the country names randomly from a list of colors that is some subset you choose of this list of valid [color names](https://cs.berry.edu/webdocs-common/csc120/docs/colors.html).
+
+
+### Option B
+
+***(very challenging)*** 
+
+Develop a function, `stats->cloud`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a word cloud of the data. You can come up with whatever approach you want for the layout of your [word cloud](http://en.wikipedia.org/wiki/Word_cloud), but here is an example:
+
+      (stats->cloud sample-stats)
+      
+<img src="kiva-stats-sample.png" width="400">
+
+The font size of the country names should be proportional to the tally number in the list of stats. Select the colors of the country names randomly from a list of colors that is some subset you choose of this list of valid [color names](https://cs.berry.edu/webdocs-common/csc120/docs/colors.html).
+
+You can use the built-in `quicksort` function to write a function that sorts the countries list alphabetically before building the word cloud, as in the following (note that I violated my own suggestion here to not get more than 10 pages of Kiva data -- but I only ran this code once in the Interactions window, and it took several minutes before it accumulated all the data and produced the result):
+
+      (stats->cloud (sort-stats (tally-countries (get-kiva-pages 1 50))))
+      
+<img src="kiva-stats.png" width="400">
 
 
 
