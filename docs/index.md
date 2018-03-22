@@ -53,9 +53,9 @@ These pages provide a more leisurely and explanatory coverage of the features of
   + [Bike Share User Ages](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare3-ages.md) (lists of atomic data/non-empty lists)
     + [Bike Share: Handling Large Amounts of Data](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/bikeshare-sampling.md)
   + [Mapping Quakes](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes2-liststruct.md) (lists of structures)
+    + Alternate: [Selecting & Mapping Quakes](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/quakes3-listproc.md#real-data--selecting--mapping-quakes) (lists of structures + abstract list processing functions)
   + [Weather Stations and Observations](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/weather6-liststruct.md) (lists of structures)
-  
-
+  + [Kiva.org Microfinance Borrowers](https://github.com/berry-cs/sinbad/blob/master/tutorials/racket/kiva-listproc.md#real-data--microfinance-borrowers) (lists of structures + abstract list processing functions)
 
 ## Quick Reference
 These may be used as "cheatsheets".
