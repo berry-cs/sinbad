@@ -94,6 +94,8 @@ After finishing all of the above, **choose one** of the following two exercises 
 
 * Option A: Develop a function, `stats->chart`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a colored bar chart, complete with legend. For example:
 
+![kiva-chart.png](kiva-chart.png)
+
 
 
 
