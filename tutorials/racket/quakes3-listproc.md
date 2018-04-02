@@ -149,7 +149,7 @@ Experiment with these in the Interactions area to see how they work. Use [www.ep
                           (make-loc 38.2 -117.3)))                                  ; NOTE: latitude, longitude order
 ````
 
-Now you should be able to load a list of `Quake` structures that respects your data definition above:
+Now you should be able to load a list of `Quake` structures that respects your data definition above (note the difference here is using **`make-quake/data`** instead of just `make-quake`):
 
 ````
 (define all-quakes
