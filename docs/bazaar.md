@@ -36,6 +36,8 @@ Data Source | Notes
 [World Bank Projects & Operations](https://data.worldbank.org/data-catalog/projects-portfolio) | All of the World Bank's lending projects from 1947 to the present. The dataset includes basic information such as the project title, task manager, country, project id, sector, themes, commitment amount, product line, procurement notices, contract awards, and financing.
 [UN Data](http://data.un.org/) | 
 [Global Shark Attack File](http://www.sharkattackfile.net/) | provided as an Excel file (see Incident Log) that can be saved as CSV to use
+[KickStarter Data Sets](https://webrobots.io/kickstarter-datasets/) | JSON format, web-scraped by a third party
+[NYC Food Service Inspections](https://health.data.ny.gov/Health/Food-Service-Establishment-Last-Inspection/cnih-y5dw) | 
 
 ## Other meta-lists of data sources
 
