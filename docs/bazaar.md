@@ -38,6 +38,8 @@ Data Source | Notes
 [Global Shark Attack File](http://www.sharkattackfile.net/) | provided as an Excel file (see Incident Log) that can be saved as CSV to use
 [KickStarter Data Sets](https://webrobots.io/kickstarter-datasets/) | JSON format, web-scraped by a third party (large files)
 [NYC Food Service Inspections](https://health.data.ny.gov/Health/Food-Service-Establishment-Last-Inspection/cnih-y5dw) | 
+[Baseball Dataset](http://www.seanlahman.com/baseball-database.html) | See the individually-available files on GitHub.
+
 
 ## Other meta-lists of data sources
 
