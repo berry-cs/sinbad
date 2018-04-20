@@ -75,6 +75,7 @@ These may be used as "cheatsheets".
 
 ## Publications & Presentations
 
+* [CCSCNE '18, CCSCSE '17 workshop slides](http://cs.berry.edu/sinbad/ccscne18-workshop-slides.pdf)
 * [ITiCSE '16 paper](https://doi.org/10.1145/2899415.2899437): "A Generic Framework for Engaging Online Data Sources in
 Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/iticse16-paper.pdf)] [ [slides](http://cs.berry.edu/sinbad/iticse16-slides.pdf)]
 * [SPLASH-E '15](http://2015.splashcon.org/track/splash2015-splash-e#event-overview) workshop presentation: "A Generic Framework for Engaging Online Data Sources in Introductory Programming Courses"
