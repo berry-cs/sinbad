@@ -31,7 +31,7 @@ To get started, provide complete data definitions for each of the following (be 
                      
 ## Constructing Nested Data
 
-When fetching data from our data source, we will need to do more than just apply the `make-trip` constructor in the `fetch` expression. Since we have nested structures, and want to represent the trip duration in minutes rather than second, we'll need to define our own "constructor-ish" function to  use that with the `fetch` operator. 
+When fetching data from our data source, we will need to do more than just apply the `make-trip` constructor in the `fetch` expression. Since we have nested structures, and want to represent the trip duration in minutes rather than second, we'll need to define our own constructor-like function to  use  with the `fetch` operator. 
 
 1. Define a function named `make-trip/data` that constructs a proper `trip` structure from several pieces of data taken as parameters:
 
