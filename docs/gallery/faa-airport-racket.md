@@ -10,7 +10,7 @@
 
 ## Source
 
-[http://services.faa.gov/docs/services/airport/](http://services.faa.gov/docs/services/airport/)
+[http://services.faa.gov](http://services.faa.gov)
 
 Includes sample data request with metadata information
 
@@ -23,15 +23,15 @@ Includes sample data request with metadata information
 (require sinbad)
 
 (define faa
-  (sail-to (string-append "http://services.faa.gov/airport/status/ATL")
-           (format "xml")
-           (param "format" "application/xml")
+  (sail-to (string-append "https://soa.smext.faa.gov/asws/api/airport/status/ATL")
+           (format "json")
+           (param "format" "application/json")
            ;(cache-timeout 300)  ; refresh every 5 minutes
            (load)))
 
 (define-struct port (name loc condition delay?))
 
-(fetch faa (make-port "Name" "State" "Weather/Weather" "Delay"))
+(fetch faa (make-port "Name" "State" "Weather/Weather/Temp" "Delay"))
 
 (manifest faa)
 ````
@@ -42,38 +42,37 @@ Includes sample data request with metadata information
 (make-port "Hartsfield-Jackson Atlanta International" "Georgia" "Fair" #false)
 
 -----
-Data Source: http://services.faa.gov/airport/status/ATL?format=application%2Fxml
-Format: xml
+Data Source: https://soa.smext.faa.gov/asws/api/airport/status/ATL?format=application%2Fjson
+Format: json
 
 The following data is available:
 structure with {
   City : *
   Delay : *
+  DelayCount : *
   IATA : *
   ICAO : *
   Name : *
   State : *
-  Status : structure with {
-             AvgDelay : *
-             ClosureBegin : *
-             ClosureEnd : *
-             EndTime : *
-             MaxDelay : *
-             MinDelay : *
-             Reason : *
-             Trend : *
-             Type : *
-           }
+  Status : list of:
+             structure with {
+               Reason : *
+             }
+  SupportedAirport : *
   Weather : structure with {
-              Meta : structure with {
-                       Credit : *
-                       Updated : *
-                       Url : *
-                     }
-              Temp : *
-              Visibility : *
-              Weather : *
-              Wind : *
+              Meta : list of:
+                       structure with {
+                         Credit : *
+                         Updated : *
+                         Url : *
+                       }
+              Temp : list of *
+              Visibility : list of *
+              Weather : list of:
+                          structure with {
+                            Temp : list of *
+                          }
+              Wind : list of *
             }
 }
 ````
