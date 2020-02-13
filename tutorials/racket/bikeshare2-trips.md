@@ -55,7 +55,7 @@ When fetching data from our data source, we will need to do more than just apply
 
 ### Usage Fee (take 2)
 
-1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. Recall that for subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
+1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. For subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
 
    Follow the template as you design this function. It should suggest that you develop a helper function on a *user*, for which you should also follow the template as you develop it.
 
