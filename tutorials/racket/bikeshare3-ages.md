@@ -22,7 +22,7 @@ Let's start by designing a couple of functions to compute the smallest or larges
 
 1. Design a function **`smallest`** that takes a list of numbers and produces the smallest number in the list. Before you go to far, let's consider some examples:  `(smallest (cons 2 (cons 1 (cons 4 empty))))` should produce `1`. What about `(smallest empty)`?
 
-   Perhaps we should design the function `smallest` with the understanding that it should only be used with *non-empty lists*. Develop a data definition for a *non-empty list of numbers* (`NEList-of-numbers`). You might refer to the [textbook section on Non-Empty Lists](http://www.ccs.neu.edu/home/matthias/HtDP2e/part_two.html#%28tech._nelist._of._temperature%29) for help.
+   Perhaps we should design the function `smallest` with the understanding that it should only be used with *non-empty lists*. Develop a data definition for a *non-empty list of numbers* (`NEList-of-numbers`). You might refer to the [textbook section on Non-Empty Lists](https://htdp.org/2019-02-24/part_two.html#%28tech._nelist._of._temperature%29) for help.
    
    Now that you have a data definition for a `NEList-of-numbers`, go ahead and develop `smallest : NEList-of-numbers -> Number`. Make sure you work out several good examples and follow the template. 
    
