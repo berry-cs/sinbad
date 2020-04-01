@@ -58,6 +58,13 @@ So, to sum up, in order to fetch data as an object, we use the `fetch()` method 
         Observation ob1 = ds1.fetch("Observation", "weather", "temp_f", "wind_degrees");    
         System.out.println(id1 + ": " + ob1);
 
+> **Note for BlueJ users**: Instead of putting the name of the class in quotation marks as in the first statement above, you'll need to use alternate syntax for specifying the class to use, which is:
+
+>        Observation ob1 = ds1.fetch(Observation.class, "weather", "temp_f", "wind_degrees");    
+
+> Do this in all such cases for the remainder of these tutorials if you are using BlueJ.
+
+
 Add these lines to your program and run it. Note that when you try to concatenate an object like `ob1` to a string (as in the `println` statement), Java uses the `toString` method to create a string representation of the object. That's why we added a `toString()` method to the class definition above. 
 
 You should see a line printed out like:

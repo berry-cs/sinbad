@@ -11,8 +11,8 @@ In this activity, we will continue working with the CitiBike service data for Je
 
 To get started, provide complete data definitions for each of the following (be sure to include examples and templates).
 
-1. Locations: a structure `loc` with latitude and longitude -- you should have this already from a previous activity.
-2. Users are *either* a daily purchaser, represented by a string "Customer" or a subscriber, who has a gender ("Male" or "Female") and a year of birth. You should recognize that you need a data definition for an itemization that starts off something like this:
+1. **Location**: a structure `loc` with latitude and longitude -- you should have this already from a previous activity.
+2. **User**: A `User` is *either* a daily purchaser, represented by a string "Customer" or a subscriber, who has a gender ("Male" or "Female") and a year of birth. You should recognize that you need a data definition for an itemization that starts off something like this:
 
         ;; A User is either:
         ;;  - "Customer"  
@@ -20,7 +20,7 @@ To get started, provide complete data definitions for each of the following (be 
 
    Finish this off with a structure definition, interpretation, template, etc.
    
-3. A `trip` has a start and end *location*, duration in minutes, and user. Note that trips will contain nested structures: `loc`s and, often, `subscriber`s. Remember how references in the types comment should relate to something in the template for the data definition. Here's an example of a piece of data:
+3. **Trip**: A `trip` has a start and end *location*, duration in minutes, and user. Note that trips will contain nested structures: `loc`s and, often, `subscriber`s. Remember how references in the types comment should relate to something in the template for the data definition. Here's an example of a piece of data:
 
         (define SHOPPING-TRIP
           (make-trip (make-loc 40.72 -74.04)
@@ -31,7 +31,7 @@ To get started, provide complete data definitions for each of the following (be 
                      
 ## Constructing Nested Data
 
-When fetching data from our data source, we will need to do more than just apply the `make-trip` constructor in the `fetch` expression. Since we have nested structures, and want to represent the trip duration in minutes rather than second, we'll need to define our own "constructor-ish" function to  use that with the `fetch` operator. 
+When fetching data from our data source, we will need to do more than just apply the `make-trip` constructor in the `fetch` expression. Since we have nested structures, and want to represent the trip duration in minutes rather than second, we'll need to define our own constructor-like function to  use  with the `fetch` operator. 
 
 1. Define a function named `make-trip/data` that constructs a proper `trip` structure from several pieces of data taken as parameters:
 
@@ -55,7 +55,7 @@ When fetching data from our data source, we will need to do more than just apply
 
 ### Usage Fee (take 2)
 
-1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. Recall that for subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
+1. Design a function `trip-usage-fee` that computes the usage fee for a trip, if any. For subscribers there is no usage fee for the first 45 minutes of a trip. After that, the usage fee is $2.50 per 15 minutes. For "customers," there is no charge for the first 30 minutes of a trip. After 30 minutes, the charge is $4 per additional 15 minutes.
 
    Follow the template as you design this function. It should suggest that you develop a helper function on a *user*, for which you should also follow the template as you develop it.
 

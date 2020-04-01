@@ -130,7 +130,7 @@ Select the colors of the country names randomly from a list of colors that is so
 
 ***(very challenging)*** 
 
-Develop a function, `stats->cloud`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a word cloud of the data. You can come up with whatever approach you want for the layout of your [word cloud](http://en.wikipedia.org/wiki/Word_cloud), but here is an example:
+Develop a function, `stats->cloud`, that consumes the statistics produced by the `tally-countries` function above (step 7) and produces a word cloud of the data. You can come up with whatever approach you want for the layout of your [word cloud](http://en.wikipedia.org/wiki/Word_cloud), but it should have the names of the countries broken up onto multiple lines based on a fixed width. Here is an example:
 
       (stats->cloud sample-stats)
       

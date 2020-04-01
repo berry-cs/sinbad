@@ -235,7 +235,7 @@ System.out.println( kiva.toString() );
 
 The two changes from the version presented in the [Accessing Data](#accessing-data) section above are the `xml` in the URL and the different path prefix, `loans/loan/...`. (XML tends to be more verbose than other formats and sometimes introduces  more layers of structure into the data.) 
 
-If for some reason Sinbad cannot infer the type of data being accessed, use the `connect_as` method to provide it a hint:
+If for some reason Sinbad cannot infer the type of data being accessed, use the `connectAs` method to provide it a hint:
 
 ````
 DataSource ds = DataSource.connectAs("xml", "http://api.kivaws.org/v1/loans/newest.xml");

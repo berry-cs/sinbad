@@ -1,14 +1,14 @@
 {
-  "path": "http://services.faa.gov/airport/status/@{airport_code}",
+  "path": "https://soa.smext.faa.gov/asws/api/airport/status/@{airport_code}",
   "name": "FAA Airport Status",
-  "format": "xml",
+  "format": "json",
   "options": [],
   "params": 
 	 [{
 		"type": "query",
 		"key": "format",
 		"required": "true",
-		"value": "application/xml"
+		"value": "application/json"
 	  },
 	  {
 		"type": "path",
