@@ -2,6 +2,8 @@ package data.json;
 
 import static core.log.Errors.exception;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,15 +33,68 @@ public class JsonSchemaBuilder {
         }
     }
 
+    private static ISchema mergeSchemas(ISchema sch, Object data) {
+        if (sch instanceof CompSchema && data instanceof JSONObject) {
+            return mergeCompSchemas((CompSchema) sch, (JSONObject) data);
+        } else if (sch instanceof ListSchema && data instanceof JSONArray) {
+            return mergeListSchemas((ListSchema) sch, (JSONArray) data);
+        } else {
+            return sch;
+        }
+    }
+    
+
     private static ISchema inferCompSchema(JSONObject data, String path) {
-        String[] fieldNames = JSONObject.getNames(data);
-        CompField[] flds = new CompField[fieldNames.length];
-        int i = 0;
-        for (String field : fieldNames) {
-            flds[i++] = new CompField(field, inferSchema(data.get(field), field)); // this is where path gets passed down
+        String[] fieldNames = JSONObject.getNames(data);  // produced null once for `https://www.loc.gov/collections/?fo=json`
+        CompField[] flds = new CompField[0];
+        
+        if (fieldNames != null) {
+            flds = new CompField[fieldNames.length];
+            int i = 0;
+            for (String field : fieldNames) {
+                flds[i++] = new CompField(field, inferSchema(data.get(field), field)); // this is where path gets passed down
+            }
         }
         CompSchema cs = new CompSchema(path, flds);
         return cs;
+    }
+    
+    
+    private static ListSchema mergeListSchemas(ListSchema sch, JSONArray data) {
+        ISchema eltSchema = sch.getElementSchema();
+        for (Object dataElt : data) {
+            eltSchema = mergeSchemas(eltSchema, dataElt);
+        }
+        return new ListSchema(sch.getPath(), sch.getDescription(), eltSchema);
+    }
+    
+    // this adds additional fields to an existing compound schema, for cases of lists of dictionaries, where not
+    // every element in the list has the same fields
+    private static CompSchema mergeCompSchemas(CompSchema sch, JSONObject data) {
+        HashMap<String, ISchema> oldFlds = sch.getFieldMap();
+        String[] fieldNames = JSONObject.getNames(data);
+        if (fieldNames != null) {
+            int countNew = 0;
+            for (String fn : fieldNames) { if (!oldFlds.containsKey(fn)) countNew++; }
+            CompField[] newFields = new CompField[oldFlds.size() + countNew];
+            int cur = 0;
+            for (String fn : oldFlds.keySet()) {  // copy over the old fields, but merge them as we go too...
+                ISchema oldSchema = oldFlds.get(fn);
+                if (data.has(fn)) {
+                    Object dataOffn = data.get(fn);
+                    newFields[cur++] = new CompField(fn, mergeSchemas(oldSchema, dataOffn));
+                } else {
+                    newFields[cur++] = new CompField(fn, oldSchema);
+                }
+            }
+            for (String fn : fieldNames) {
+                if (!oldFlds.containsKey(fn)) {
+                    newFields[cur++] = new CompField(fn, inferSchema(data.get(fn), fn));
+                }
+            }
+            sch = new CompSchema(sch.getPath(), sch.getDescription(), newFields);
+        }        
+        return sch;
     }
 
     private static ISchema inferArraySchema(JSONArray data, String path) {
@@ -58,7 +113,8 @@ public class JsonSchemaBuilder {
         }
         
         if (allSame) {
-            ListSchema ls = new ListSchema(path, inferSchema(first));
+            ISchema eltSchema = inferSchema(first);
+            ISchema ls = mergeSchemas(new ListSchema(path, eltSchema), data);
             return ls;
         } else {
             CompField[] flds = new CompField[N];

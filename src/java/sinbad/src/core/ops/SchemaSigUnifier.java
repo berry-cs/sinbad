@@ -75,8 +75,9 @@ public class SchemaSigUnifier {
         HashMap<String, ISchema> fieldMap = sch.getFieldMap();
         if (fieldMap.size() == 1)
         {
-            ISchema field0 = fieldMap.values().iterator().next();
-            return unifyWith(field0,sig);
+            String fstLabel = fieldMap.keySet().iterator().next();
+            ISchema field0 = fieldMap.get(fstLabel);
+            return opf.makeSelectOp(unifyWith(field0,sig), fstLabel);
         } else { 
             throw new RuntimeException("Cannot unify compound data of more than one field with a primitive.");
         }
@@ -84,13 +85,21 @@ public class SchemaSigUnifier {
     
     
     public static <T> IDataOp<T> unifyWith(CompSchema sch, CompSig<?> sig) {
-        //System.err.println(sch.toString(true) + "\n" + sig);
+        //System.out.println("1 - " + sch.toString(true) + "\n" + sig);
         
         IDataOp<T>[] listOps = new IDataOp[sig.getFieldCount()];
 
         for(int i = 0; i < sig.getFieldCount(); i++){
             try {
-                listOps[i] = sch.apply(new FieldSelectUnifier<T>(sig.getFieldName(i), sig.getFieldSig(i)));
+                // this is to support comp signatures that have nested
+                //  comp signatures, drawing from a flat schema; so when 
+                //  unifying with the nested signature, there is no select op
+                //  that happens on the schema of the data
+                if (sig.getFieldName(i) == null) {
+                    listOps[i] = unifyWith((ISchema)sch, (ISig)sig.getFieldSig(i));
+                } else {
+                    listOps[i] = sch.apply(new FieldSelectUnifier<T>(sig.getFieldName(i), sig.getFieldSig(i)));
+                }
             } catch(RuntimeException e){
                 //e.printStackTrace();
                 throw exception(DataAccessException.class, "da:get-path", sig.getFieldName(i));
@@ -177,10 +186,11 @@ public class SchemaSigUnifier {
             // (LIST-STRIP) rule
             return opf.makeIndexOp(unifyWith(sch.getElementSchema(),sig), sch.getPath(), 0);  
         }catch(RuntimeException e){
-            e.printStackTrace();
+          //  e.printStackTrace();
+            // (LIST-COMP-WEIRD) rule
             IDataOp<T>[] ops = new IDataOp[sig.getFieldCount()];
             for(int i = 0; i < ops.length; i++){
-                ops[i] = opf.makeIndexOp(unifyWith(sch.getElementSchema(),sig.getFieldSig(i)),sch.getPath(),i);
+                ops[i] = opf.makeIndexOp(unifyWith(sch.getElementSchema(), sig.getFieldSig(i)), sch.getPath(), i);
             }
             ConstructorSigPair<?> csp = SigClassUnifier.findConstructor(sig);
             return opf.makeConstructor(csp.constructor, ops);
@@ -297,9 +307,11 @@ public class SchemaSigUnifier {
 	
 	
     protected static String longestCommonPrefix(String[] strings, char sep) {
-        if (strings.length <= 0) {
+        if (strings.length == 0) {
             return "";
         }
+        
+        for (String s : strings) { if (s == null) return ""; }
         
         for (int prefixLen = 0; prefixLen < strings[0].length(); prefixLen++) {
             char c = strings[0].charAt(prefixLen);
@@ -340,8 +352,11 @@ public class SchemaSigUnifier {
         public IDataOp<T> visit(CompSchema s) {
             HashMap<String, ISchema> fieldMap = s.getFieldMap();
             
+            if (fieldName == null) {
+                return unifyWith(s, fieldSig);
+            }
             // (BASE) rule
-            if (fieldMap.containsKey(fieldName)) {
+            else if (fieldMap.containsKey(fieldName)) {
                 ISchema theFieldSchema = fieldMap.get(fieldName);
                 // clearPath() in next statement so that the next op doesn't try to use 
                 //    the path of theFieldSchema to select out the field again

@@ -44,12 +44,12 @@ public class CsvDataAccess extends FailAccess {
         sts.getFormat().setDelimiter(this.delimiter);
         sts.setMaxCharsPerColumn(10000);
         sts.getFormat().setQuote(this.quote);
-        sts.getFormat().setComment('\0');   // disable comments
+        //sts.getFormat().setComment('\0');   // disable comments
         
         p = new CsvParser(sts);
         //System.err.println(p.parseAll(new InputStreamReader(is)));
         p.beginParsing(new InputStreamReader(new BufferedInputStream(is)));
-        
+
         for (int i = 0; i < skipRows; i++) {
             p.parseNext();
         }

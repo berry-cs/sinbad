@@ -56,7 +56,10 @@ public class TestSchemaSigUnifier {
 		/*=======  Test case : Compound || Prim */
 		CompSchema fld2 = new CompSchema("somePath","A description", new CompField("n", new PrimSchema("somePath","")));
 		IDataOp<Integer> dop = unifier.unifyWith(fld2, INT_SIG); 
-		assertEquals((Integer) 123,dop.apply(new RawPrim("123")));
+		System.out.println(dop);
+		assertEquals((Integer) 123,dop.apply(
+		            new RawStruct(new RawStructField[]{
+		                    new RawStructField("n",new RawPrim("123"))})));
 	}
 
 
@@ -147,11 +150,12 @@ public class TestSchemaSigUnifier {
 		/*======= Test case : Comp || List => (List WRAP Comp)*/
 		CompSchema wrapField = new CompSchema("foo","Dec",new CompField("n",new PrimSchema()));
 		ListSig listWrapComp = new ListSig(FOO_SIG);
-		IDataOp<Stream<Foo>> dop = unifier.unifyWith(wrapField, listWrapComp);
+		IDataOp<Stream<Foo>> dop = SchemaSigUnifier.unifyWith(wrapField, listWrapComp);
 		List<Foo> l = new ArrayList<Foo>();
 		l.add(new Foo(521));
 		System.out.println(dop);
-		assertEquals(l,dop.apply(new RawStruct(new RawStructField("n",new RawPrim("521")))).collect(Collectors.toList()));
+		assertEquals(l,dop.apply(new RawStruct(new RawStructField("n",new RawPrim("521")),
+		                                       new RawStructField("m", new RawPrim("123")))).collect(Collectors.toList()));
 	}
 
 	@Test
@@ -217,6 +221,24 @@ public class TestSchemaSigUnifier {
 		System.out.println(new RawList("foo",testData2));
 		assertEquals(l,listOFoos.apply(new RawList("list",testData2)).collect(Collectors.toList()));
 	}
+	
+   @Test
+    public void testList_Comp_Weird(){
+        /*======== Test Case : List[t] || COmp[t] */
+        ListSchema list = new ListSchema("list",new PrimSchema("x"));
+        
+        IDataOp<Bar> barOp = SchemaSigUnifier.unifyWith(list, BAR_SIG);
+        IRawAccess[] testData2 = new IRawAccess[10];
+        for(int j = 0; j < testData2.length; j++){
+            testData2[j] = new RawPrim(""+((j+1)*j));
+        }
+        System.out.println(barOp);
+        System.out.println(new RawList("foo",testData2));
+        System.out.println(barOp.apply(new RawList("list",testData2)));
+        assertEquals(new Bar(0, 2, "6"),
+                     barOp.apply(new RawList("list",testData2)));
+    }
+
 	
 	@Test
 	public void testList_ListList_List(){

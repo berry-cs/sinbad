@@ -66,15 +66,16 @@ public class JsonDataAccess extends FailAccess {
     
     @Override
     public String getContents() {
-        if (data == JSONObject.NULL) 
+        if (JSONObject.NULL.equals(data)) 
             return "";
-        else 
-            return data.toString();
+        return data.toString();
     }
     
     @Override
     public IDataAccess get(String path) {
-        if (path == null) {
+        if (JSONObject.NULL.equals(data)) {
+            return new JsonDataAccess(JSONObject.NULL);
+        } else if (path == null) {
             return super.get(path);
         }
         
@@ -89,7 +90,9 @@ public class JsonDataAccess extends FailAccess {
 
     @Override
     public IDataAccess get(String path, int i) {
-        if (path == null) {
+        if (JSONObject.NULL.equals(data)) {
+            return new JsonDataAccess(JSONObject.NULL);
+        } else if (path == null) {
             if (data instanceof JSONArray) {
                 JSONArray arr = (JSONArray) data;
                 if (i < arr.length()) {
@@ -111,7 +114,9 @@ public class JsonDataAccess extends FailAccess {
     
     @Override
     public Stream<IDataAccess> getAll(String path) {
-        if (path == null) {
+        if (JSONObject.NULL.equals(data)) {
+            return Stream.empty();
+        } else if (path == null) {
             if (data instanceof JSONArray) {
                 JSONArray arr = (JSONArray) data;
                 return IntStream.range(0,  arr.length()).mapToObj(i -> new JsonDataAccess(arr.get(i)));

@@ -15,6 +15,26 @@ import core.data.DataSource;
 import core.spec.DataSpecGenerator;
 import junit.framework.Assert;
 
+/*
+  class C {
+    int year; 
+    double price;
+    
+    }
+    
+  class B {
+     String make;
+     String model;
+     C info;
+     
+     }
+     
+
+    ds.fetch(listOf(objectOf(B.class, stringOf("Make"), stringOf("Model"), 
+                                    objectOf(C.class, intOf("Year"), doubleOf("Price")))));
+
+
+ */
 
 public class TestDataSource {
     
@@ -22,6 +42,29 @@ public class TestDataSource {
     public void testHelp() {
         DataSource.help();
     }
+    
+    
+    @Test
+    public void testAdvancedAccess() {        
+        DataSource ds = DataSource.connect("src/core/tests/example.csv");
+        //ds.clearENTIRECache();
+        //ds.setOption("skip-rows", 4);
+        assertEquals(true, ds.readyToLoad());
+        
+        ds.load();
+        System.out.println(ds.getDataAccess().getSchema());
+        
+        assertEquals(new A("Ford", 1997, 3000.0), 
+                     ds.fetch("core.tests.A", "Make", "Year", "Price"));
+        ArrayList<A> as = ds.fetchList(A.class,  "Model", "Year", "Price");
+        System.out.println(as);
+        
+        A[] aarray = ds.fetchArray("core.tests.A", "Model", "Year", "Price");
+        assertEquals(5, aarray.length);
+        
+        ds.printUsageString();
+    }
+
     
     @Test
     public void testJsonCollectNestedLists() {

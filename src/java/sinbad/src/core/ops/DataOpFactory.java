@@ -1,7 +1,10 @@
 package core.ops;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -190,6 +193,20 @@ public class DataOpFactory {
 				
 				for(int i = start; i < args.length; i++) {
 					args[i] = consParamOps[i-start].apply(d);
+					Parameter consParam = cons.getParameters()[i];
+					// (?) if the parameter type is an array and we ended up with a stream of data, then cast the stream to an array
+					if (consParam.getType().isArray()
+					        && args[i] instanceof Stream) {
+					    args[i] = ((Stream<IDataAccess>)args[i]).toArray();
+					    Object[] castArgs = (Object[])Array.newInstance(consParam.getType().getComponentType(), ((Object[])args[i]).length);
+					    for (int j = 0; j < ((Object[])args[i]).length; j++) {
+					        castArgs[j] = ((Object[])args[i])[j];
+					    }
+					    args[i] = castArgs;
+	                    //System.out.printf("args[%d]=%s\n", i, ((Object[])args[i]));
+	                    //System.out.printf("param: %s\n", consParam.getType());
+					}
+					// TODO:  else if (consParam.getType().equals(ArrayList.class)) --- convert that...
 				}
 				try {
 				    cons.setAccessible(true);

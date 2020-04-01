@@ -52,7 +52,13 @@ public class SigUtils {
         
         ArgSpec[] args = new ArgSpec[keys.length];
         for (int i = 0; i < keys.length; i++) {
-            args[i] = new ArgSpec(keys[i], PrimSig.WILDCARD_SIG);
+            String key = keys[i];
+            if (key.startsWith("[")) {
+                key = key.substring(1);
+                args[i] = new ArgSpec(key, new ListSig(PrimSig.WILDCARD_SIG));
+            } else { 
+                args[i] = new ArgSpec(key, PrimSig.WILDCARD_SIG);
+            }
         }
         CompSig<C> cs = new CompSig<C>(cls, args);
         return cs;

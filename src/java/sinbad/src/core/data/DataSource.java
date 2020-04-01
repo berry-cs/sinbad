@@ -678,12 +678,18 @@ public class DataSource implements IDataSource {
         
         ISig sig = SigUtils.buildCompSig(cls, keys).apply(new SigClassUnifier(cls));
         ISig lsig = new ListSig(sig);
+        return this.fetchList(cls, lsig);
+    }
+    
+    public <T> ArrayList<T> fetchList(Class<T> cls, ISig lsig) {
         boolean success = false;
         
         try {
             ISchema sch = this.dataAccess.getSchema();
             IDataOp<Stream<T>> op = SchemaSigUnifier.unifyWith(sch, lsig);
+            //System.out.printf("SIG: %s\nSCHEMA: %s\nOP: %s\n", ""+lsig, ""+sch, ""+op + "\n   [datasource.java]");
             Stream<T> d = op.apply(this.dataAccess);
+            //System.out.println("STREAM: " + d.iterator().next());
             ArrayList<T> result = d.collect(Collectors.toCollection(ArrayList::new));
             success = true;
             return result;
