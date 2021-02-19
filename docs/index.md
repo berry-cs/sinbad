@@ -75,6 +75,9 @@ These may be used as "cheatsheets".
 
 ## Publications & Presentations
 
+* [ACM SE '20 paper](https://dl.acm.org/doi/10.1145/3374135.3385284) "Lightweight Automated Structure Inference and Binding of Data Sources to Predefined Data Types"
+* [SIGCSE '18 panel](https://dl.acm.org/doi/10.1145/3159450.3159616) "Preparing, Visualizing, and Using Real-world Data in Introductory Courses"
+* [CCSCSE '18 paper](https://dl.acm.org/doi/10.5555/3282588.3282616) "Automated inference of fixed-width data formats"
 * [CCSCNE '18, CCSCSE '17 workshop slides](http://cs.berry.edu/sinbad/ccscne18-workshop-slides.pdf)
 * [ITiCSE '16 paper](https://doi.org/10.1145/2899415.2899437): "A Generic Framework for Engaging Online Data Sources in
 Introductory Programming Courses" [ [local copy](http://cs.berry.edu/sinbad/iticse16-paper.pdf)] [ [slides](http://cs.berry.edu/sinbad/iticse16-slides.pdf)]
