@@ -12,7 +12,7 @@ For a list of data sources, visit the [Bazaar <img src="bazaar.png" alt="bazaar"
 
 ## Installation
 Instructions for:
-* [Java/Processing](install-java)
+* [Java/Processing/Replit](install-java)
 * [Python](install-python)
 * [Racket](install-racket)
 
