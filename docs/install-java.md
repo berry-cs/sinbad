@@ -39,4 +39,27 @@ Locate the `sinbad.jar` file that you downloaded and click "Open"/"OK".
 You should be all set! Repeat this for every sketch that needs to use the library.
 
 
+## [Replit](https://replit.com/)
+
+(Instructions [based on this post](https://replit.com/talk/ask/Jar-files/21299).)
+
+- Create a new Java repl.
+- Download the `sinbad.jar` file above and then upload it to the Replit environment where your `Main.java` file is (drag the jar files onto the `Files` area of the Repilt environment). (In the rest of the instructions, change `Main.java` to whatever file name your `main` function is defined in.)
+- To manually compile and run the `Main.java` program, you can type the following two commands in the `Console` area (press `Return` after typing each one):
+  ```
+  javac -classpath .:sinbad.jar -d . Main.java
+  java -classpath.:sinbad.jar Main
+  ```
+  This should compile and run the program, and you should see the output in the console.
+
+- To have the **Run** button work with the Sinbad JAR file, create a file named `.replit`  in your main Replit directory and put the following text in it:
+  ```
+  run = "export CLASSPATH=\".:sinbad.jar\"; javac -d . Main.java; java Main"
+  ```
+
+  Save and close the file, and then when you press the **Run** button in the Replit window, it should run those two commands automatically.
+  
+ 
+
+
 
