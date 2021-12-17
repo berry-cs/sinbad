@@ -7,7 +7,7 @@
 
 ## Quick Install
 
-- Go to [http://cs.berry.edu/sinbad/index-java.php](http://cs.berry.edu/sinbad/index-java.php)
+- Go to [https://cs.berry.edu/sinbad/index-java.php](http://cs.berry.edu/sinbad/index-java.php)
 - Download the latest `sinbad.jar` file to your computer.
 - Add the `sinbad.jar` file to the class path for whatever development environment you are using. Below are details for some common IDEs.
 
