@@ -3,7 +3,7 @@
 
 In this activity, we will continue working with the CitiBike service data for Jersey City, NY (U.S.A.) provided at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). If you scroll down to the middle of that page, you'll see the data that is provided for "Trip Histories".
 
-* Before getting started, let's make sure you have the data all set and ready to go. Click on the link to "downloadable files" at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). Then scroll down and choose a recent "JC-...csv.zip" file. <small>(The "JC-" prefix indicates Jersey City, and these files are much smaller than the full New York City data files that don't have that prefix.)</small> Right click on the file you've chosen and copy the link address/URL to that file. 
+* Before getting started, let's make sure you have the data all set and ready to go. Click on the link to "downloadable files" at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). Then scroll down and choose a "JC-...csv.zip" file (from earlier than 2019 -- the data fields collected were changed at some point and later data files will not work for this activity). <small>(The "JC-" prefix indicates Jersey City, and these files are much smaller than the full New York City data files that don't have that prefix.)</small> Right click on the file you've chosen and copy the link address/URL to that file. 
 
 * In a new file in DrRacket, `(require sinbad)` and then `sail-to` the URL that you copied, e.g. `"https://s3.amazonaws.com/tripdata/JC-201709-citibike-tripdata.csv.zip"`, with a `load` and `manifest` clause. Make sure that you can run the program and see the list of available data elements.
 
