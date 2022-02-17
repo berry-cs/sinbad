@@ -98,7 +98,7 @@ should produce `4`.
 4. Now you can use your `how-many-between` to examine the number of riders in any particular age group, e.g. `(how-many-between 15 20 all-ages)`.
 
 
-## Aside: Performance of `smallest`/`largest`
+### Aside: Performance of `smallest`/`largest`
 
 If you define the bodies of `smallest`/`largest` using a straightforward `if` expression such as
 
