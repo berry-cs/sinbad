@@ -1,5 +1,5 @@
 # "Real Data" : Bike Share - Analyzing User Ages and Trip Lengths
-**[Data: Lists of atomic data/non-empty lists]**
+**[Data: Lists of atomic data/non-empty lists/list of structures]**
 
 In this activity, we will continue working with the CitiBike service data for Jersey City, NY (U.S.A.) provided at [https://www.citibikenyc.com/system-data](https://www.citibikenyc.com/system-data). If you scroll down to the middle of that page, you'll see the data that is provided for "Trip Histories".
 
@@ -118,6 +118,8 @@ Ask your instructor for more details if you are curious or would like to underst
 ## Longest Trips
 
 Start with your definitions from a previous activity where we defined structures and functions to process [trips and users](bikeshare2-trips.md).
+
+1. Write a data definition, including template, for a non-empty list of trips (`NEList-of-trips`). 
 
 1. Design a function **`trip-length`** that computes the distance of a trip using the Manhattan distance formula.
 
