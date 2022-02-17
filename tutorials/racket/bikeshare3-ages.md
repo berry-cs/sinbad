@@ -97,8 +97,7 @@ should produce `4`.
 
 4. Now you can use your `how-many-between` to examine the number of riders in any particular age group, e.g. `(how-many-between 15 20 all-ages)`.
 
-   
-   
+
 ## Aside: Performance of `smallest`/`largest`
 
 If you define the bodies of `smallest`/`largest` using a straightforward `if` expression such as
@@ -113,3 +112,59 @@ Later on in the course, we'll see how this is an appropriate place to use a `loc
 
 Ask your instructor for more details if you are curious or would like to understand better what we are talking about here.
 
+
+
+
+## Longest Trips
+
+Start with your definitions from a previous activity where we defined structures and functions to process [trips and users](bikeshare2-trips.md).
+
+1. Design a function **`trip-length`** that computes the distance of a trip using the Manhattan distance formula.
+
+2. Design a function **`longer-distance-trip`** that takes two trips and produces the trip with the longer trip length.
+
+3. Design a function **`longest-trip : NEList-of-trips -> Trip`** that produces the longest trip from the given list. For example,
+
+            (define TRIP-1
+               (make-trip (make-loc 40.72 -74.04)
+                          (make-loc 40.71 -74.05)
+                          10   ; minutes
+                          (make-subscriber "male" 1998)))
+            (define TRIP-2
+              (make-trip (make-loc 40.718 -74.044)
+                         (make-loc 40.711 -74.056)
+                         12
+                         (make-subscriber "female" 1986)))
+            (define TRIP-3
+              (make-trip (make-loc 40.726 -74.049)
+                         (make-loc 40.719 -74.043)
+                         3
+                         (make-subscriber "male" 1992)))
+
+            (check-expect (longest-trip (list TRIP-3 TRIP-2 TRIP-1))
+                          TRIP-1)
+
+   You should now be able to load the trips from a data file and find the longest trip (by distance):
+
+            (define all-trips
+              (fetch ds (make-trip/data "start station latitude"
+                                                "start station longitude"
+                                                "end station latitude"
+                                                "end station longitude"
+                                                "tripduration"
+                                                "usertype"
+                                                "gender"
+                                                "birthyear")))
+
+   What do you get? You probably will realize that there are some trips with invalid data, where the start or end locations are missing: (0, 0). So we'll need to filter those out:
+   
+4. Design a function **`filter-valid-trips : List-of-trips -> List-of-trips`** that produces a list with only the valid trips from the given list. A valid trip should have
+   non-zero locations for both start and end coordinates (note: you should already have a helper function to help with this), and should last less than a week in duration
+   (which is about 10000 minutes).
+   
+   Now, try `(longest-trip (filter-valid-trips all-trips))`. What do you find?
+   
+   Remember, you can map the trip on Google in your browser using `(open-browser-to (trip-map-url (longest-trip (filter-valid-trips all-trips))))`.
+   
+   Cool stuff!
+   
