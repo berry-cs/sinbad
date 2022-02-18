@@ -1,6 +1,6 @@
 # Installation
 
-- Go to [http://cs.berry.edu/sinbad](http://cs.berry.edu/sinbad/)
+- Go to [https://cs.berry.edu/sinbad](https://cs.berry.edu/sinbad/)
 - Download the latest "sinbad-vX.X.jar" file to your computer.
 - See the appropriate section below for the development environment you are using:
 
