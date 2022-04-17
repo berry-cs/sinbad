@@ -81,7 +81,7 @@ Here is a function that uses the Sinbad library to connect to the Kiva API and r
 
 9. Write a function `get-kiva-pages : Number Nat -> [listof Borrower]` that retrieves the given (natural) number of pages of data from the Kiva website, starting with a particular page number. i.e. (get-kiva-pages start-page num-of-pages). Define the function based on the template for natural numbers.
 
-   Please do not use this function with more than 10 pages at a time. Otherwise it will put undue stress on the Berry network and the Kiva servers. (See point #6 on the Kiva API [Code of Conduct](http://build.kiva.org/docs/code_of_conduct) page.) You can call this function once in your file and assign the result to a constant, to be used in test cases:
+   Please do not use this function with more than 10 pages at a time. Otherwise it will put undue stress on the Berry network and the Kiva servers. (See point #6 on the Kiva API [Code of Conduct](https://www.kiva.org/build/code-of-conduct) page.) You can call this function once in your file and assign the result to a constant, to be used in test cases:
 
         (define LIVE-DATA (get-kiva-pages 1 5)) ;; first five pages of current data from Kiva
         
