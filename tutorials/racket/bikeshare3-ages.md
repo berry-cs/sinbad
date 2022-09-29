@@ -7,7 +7,7 @@ In this activity, we will continue working with the CitiBike service data for Je
 
 * In a new file in DrRacket, `(require sinbad)` and then `sail-to` the URL that you copied, e.g. `"https://s3.amazonaws.com/tripdata/JC-201709-citibike-tripdata.csv.zip"`, with a `load` and `manifest` clause. Make sure that you can run the program and see the list of available data elements.
 
-** If you get an error message like, `failed to load data: Specify a file-entry from the ZIP file: (JC-202208-citibike-tripdata.csv __MACOSX/._JC-202208-citibike-tripdata.csv)`, then add a clause like `(option "file-entry" "JC-202208-citibike-tripdata.csv")` to your `sail-to` expression with the name of the appropriate `.csv` file to extract the data from.
+  * If you get an error message like, `failed to load data: Specify a file-entry from the ZIP file: (JC-202208-citibike-tripdata.csv __MACOSX/._JC-202208-citibike-tripdata.csv)`, then add a clause like `(option "file-entry" "JC-202208-citibike-tripdata.csv")` to your `sail-to` expression with the name of the appropriate `.csv` file to extract the data from.
 
 
 ## Questions
