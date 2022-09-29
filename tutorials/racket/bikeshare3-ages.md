@@ -117,7 +117,7 @@ Ask your instructor for more details if you are curious or would like to underst
 
 
 
-## Longest Trips
+# Longest Trips
 
 Start with your definitions from a previous activity where we defined structures and functions to process [trips and users](bikeshare2-trips.md).
 
