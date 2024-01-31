@@ -1,7 +1,7 @@
 # "Real Data" Activity: Structures with Weather Data
 **[Data: Simple structures]**
 
-## Warmup: Data Definitions for Structures
+## Prep: Data Definitions for Structures
 
 As you start this activity, you should know that a *structure* is a programming language mechanism to combine several pieces of data into a single piece of compound data.
 
