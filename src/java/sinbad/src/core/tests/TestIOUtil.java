@@ -13,9 +13,6 @@ import core.util.FileLoader;
 
 
 public class TestIOUtil {
-    @Rule
-    public final ExpectedException ex = ExpectedException.none();
-
     @Test
     public void testCreateInput() {
         assertNotNull(new FileLoader().createInput("http://www.google.com"));
@@ -31,8 +28,12 @@ public class TestIOUtil {
     
     @Test
     public void testCreateInputFail1() {
-        ex.expect(RuntimeException.class);
-        new FileLoader().createInput("src/core/tests/testioutil.java");
+        try {
+        	new FileLoader().createInput("src/core/tests/testioutil.java");
+        	fail("didn't raise exception");
+        } catch (RuntimeException re) {
+        	
+        }
     }
 
 

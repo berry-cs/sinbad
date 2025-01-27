@@ -4,10 +4,11 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import org.json.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import core.cache.DataCacher;
 import core.data.CacheConstants;
@@ -113,7 +114,7 @@ public class TestDataSource {
         System.out.println(ds.export());
         
         JSONObject jobj = new JSONObject(ds.export());
-        JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", "value", "description", "required", "elements", "fields", "options", "params", "cache", "schema" };
+        /*JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", "value", "description", "required", "elements", "fields", "options", "params", "cache", "schema" };*/
         System.out.println(jobj);
         System.out.println(jobj.toString(3));
         
@@ -193,6 +194,7 @@ public class TestDataSource {
         ds.printUsageString();
         //System.out.println( ds.fetchStringArray("bbox")[1] );
         System.out.println( ds.fetchString("bbox") );
+        System.out.println( Arrays.toString( ds.fetchDoubleArray("bbox") ) );
     }
 
 }

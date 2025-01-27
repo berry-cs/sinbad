@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import core.access.IDataAccess;
 import core.util.FileLoader;

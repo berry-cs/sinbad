@@ -130,7 +130,9 @@ public class XML implements Serializable {
         builder.setErrorHandler(new SimpleErrorHandler());
     }
 
-    Document document = builder.parse(new InputSource(input));
+    InputSource is = new InputSource(input);
+    //is.setEncoding("UTF-8");
+    Document document = builder.parse(is);
     node = document.getDocumentElement();
   }
 

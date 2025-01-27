@@ -36,9 +36,9 @@ public class DataSpecGenerator {
     
     public String getJSONSpec(int indentFactor) {
         JSONObject jobj = new JSONObject(this.ds.export());
-        JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", 
+        /*JSONWriter.keyOrder = new String[] { "type", "path", "name", "format", "infourl", "key", 
                                              "value", "description", "required", "elements", "fields", 
-                                             "options", "params", "cache", "schema" };
+                                             "options", "params", "cache", "schema" };*/
         return jobj.toString(indentFactor);
     }
 

@@ -12,7 +12,7 @@ import core.schema.*;
 
 public class JsonSchemaBuilder {
     
-    // could be a Boolean, Double, Integer, Long, String, JSONArray, JSONObject, or null
+    // could be a Boolean, *BigDecimal, Double, Integer, Long, String, JSONArray, JSONObject, or null
     public static ISchema inferSchema(Object data) {
         return inferSchema(data, null);
     }
@@ -28,7 +28,7 @@ public class JsonSchemaBuilder {
         } else if (data instanceof JSONObject) {
             return inferCompSchema( (JSONObject) data, path );
         } else {
-            System.err.println("Problem: " + data);
+            System.err.println("Problem: " + data + " (" + data.getClass() + ")");
             throw exception(DataAccessException.class, "da:schema");
         }
     }
@@ -139,6 +139,7 @@ public class JsonSchemaBuilder {
 
     private static <T> boolean isPrimitiveOrWrapperOrJsonNull(Class<T> klass) {
         return String.class == klass || ClassUtils.isPrimitiveOrWrapper(klass)
+        		|| java.math.BigDecimal.class == klass    // treat as a Double
                 || JSONObject.NULL.getClass() == klass;
     }    
     

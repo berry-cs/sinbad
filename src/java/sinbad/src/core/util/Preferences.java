@@ -38,8 +38,8 @@ public class Preferences {
     
     
     public static void savePrefs(JSONObject prefs) {
-        JSONWriter.keyOrder = new String[] { "share_usage", "notify_updates", "print_load_progress", 
-                        "run_count", "first_use_ts", "last_use_ts", "server_base" };
+        /*JSONWriter.keyOrder = new String[] { "share_usage", "notify_updates", "print_load_progress", 
+                        "run_count", "first_use_ts", "last_use_ts", "server_base" };*/
         String str = prefs.toString(2);
         try {
             FileWriter w = new FileWriter(getSinbadPrefsFile());

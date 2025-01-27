@@ -25,6 +25,7 @@ public class JsonDataAccess extends FailAccess {
 
     public JsonDataAccess(InputStream is, int skipChars) {
         JSONTokener jt = new JSONTokener(is);
+
         for (int i = 0; i < skipChars; i++) { jt.next(); }  // allow skipping past some initial characters
         this.data = jt.nextValue();
         if (jt.more()) {
@@ -36,6 +37,7 @@ public class JsonDataAccess extends FailAccess {
                     lst.add(jt.nextValue());
                 } catch (JSONException e) {
                     // just stop trying at this point
+                	System.err.println("skipping some data?");
                     break;
                 }
             }
@@ -43,6 +45,7 @@ public class JsonDataAccess extends FailAccess {
                 this.data = new JSONArray(lst);
             }
         }
+        //System.out.println("Read: " + this.data.toString());
     }
     
     private JsonDataAccess(Object data) {

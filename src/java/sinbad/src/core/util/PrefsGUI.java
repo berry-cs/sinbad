@@ -90,6 +90,8 @@ public class PrefsGUI {
         usage.setLayout(new BoxLayout(usage, BoxLayout.X_AXIS));
         chk_share_usage = new JCheckBox("Share usage & diagnostics information");
         usage_info_btn = new JButton("More info...");
+        chk_share_usage.setEnabled(false);
+        usage_info_btn.setEnabled(false);
         usage.add(chk_share_usage);
         usage.add(usage_info_btn);
         mainPane.add(usage);

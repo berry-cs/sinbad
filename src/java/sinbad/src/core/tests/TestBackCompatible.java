@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import core.cache.DataCacher;
 import core.data.CacheConstants;
@@ -54,7 +54,7 @@ public class TestBackCompatible {
         DataSource ds = DataSource.connect("http://api.worldbank.org/v2/en/country/per?downloadformat=csv");
         //ds.clearENTIRECache();
         ds.setOption("skiprows", "2");
-        ds.setOption("fileentry", "API_PER_DS2_en_csv_v2.csv");
+        ds.setOption("fileentry", "API_PER_DS2_en_csv_v2_16007.csv");
         ds.load();
         ds.printUsageString();
     }
@@ -119,6 +119,10 @@ public class TestBackCompatible {
     }
     
     
+    
+    // TODO: update to use new APIs,
+    // e.g. see  https://www.fly.faa.gov/aadc/api/airports/ATL   (from https://www.fly.faa.gov/aadc/ )
+    // or  https://aviationweather.gov/api/data/metar?ids=KRMG&hours=24&order=id%2C-obs&format=json
     
     @Test
     public void testAirport() {
@@ -268,6 +272,7 @@ public class TestBackCompatible {
         Movie[] movies;
 
         DataSource ds = DataSource.connect("http://bigscreen.com/xml/nowshowing_new.xml");
+        ds.clearENTIRECache();
         ds.setCacheTimeout(15 * 60);
         ds.load();
         ds.printUsageString();
@@ -288,13 +293,13 @@ public class TestBackCompatible {
         String status = ds2.fetchString("valid"); 
         System.out.println("30165: valid? " + status);
         
-        DataSource ds = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/494/1dda0280-390b-4c86-9484-14278783ffdc.zip");
-        ds.setOption("fileentry", "FACTDATA_MAR2017.TXT");
+        DataSource ds = DataSource.connectAs("CSV", "https://www.opm.gov/data/datasets/Files/533/7b4b44af-b3c8-4515-afe3-904668d61e1e.zip");
+        ds.setOption("fileentry", "DTefdate.txt");
         ds.load();
         ds.printUsageString();
         System.out.println(ds.getCacheDirectory());
 
-        DataSource ds3 = DataSource.connectAs("CSV", "https://www.opm.gov/Data/Files/494/1dda0280-390b-4c86-9484-14278783ffdc.zip");
+        DataSource ds3 = DataSource.connectAs("CSV", "https://www.opm.gov/data/datasets/Files/533/7b4b44af-b3c8-4515-afe3-904668d61e1e.zip");
         ds3.setOption("fileentry", "DTpatco.txt");
         ds3.load();
         ds3.printUsageString();
