@@ -70,7 +70,7 @@ There are several steps that may be required for step 1, and there are a variety
 (fetch ds "temp_f")
 ````
 
-* Run your program at this point. You should see a temperature value printed out that matches what is shown at the URL [forecast.weather.gov/xml/current_obs/KRMG.xml](https://forecase.weather.gov/xml/current_obs/KRMG.xml) if you load it in your web browser.
+* Run your program at this point. You should see a temperature value printed out that matches what is shown at the URL [forecast.weather.gov/xml/current_obs/KRMG.xml](https://forecast.weather.gov/xml/current_obs/KRMG.xml) if you load it in your web browser.
 
 * Try fetching the data that has label "location". 
 
